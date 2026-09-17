@@ -1,220 +1,227 @@
-// Sample figures until the scoreboard is connected to the real registration sheets.
-const SAMPLE = {
-  me: {
-    today: 2,
-    usualDay: 2.8,
-    usualByNow: 0.9,
-    bestDay: 7,
-    week: [3, 2, 4, 2, null],
-    todayIndex: 3,
-    month: 34
-  },
-  team: { today: 27, usualByNow: 36, registering: 17, people: 30 },
-  colleges: [
-    { name: 'Skills Academy', today: 12, usualByNow: 17 },
-    { name: 'Matric College', today: 7, usualByNow: 9 },
-    { name: 'Bellview', today: 8, usualByNow: 10 }
-  ],
-  wins: [
-    { name: 'Sipho Dlamini', detail: 'Silver · 3 registrations today', time: '10:15' },
-    { name: 'Ayesha Patel', detail: 'Best month so far · 58 registrations', time: '09:40' },
-    { name: 'Nomsa Khumalo', detail: 'Bronze · first registration today', time: '09:05' },
-    { name: 'Johan van Wyk', detail: 'Reached R5 000 cash this month', time: '08:30' }
-  ]
+const PERIOD_OPTIONS = Object.entries(PERIODS).map(([key, period]) => [key, period.label]);
+
+const user = setUpShell();
+const state = {
+  person: recall('person') || user.name,
+  period: PERIODS[recall('period')] ? recall('period') : 'today'
 };
 
-const MILESTONES = [
-  { count: 1, name: 'Bronze', medal: 'bronze' },
-  { count: 3, name: 'Silver', medal: 'silver' },
-  { count: 5, name: 'Gold', medal: 'gold' },
-  { count: 10, name: 'Diamond', medal: 'diamond' }
-];
-
-const WEEK_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-
-function create(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-}
-
-const formatNumber = (value) => value.toLocaleString('en-ZA', { maximumFractionDigits: 1 });
-const initials = (name) => name.split(/\s+/).map((part) => part[0]).slice(0, 2).join('').toUpperCase();
-const percent = (value, of) => `${Math.round((value / of) * 100)}%`;
-
-function showUser(user) {
-  document.getElementById('user-initials').textContent = initials(user.name);
-  document.getElementById('user-name').textContent = user.name;
-  document.getElementById('user-role').textContent = `${user.role} · ${user.college}`;
-
-  const hour = new Date().getHours();
-  const part = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('greeting').textContent = `${part}, ${user.name.split(' ')[0]}`;
-  document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-ZA', {
-    weekday: 'long', day: 'numeric', month: 'long'
+function fillFigures(list, rows) {
+  list.replaceChildren();
+  rows.forEach(([term, value]) => {
+    const row = create('div');
+    row.append(create('dt', '', term), create('dd', '', value));
+    list.append(row);
   });
 }
 
-function drawRing(container, value, target) {
-  const ns = 'http://www.w3.org/2000/svg';
-  const radius = 56;
-  const length = 2 * Math.PI * radius;
-  const svg = document.createElementNS(ns, 'svg');
-  svg.setAttribute('viewBox', '0 0 132 132');
-
-  [['ring-track', length], ['ring-fill', length * Math.min(1, value / target)]].forEach(([className, filled]) => {
-    const circle = document.createElementNS(ns, 'circle');
-    circle.setAttribute('class', className);
-    circle.setAttribute('cx', '66');
-    circle.setAttribute('cy', '66');
-    circle.setAttribute('r', String(radius));
-    circle.setAttribute('fill', 'none');
-    circle.setAttribute('stroke-width', '12');
-    circle.setAttribute('stroke-linecap', 'round');
-    circle.setAttribute('stroke-dasharray', `${filled} ${length}`);
-    svg.append(circle);
-  });
-
-  const label = create('div', 'ring-label');
-  label.append(create('b', '', String(value)), create('span', '', `of ${Math.ceil(target)} usual`));
-  container.append(svg, label);
-  container.setAttribute('aria-label', `${value} registrations today, compared with a usual day of ${formatNumber(target)}`);
+function addMarker(track, className, value, scale) {
+  const marker = create('span', `track-marker ${className}`);
+  marker.style.left = `${Math.min(100, (value / scale) * 100)}%`;
+  track.append(marker);
 }
 
-function showMyDay(me) {
-  const ahead = me.today >= me.usualByNow;
-  const status = document.getElementById('pace-status');
-  status.textContent = ahead ? 'Ahead of usual pace' : 'Behind usual pace';
-  status.classList.add(ahead ? 'status-good' : 'status-waiting');
+function showHeader(person) {
+  document.getElementById('person-name').textContent = person.name;
+  document.getElementById('person-note').textContent = `${person.college} · ${PERIODS[state.period].note}`;
+  document.getElementById('snapshot-time').textContent = SNAPSHOT.time;
 
-  drawRing(document.getElementById('today-ring'), me.today, me.usualDay);
+  const select = document.getElementById('person-select');
+  if (!select.options.length) {
+    COLLEGES.forEach((college) => {
+      const group = create('optgroup');
+      group.label = college;
+      PEOPLE.filter((someone) => someone.college === college).forEach((someone) => {
+        group.append(new Option(someone.name, someone.name));
+      });
+      select.append(group);
+    });
+    select.addEventListener('change', () => choosePerson(select.value));
+  }
+  select.value = person.name;
 
-  const toAverage = Math.ceil(me.usualDay - me.today);
-  document.getElementById('today-lead').textContent = `${me.today} registration${me.today === 1 ? '' : 's'} so far today.`;
-  document.getElementById('today-detail').textContent = toAverage > 0
-    ? `You usually have about ${formatNumber(me.usualByNow)} by this time. ${toAverage} more reaches your daily average.`
-    : 'You\'ve already passed your daily average.';
-
-  const weekTotal = me.week.reduce((sum, day) => sum + (day || 0), 0);
-  document.getElementById('fact-usual').textContent = formatNumber(me.usualDay);
-  document.getElementById('fact-best').textContent = String(me.bestDay);
-  document.getElementById('fact-week').textContent = String(weekTotal);
-  document.getElementById('fact-month').textContent = String(me.month);
-}
-
-function showMilestones(me) {
-  const list = document.getElementById('milestones');
-  const goals = MILESTONES.map((goal) => ({ ...goal, label: String(goal.count) }));
-  goals.push({ count: me.bestDay + 1, name: `New best day (${me.bestDay + 1})`, medal: 'best', label: '★' });
-
-  goals.forEach((goal) => {
-    const done = me.today >= goal.count;
-    const item = create('li', done ? 'is-done' : '');
-    item.append(
-      create('span', `medal medal-${goal.medal}`, goal.label),
-      create('span', 'name', goal.name),
-      create('span', 'left', done ? 'Earned' : `${goal.count - me.today} to go`)
-    );
-    list.append(item);
+  buildSegmented(document.getElementById('period-picker'), PERIOD_OPTIONS, state.period, (period) => {
+    state.period = period;
+    remember('period', period);
+    render();
   });
 }
 
-function showTeam(team, colleges) {
-  const tiles = document.getElementById('team-tiles');
-  [
-    ['Registrations', String(team.today), 'Across all three colleges'],
-    ['Against usual pace', percent(team.today, team.usualByNow), `Usually ${team.usualByNow} by now`],
-    ['People registering', String(team.registering), `Out of ${team.people} in the team`]
-  ].forEach(([label, value, note]) => {
-    const tile = create('div', 'tile');
-    tile.append(create('span', '', label), create('b', '', value), create('small', '', note));
-    tiles.append(tile);
-  });
+function showRegistrations(person, figures) {
+  const period = PERIODS[state.period];
+  const inProgress = state.period !== 'yesterday';
 
+  document.getElementById('registrations-status').replaceChildren(statusChip(paceFor(figures, state.period)));
+  document.getElementById('registrations-count').textContent = String(figures.count);
+  document.getElementById('registrations-label').textContent = figures.count === 1 ? 'registration' : 'registrations';
+
+  const track = document.getElementById('registrations-track');
+  track.replaceChildren();
+  const scale = Math.max(figures.count, figures.august, 1) * 1.15;
+  const fill = create('span', 'track-fill');
+  fill.style.width = `${(figures.count / scale) * 100}%`;
+  track.append(fill);
+  addMarker(track, 'is-august', figures.august, scale);
+  if (inProgress) addMarker(track, 'is-now', figures.byNow, scale);
+
+  const legend = document.getElementById('registrations-legend');
+  legend.replaceChildren();
+  const key = (className, text) => {
+    const item = create('span');
+    item.append(create('i', className), document.createTextNode(text));
+    legend.append(item);
+  };
+  key('key-fill', 'So far');
+  key('key-august', period.days === 1 ? 'August daily average' : `August average for ${period.days} days`);
+  if (inProgress) key('key-now', `Usually by ${SNAPSHOT.time}`);
+
+  const rows = [['Per day in August', formatNumber(person.august)]];
+  if (period.days > 1) rows.push([`August average for ${period.days} days`, formatNumber(figures.august)]);
+  if (inProgress) rows.push([`Usually by ${SNAPSHOT.time}`, formatNumber(figures.byNow)]);
+  rows.push(['Compared with August', describeChange(figures.count, figures.august)]);
+  fillFigures(document.getElementById('registrations-figures'), rows);
+}
+
+function showRecord(figures) {
+  const unit = PERIODS[state.period].unit;
+  const record = document.getElementById('record');
+  record.replaceChildren();
+
+  if (figures.count > figures.previousBest) {
+    record.append(create('b', '', 'New record'), create('span', '', `A new best ${unit} since August. Worth a celebration.`));
+  } else {
+    const needed = figures.previousBest + 1 - figures.count;
+    record.append(create('b', '', `${needed} more`), create('span', '', `for a new best ${unit} since August`));
+  }
+
+  fillFigures(document.getElementById('record-figures'), [
+    [`Previous best ${unit}`, String(figures.previousBest)],
+    ['So far', String(figures.count)]
+  ]);
+}
+
+function showCash(person, figures) {
+  const unit = PERIODS[state.period].unit;
+  document.getElementById('cash-amount').textContent = formatMoney(figures.cash);
+
+  fillFigures(document.getElementById('cash-figures'), [
+    [PERIODS[state.period].days === 1 ? 'Per day in August' : `August pace for ${PERIODS[state.period].days} days`,
+      person.cashAugust ? formatMoney(figures.cashAugust) : 'No August cash'],
+    ['Previous day cash best', person.cashBest ? formatMoney(person.cashBest) : 'None yet']
+  ]);
+
+  document.getElementById('cash-milestones-title').textContent =
+    unit === 'day' ? 'Daily milestones' : unit === 'week' ? 'Weekly milestones' : 'Monthly milestones';
+
+  const chips = document.getElementById('cash-milestones');
+  chips.replaceChildren();
+  CASH_MILESTONES[unit].forEach((amount) => {
+    const reached = figures.cash >= amount;
+    const label = amount === 1 ? 'First payment' : `R${amount.toLocaleString('en-ZA')}`;
+    const chip = create('span', reached ? 'chip is-reached' : 'chip', reached ? `✓ ${label}` : label);
+    chips.append(chip);
+  });
+}
+
+function showLatestCard(person) {
+  const holder = document.getElementById('latest-card');
+  holder.replaceChildren();
+  const card = latestCardFor(person);
+
+  if (!card) {
+    holder.append(create('p', 'empty', 'No celebrations yet this month. The first registration earns a Bronze card.'));
+    return;
+  }
+
+  const preview = create('div', 'mini-card');
+  preview.append(
+    create('span', `mini-card-tier tier-${card.tier.toLowerCase()}`, `${card.label} · ${card.tier}`),
+    create('b', '', String(card.count)),
+    create('span', '', card.unit),
+    create('small', '', card.date)
+  );
+
+  const footer = create('div', 'card-footer');
+  footer.append(
+    create('span', `status ${card.status === 'Sent' ? 'status-good' : 'status-info'}`, card.status),
+    create('span', 'panel-note', 'Cards page coming soon')
+  );
+  holder.append(preview, footer);
+}
+
+function showLeague(person) {
+  document.getElementById('league-name').textContent = person.league;
+  const list = document.getElementById('league');
+  list.replaceChildren();
+
+  PEOPLE.filter((someone) => someone.league === person.league)
+    .map((someone) => ({ someone, figures: figuresFor(someone, state.period) }))
+    .sort((a, b) => b.figures.count / Math.max(b.figures.august, 0.1) - a.figures.count / Math.max(a.figures.august, 0.1))
+    .forEach(({ someone, figures }) => {
+      const item = create('li', someone.name === person.name ? 'is-selected' : '');
+      const who = create('div');
+      const name = create('button', 'person-link', someone.name);
+      name.type = 'button';
+      name.addEventListener('click', () => choosePerson(someone.name));
+      who.append(name, create('small', '', `August ${formatNumber(figures.august)} · ${describeChange(figures.count, figures.august)}`));
+
+      const now = create('div', 'now');
+      now.append(create('b', '', String(figures.count)), statusChip(paceFor(figures, state.period)));
+      item.append(create('span', 'avatar avatar-soft', initials(someone.name)), who, now);
+      list.append(item);
+    });
+}
+
+function showColleges() {
   const list = document.getElementById('colleges');
-  colleges.forEach((college) => {
-    const scale = Math.max(college.today, college.usualByNow) * 1.2;
+  list.replaceChildren();
+  const inProgress = state.period !== 'yesterday';
+
+  COLLEGES.forEach((college) => {
+    const totals = PEOPLE.filter((someone) => someone.college === college)
+      .map((someone) => figuresFor(someone, state.period))
+      .reduce((sum, figures) => ({
+        count: sum.count + figures.count,
+        august: sum.august + figures.august,
+        byNow: sum.byNow + figures.byNow
+      }), { count: 0, august: 0, byNow: 0 });
+
+    const scale = Math.max(totals.count, totals.august, 1) * 1.15;
     const item = create('li');
     const top = create('div', 'college-top');
-    top.append(create('span', '', college.name), create('b', '', String(college.today)));
+    top.append(create('span', '', college), create('b', '', String(totals.count)));
 
-    const meter = create('div', 'meter');
-    const fill = create('div', 'meter-fill');
-    const mark = create('div', 'meter-mark');
-    fill.style.width = `${(college.today / scale) * 100}%`;
-    mark.style.left = `${(college.usualByNow / scale) * 100}%`;
-    meter.append(fill, mark);
+    const meter = create('div', 'track track-small');
+    const fill = create('span', 'track-fill');
+    fill.style.width = `${(totals.count / scale) * 100}%`;
+    meter.append(fill);
+    addMarker(meter, 'is-august', totals.august, scale);
+    if (inProgress) addMarker(meter, 'is-now', totals.byNow, scale);
 
-    item.append(top, meter, create('p', 'college-note', `${percent(college.today, college.usualByNow)} of the usual ${college.usualByNow} by now`));
+    const note = inProgress
+      ? `${formatPercent(totals.count, totals.august)} of August average · usually ${formatNumber(totals.byNow)} by now`
+      : `${formatPercent(totals.count, totals.august)} of August average (${formatNumber(totals.august)})`;
+    item.append(top, meter, create('p', 'college-note', note));
     list.append(item);
   });
 }
 
-function showWeek(me) {
-  const chart = document.getElementById('week-chart');
-  const days = document.getElementById('week-days');
-  const top = Math.max(me.usualDay, ...me.week.filter((day) => day !== null)) * 1.25;
-
-  me.week.forEach((value, index) => {
-    const bar = create('div', 'week-bar');
-    if (value === null) {
-      bar.classList.add('is-future');
-      bar.append(create('span', '', '–'));
-    } else {
-      bar.style.height = `${(value / top) * 100}%`;
-      bar.append(create('span', '', String(value)));
-      if (index === me.todayIndex) bar.classList.add('is-today');
-    }
-    bar.title = value === null ? `${WEEK_DAYS[index]}: still to come` : `${WEEK_DAYS[index]}: ${value}`;
-    chart.append(bar);
-    days.append(create('span', '', WEEK_DAYS[index]));
-  });
-
-  const average = create('div', 'week-average');
-  average.style.bottom = `${(me.usualDay / top) * 100}%`;
-  chart.append(average);
+function choosePerson(name) {
+  state.person = findPerson(name).name;
+  remember('person', state.person);
+  render();
 }
 
-function showWins(wins) {
-  const list = document.getElementById('wins');
-  wins.forEach((win) => {
-    const item = create('li');
-    const text = create('div');
-    text.append(create('b', '', win.name), create('small', '', win.detail));
-    item.append(create('span', 'avatar', initials(win.name)), text, create('time', '', win.time));
-    list.append(item);
-  });
+function render() {
+  const person = findPerson(state.person);
+  const figures = figuresFor(person, state.period);
+  showHeader(person);
+  showRegistrations(person, figures);
+  showRecord(figures);
+  showCash(person, figures);
+  showLatestCard(person);
+  showLeague(person);
+  showColleges();
 }
 
-function setUpMenu() {
-  const app = document.getElementById('app');
-  const button = document.getElementById('menu-button');
-  const setOpen = (open) => {
-    app.classList.toggle('menu-open', open);
-    button.setAttribute('aria-expanded', String(open));
-  };
-
-  button.addEventListener('click', () => setOpen(!app.classList.contains('menu-open')));
-  document.getElementById('scrim').addEventListener('click', () => setOpen(false));
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') setOpen(false);
-  });
-
-  document.getElementById('sign-out').addEventListener('click', () => {
-    endSession();
-    location.href = 'index.html';
-  });
-}
-
-const user = readSession();
-
-if (user) {
-  showUser(user);
-  showMyDay(SAMPLE.me);
-  showMilestones(SAMPLE.me);
-  showTeam(SAMPLE.team, SAMPLE.colleges);
-  showWeek(SAMPLE.me);
-  showWins(SAMPLE.wins);
-  setUpMenu();
-}
+render();
