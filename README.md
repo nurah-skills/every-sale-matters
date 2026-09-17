@@ -12,7 +12,7 @@ Live site: https://nurah-skills.github.io/every-sale-matters/
 - `signup.html` is the create account page.
 - `home.html` shows one person's progress: registrations against their August average and usual pace, the next record, cash recorded, this week's staff incentives, their most recent celebration, their suggested league and the three colleges.
 - `team.html` shows the whole group: totals, college totals and everyone's results in a table you can search and sort. Selecting a name opens their details. Below the table, Celebrate next shows new bests or the people closest to one.
-- `cards.html` is the queue of celebration cards. Each card can be previewed, downloaded as a 1080 × 1350 image for WhatsApp, have its caption copied, and be marked as sent or skipped. In the demo those statuses are saved in your browser only.
+- `cards.html` is the queue of celebration cards: sales levels from Bronze to Black, personal bests for registrations and cash, cash milestones, steady progress, staff incentives and approved assists. Each card can be previewed, downloaded as a 1080 × 1350 image for WhatsApp, have its caption copied, and be marked as sent or skipped. In the demo those statuses are saved in your browser only.
 - `make.html` makes a single card: choose a person, one of the achievements their figures support and an optional cheer, then download the image, share it or copy the caption.
 - `roundups.html` writes a daily, weekly or monthly WhatsApp round-up for the whole team or one college, with a summary alongside.
 - `feedback.html` lets people report a problem, share an idea or nominate a colleague for an assist, and shows their own submissions and replies. In the demo, submissions are saved in your browser only.

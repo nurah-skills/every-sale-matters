@@ -4,6 +4,10 @@ const PILL_COLOURS = {
   best: '#F2DC8C',
   cash: '#8FB39A',
   assist: '#B9D3EA',
+  incentive: '#F6C28B',
+  steady: '#DCE6D8',
+  Platinum: '#E4E1F0',
+  Black: '#111418',
   Bronze: '#E3C19F',
   Silver: '#CBD3DC',
   Gold: '#F2DC8C',
@@ -18,10 +22,13 @@ function pillText(card) {
   if (card.lead.kind === 'best') return 'Personal best';
   if (card.lead.kind === 'cash') return 'Cash';
   if (card.lead.kind === 'assist') return 'Thank you';
+  if (card.lead.kind === 'incentive') return 'Staff incentive';
+  if (card.lead.kind === 'steady') return 'Steady progress';
   return card.lead.tier === 'Total' ? 'Registrations' : card.lead.tier;
 }
 
 const pillColour = (card) => PILL_COLOURS[card.lead.kind === 'sales' ? card.lead.tier : card.lead.kind];
+const pillTextColour = (card) => (card.lead.tier === 'Black' ? '#FFFFFF' : '#1E1E1E');
 
 const readLine = (card) => (card.lead.kind === 'assist' ? 'Approved by an admin' : `Figures read ${card.read}`);
 
@@ -142,7 +149,7 @@ async function drawCard(card, cheer = '') {
   roundedRect(context, 110, 260, pillWidth, 58, 29);
   context.fillStyle = pillColour(card);
   context.fill();
-  context.fillStyle = '#1E1E1E';
+  context.fillStyle = pillTextColour(card);
   context.fillText(label, 138, 299);
 
   context.fillStyle = '#FFFFFF';

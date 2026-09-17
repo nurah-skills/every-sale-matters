@@ -108,7 +108,20 @@ const PEOPLE = SAMPLE_PEOPLE.map(([name, collegeIndex, august]) => {
 
   const bestCash = PEOPLE.find((person) => person.name === 'Zanele Ndlovu');
   bestCash.cash[TODAY - 1] = bestCash.cashBest + 400;
+
+  const platinum = PEOPLE.find((person) => person.name === 'Refilwe Maseko');
+  platinum.best = Math.max(platinum.best, 18);
+  platinum.days[TODAY - 1] = 15;
+
+  const steady = PEOPLE.find((person) => person.name === 'Megan Fourie');
+  [WEEK_START, WEEK_START + 1, WEEK_START + 2].forEach((index) => { steady.days[index] = Math.ceil(steady.august) + 1; });
+  steady.days[TODAY] = Math.ceil(steady.august);
 })();
+
+PEOPLE.forEach((person) => {
+  person.cashBestWeek = roundToFive(person.cashBest * 1.6);
+  person.bestMonthCash = roundToFive(person.cashAugust * 20 * 1.1);
+});
 
 // Leagues group people with similar August averages
 PEOPLE.slice()
@@ -154,6 +167,8 @@ function paceFor(figures, periodKey) {
 const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const TIERS = [
+  { count: 20, name: 'Black' },
+  { count: 15, name: 'Platinum' },
   { count: 10, name: 'Diamond' },
   { count: 5, name: 'Gold' },
   { count: 3, name: 'Silver' },
@@ -163,7 +178,9 @@ const TIERS = [
 // 1 September 2026 is a Tuesday
 const dayName = (index) => `${WEEKDAY_NAMES[(WORKDAYS[index] + 1) % 7]} ${WORKDAYS[index]} September 2026`;
 const slugFor = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const KIND_ORDER = { best: 0, cash: 1, sales: 2 };
+const KIND_ORDER = { best: 0, cash: 1, sales: 2, steady: 3, incentive: 4, assist: 5 };
+const WEEK_LABEL = 'Monday 14 to Thursday 17 September 2026';
+const rand = (value) => `R${Math.round(value).toLocaleString('en-ZA')}`;
 
 const readTime = (day) => (day === TODAY ? `17 September at ${SNAPSHOT.time}` : '16 September at 17:02');
 
@@ -225,7 +242,46 @@ function monthWins(person) {
       detail: `Reached the R${milestone.toLocaleString('en-ZA')} milestone`
     });
   }
-  return wins;
+  if (person.bestMonthCash && cash > person.bestMonthCash) {
+    wins.unshift({ kind: 'best', title: 'Best cash month', value: cash, money: true, unit: 'cash recorded this month so far', detail: `Previous whole-month cash best: ${rand(person.bestMonthCash)}` });
+  }
+  return wins.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
+}
+
+function weekWins(person) {
+  const count = sumBetween(person.days, WEEK_START, TODAY);
+  const cash = sumBetween(person.cash, WEEK_START, TODAY);
+  const wins = [];
+
+  if (count > person.bestWeek) {
+    wins.push({ kind: 'best', title: 'Best week', value: count, unit: 'registrations this week', detail: `Previous best week: ${person.bestWeek}` });
+  }
+  if (person.cashBestWeek && cash > person.cashBestWeek) {
+    wins.push({ kind: 'best', title: 'Best cash week', value: cash, money: true, unit: 'cash recorded this week', detail: `Previous best cash week: ${rand(person.cashBestWeek)}` });
+  }
+
+  const milestone = CASH_MILESTONES.week.slice().reverse().find((amount) => cash >= amount);
+  if (milestone) {
+    wins.push({ kind: 'cash', title: `${rand(milestone)} this week`, value: cash, money: true, unit: 'cash recorded this week', detail: `Reached the ${rand(milestone)} milestone` });
+  }
+
+  // Steady improvement: at or above the August daily average on at least 4 days this week
+  const steadyDays = person.days.slice(WEEK_START, TODAY + 1).filter((day) => person.august > 0 && day >= person.august).length;
+  if (steadyDays >= 4) {
+    wins.push({ kind: 'steady', title: 'Steady progress', value: steadyDays, unit: 'days ahead of the August average this week', detail: `August daily average: ${person.august.toLocaleString('en-ZA')}` });
+  }
+
+  return wins.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
+}
+
+// Newly recorded staff earnings get their own card, separate from sales and student cash
+function incentiveWin(person) {
+  const incentives = incentivesFor(person);
+  if (!incentives.total) return null;
+  const [value, unit] = incentives.enrolment
+    ? [incentives.enrolment, `weekly enrolment incentive · ${incentives.qualifying} enrolments`]
+    : incentives.cash ? [incentives.cash, 'additional cash incentive'] : [incentives.fees, 'registration fees and referrals'];
+  return { kind: 'incentive', title: 'Staff incentive earned', value, money: true, unit, detail: `Weekly total so far: ${rand(incentives.total)}` };
 }
 
 // Follows the current scoreboard: unsent wins for the same person and day share one card,
@@ -251,19 +307,24 @@ function buildCards() {
       });
     });
 
-    const wins = monthWins(person);
-    if (wins.length) {
+    const addGroup = (wins, id, date, startingStatus = 'ready') => {
+      if (!wins.length) return;
       cards.push({
-        id: `${slugFor(person.name)}-september-month`,
+        id: `${slugFor(person.name)}-${id}`,
         person: person.name,
         college: person.college,
-        date: '1 to 17 September 2026',
+        date,
         read: readTime(TODAY),
         lead: wins[0],
         also: wins.slice(1).map((win) => win.title),
-        startingStatus: 'ready'
+        startingStatus
       });
-    }
+    };
+    addGroup(weekWins(person), 'week-14-september', WEEK_LABEL);
+    addGroup(monthWins(person), 'september-month', '1 to 17 September 2026');
+    const incentive = incentiveWin(person);
+    // Earnings already in the sheet aren't announced again, so only a few are new
+    if (incentive) addGroup([incentive], 'incentive-14-september', INCENTIVE_WEEK, person.name.length % 4 === 0 ? 'ready' : 'sent');
   });
 
   // One card that was sent earlier today, where the person has kept going since
@@ -276,12 +337,12 @@ function buildCards() {
 // Everything one person could be celebrated for, one achievement per card
 function achievementsFor(person) {
   const options = [];
-  const add = (win, day, date) => options.push({
+  const add = (win, day, date, shortDate = 'this month') => options.push({
     id: `${slugFor(person.name)}-${slugFor(win.title)}-${slugFor(String(date))}`,
     person: person.name,
     college: person.college,
     date: day === null ? date : dayName(day),
-    shortDate: day === null ? 'this month' : `${WORKDAYS[day]} Sep`,
+    shortDate: day === null ? shortDate : `${WORKDAYS[day]} Sep`,
     read: readTime(day === null ? TODAY : day),
     lead: win,
     also: []
@@ -291,7 +352,10 @@ function achievementsFor(person) {
     dayWins(person, day).forEach((win) => add(win, day, WORKDAYS[day]));
     add({ kind: 'sales', tier: 'Total', title: 'Day total', value: person.days[day], unit: 'registrations this day', detail: dayName(day) }, day, WORKDAYS[day]);
   });
+  weekWins(person).forEach((win) => add(win, null, WEEK_LABEL, 'this week'));
   monthWins(person).forEach((win) => add(win, null, '1 to 17 September 2026'));
+  const incentive = incentiveWin(person);
+  if (incentive) add(incentive, null, INCENTIVE_WEEK, 'this week');
   add({
     kind: 'sales',
     tier: 'Total',
@@ -302,7 +366,7 @@ function achievementsFor(person) {
   }, null, '1 to 17 September 2026');
 
   // Personal bests first and plain totals last, like the card queue
-  const rank = (card) => (card.lead.tier === 'Total' ? 3 : KIND_ORDER[card.lead.kind]);
+  const rank = (card) => (card.lead.tier === 'Total' ? 9 : KIND_ORDER[card.lead.kind]);
   return options.sort((a, b) => rank(a) - rank(b));
 }
 

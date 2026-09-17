@@ -64,6 +64,7 @@ function cardTile(card) {
   const art = create('div', `card-art kind-${card.lead.kind}`);
   const pill = create('span', 'card-pill', pillText(card));
   pill.style.background = pillColour(card);
+  pill.style.color = pillTextColour(card);
   art.append(pill, create('b', '', shortValueText(card.lead)), create('span', '', card.lead.unit));
 
   const details = create('div', 'card-details');
@@ -75,7 +76,7 @@ function cardTile(card) {
     create('p', 'card-detail', card.lead.detail)
   );
   if (card.also.length) details.append(create('p', 'card-also', `Also: ${card.also.join(' · ')}`));
-  details.append(create('p', 'card-meta', `${card.college} · ${card.date} · ${readLine(card).toLowerCase()}`));
+  details.append(create('p', 'card-meta', `${card.college} · ${card.date} · ${readLine(card).charAt(0).toLowerCase()}${readLine(card).slice(1)}`));
 
   const share = create('div', 'card-actions');
   share.append(
