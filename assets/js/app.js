@@ -79,6 +79,26 @@ function showReadyCount() {
   badge.hidden = ready === 0;
 }
 
+// Feedback is also kept in this browser until there's a shared database
+const FEEDBACK_KEY = 'esm-feedback';
+
+function savedFeedback() {
+  try {
+    return JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveFeedback(items) {
+  try {
+    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(items));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function buildSegmented(container, options, current, onChange) {
   container.replaceChildren();
   options.forEach(([value, label]) => {

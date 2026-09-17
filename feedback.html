@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; base-uri 'self'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
-  <title>Home · Every Sale Matters</title>
+  <title>Feedback · Every Sale Matters</title>
   <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
       <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="36" height="36" alt=""><span>Every Sale Matters</span></a>
 
       <nav class="menu" aria-label="Pages">
-        <a class="menu-item" href="home.html" aria-current="page">
+        <a class="menu-item" href="home.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
           <span>Home</span>
         </a>
@@ -48,7 +48,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>
           <span>Our progress</span><em class="soon">Soon</em>
         </span>
-        <a class="menu-item" href="feedback.html">
+        <a class="menu-item" href="feedback.html" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>
           <span>Feedback</span>
         </a>
@@ -80,98 +80,111 @@
       <main class="app-main">
         <div class="page-header">
           <div>
-            <p class="eyebrow">Individual progress</p>
-            <h1 id="person-name">Progress</h1>
-            <p class="page-note" id="person-note"></p>
+            <p class="eyebrow">Team health</p>
+            <h1>Feedback</h1>
+            <p class="page-note">Spot a problem, have an idea, or want to thank someone who helped you make a sale? Tell us here.</p>
           </div>
-          <span class="tag">Sample figures · updated <span id="snapshot-time"></span></span>
-        </div>
-
-        <div class="controls">
-          <label class="sr-only" for="person-select">Choose a person</label>
-          <select class="select" id="person-select"></select>
-          <div class="segmented" id="period-picker" role="group" aria-label="Period"></div>
         </div>
 
         <div class="grid">
-          <section class="panel span-7" aria-labelledby="registrations-title">
+          <section class="panel span-7" aria-labelledby="form-title">
             <div class="panel-head">
-              <h2 id="registrations-title">Registrations</h2>
-              <span id="registrations-status"></span>
+              <h2 id="form-title">What would you like to tell us?</h2>
             </div>
-            <div class="big-number"><b id="registrations-count">0</b><span id="registrations-label">registrations</span></div>
-            <div class="track" id="registrations-track" aria-hidden="true"></div>
-            <div class="legend" id="registrations-legend"></div>
-            <dl class="figure-list" id="registrations-figures"></dl>
+
+            <form class="form" id="feedback-form" novalidate>
+              <fieldset class="choice-group">
+                <legend class="sr-only">Type of feedback</legend>
+                <label class="choice">
+                  <input type="radio" name="type" value="problem" checked>
+                  <span><b>Something is wrong</b><small>A missing sale, wrong total or missed celebration.</small></span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="type" value="idea">
+                  <span><b>I have an idea</b><small>A way to improve how this works.</small></span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="type" value="assist">
+                  <span><b>Nominate an assist</b><small>Tell us who helped and what they did.</small></span>
+                </label>
+              </fieldset>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="feedback-name">Your name</label>
+                  <input class="input" id="feedback-name" type="text" autocomplete="name" required>
+                </div>
+                <div class="field">
+                  <label for="feedback-college">Your college</label>
+                  <select class="select" id="feedback-college">
+                    <option>Skills Academy</option>
+                    <option>Matric College</option>
+                    <option>Bellview</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field" id="helper-field" hidden>
+                <label for="feedback-helper">Who helped you?</label>
+                <select class="select" id="feedback-helper"></select>
+              </div>
+
+              <div class="field">
+                <label for="feedback-message" id="feedback-message-label">What happened, and what should it show?</label>
+                <textarea class="input" id="feedback-message" rows="5" maxlength="1000" aria-describedby="feedback-privacy" required></textarea>
+                <p class="field-hint" id="feedback-privacy">Please leave out student names, phone numbers and payment details.</p>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="feedback-date">When? <span class="optional">(optional)</span></label>
+                  <input class="input" id="feedback-date" type="date">
+                </div>
+                <div class="field">
+                  <label for="feedback-reference">Sale reference <span class="optional">(optional)</span></label>
+                  <input class="input" id="feedback-reference" type="text" maxlength="40" placeholder="CRM ID" autocomplete="off">
+                </div>
+              </div>
+
+              <p class="form-error" id="feedback-error" role="alert" hidden></p>
+
+              <div class="dialog-actions">
+                <button class="button button-inline" type="submit">Submit feedback</button>
+                <span class="panel-note">Your message goes to the admin inbox. Reporting an error doesn't change sales totals by itself.</span>
+              </div>
+            </form>
           </section>
 
-          <section class="panel span-5" aria-labelledby="record-title">
-            <div class="panel-head">
-              <h2 id="record-title">The next record</h2>
-            </div>
-            <div class="record" id="record"></div>
-            <dl class="figure-list" id="record-figures"></dl>
-            <p class="panel-note">Based on the history loaded since August.</p>
-          </section>
+          <div class="span-5 stack">
+            <section class="panel" aria-labelledby="next-title">
+              <div class="panel-head">
+                <h2 id="next-title">What happens next?</h2>
+              </div>
+              <ol class="timeline">
+                <li><b>Submitted</b><span>Your message is saved with a reference number.</span></li>
+                <li><b>Reviewed by a manager</b><span>They check the sale or ask about the assist.</span></li>
+                <li><b>An outcome</b><span>The result is corrected, the assist is recognised, or the decision is explained.</span></li>
+              </ol>
+              <p class="panel-note">Approved assists get a thank-you card. They don't add another sale.</p>
+            </section>
 
-          <section class="panel span-7" aria-labelledby="cash-title">
-            <div class="panel-head">
-              <h2 id="cash-title">Cash recorded</h2>
-              <span class="panel-note">Recorded under Paid</span>
-            </div>
-            <div class="big-number"><b id="cash-amount">R0,00</b></div>
-            <dl class="figure-list" id="cash-figures"></dl>
-            <div>
-              <p class="subheading" id="cash-milestones-title">Milestones</p>
-              <div class="chips" id="cash-milestones"></div>
-            </div>
-            <p class="panel-note">Daily cash incentive: your team's existing cash rules still apply. Earned amounts aren't connected yet.</p>
-          </section>
-
-          <section class="panel span-5" aria-labelledby="card-title">
-            <div class="panel-head">
-              <h2 id="card-title">Most recent celebration</h2>
-            </div>
-            <div id="latest-card"></div>
-          </section>
-
-          <section class="panel span-7" aria-labelledby="league-title">
-            <div class="panel-head">
-              <h2 id="league-title">Suggested league</h2>
-              <span class="status status-info" id="league-name"></span>
-            </div>
-            <p class="panel-note">People with similar August daily averages. Each person is compared with their own August figures.</p>
-            <ul class="league" id="league"></ul>
-          </section>
-
-          <section class="panel span-5" aria-labelledby="colleges-title">
-            <div class="panel-head">
-              <h2 id="colleges-title">Our colleges</h2>
-            </div>
-            <div class="legend">
-              <span><i class="key-fill"></i>Registrations</span>
-              <span><i class="key-august"></i>August average</span>
-              <span><i class="key-now"></i>Usually by now</span>
-            </div>
-            <ul class="colleges colleges-stacked" id="colleges"></ul>
-          </section>
-        </div>
-
-        <details class="about">
-          <summary>How these numbers work</summary>
-          <div class="about-body">
-            <p>A registration counts when a row has a salesperson's name and either a student name or CRM ID. "Confirmed" and "Docs Received" both count. "Cancelled" doesn't.</p>
-            <p>The August average is August's registrations divided by its 20 recorded days, multiplied by the days in the period you're looking at. "Usually by now" scales that to how much of today's working day (08:00 to 17:00) has passed.</p>
-            <p>Cash is the amount recorded under Paid on the sheet date. These are registrations and sheet amounts, not money received in the bank.</p>
-            <p>The figures on this page are samples while the site is being designed.</p>
+            <section class="panel" aria-labelledby="submissions-title">
+              <div class="panel-head">
+                <h2 id="submissions-title">Your submissions</h2>
+              </div>
+              <ul class="submissions" id="submissions"></ul>
+              <p class="panel-note">In this demo, submissions are saved in this browser only.</p>
+            </section>
           </div>
-        </details>
+        </div>
       </main>
     </div>
   </div>
 
+  <div class="toast" id="toast" role="status" hidden></div>
+
   <script src="assets/js/data.js"></script>
   <script src="assets/js/app.js"></script>
-  <script src="assets/js/home.js"></script>
+  <script src="assets/js/feedback.js"></script>
 </body>
 </html>
