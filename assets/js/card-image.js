@@ -134,7 +134,7 @@ async function drawCard(card, cheer = '') {
 
   context.fillStyle = '#FFFFFF';
   context.font = `600 36px ${heading}`;
-  context.fillText('Every Sale Matters', 208, 160);
+  context.fillText('Sales Scoreboard', 208, 160);
 
   const label = pillText(card).toUpperCase();
   context.font = `700 28px ${body}`;

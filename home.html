@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; base-uri 'self'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
-  <title>Home · Every Sale Matters</title>
+  <title>Home · Sales Scoreboard</title>
   <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
 <body>
   <div class="app" id="app">
     <aside class="sidebar" id="sidebar" aria-label="Main menu">
-      <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="36" height="36" alt=""><span>Every Sale Matters</span></a>
+      <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="36" height="36" alt=""><span class="brand-text"><b>Sales Scoreboard</b><small>Every sale matters</small></span></a>
 
       <nav class="menu" aria-label="Pages">
         <a class="menu-item" href="home.html" aria-current="page">
@@ -74,7 +74,7 @@
         <button class="icon-button" id="menu-button" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         </button>
-        <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="30" height="30" alt=""><span>Every Sale Matters</span></a>
+        <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="30" height="30" alt=""><span>Sales Scoreboard</span></a>
       </header>
 
       <main class="app-main">
@@ -133,6 +133,38 @@
               <h2 id="card-title">Most recent celebration</h2>
             </div>
             <div id="latest-card"></div>
+          </section>
+
+          <section class="panel span-12 incentives" aria-labelledby="incentives-title">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Staff incentives</p>
+                <h2 id="incentives-title">Your incentives this week</h2>
+                <p class="panel-note" id="incentive-week"></p>
+              </div>
+              <span id="incentive-paid"></span>
+            </div>
+
+            <div class="incentive-layout">
+              <dl class="figure-list incentive-lines" id="incentive-lines"></dl>
+
+              <div class="incentive-progress">
+                <p class="subheading">Weekly enrolment level</p>
+                <p class="incentive-count"><b id="incentive-qualifying">0</b> qualifying debit-order registrations</p>
+                <div class="level-track" id="incentive-track" aria-hidden="true"></div>
+                <p class="incentive-nudge" id="incentive-nudge"></p>
+              </div>
+            </div>
+
+            <details class="about about-inline">
+              <summary>How your incentives work</summary>
+              <div class="about-body">
+                <p>The weekly enrolment incentive uses debit-order registrations. Below 25 it's R0. Only the highest level reached applies; levels aren't added together.</p>
+                <ul class="level-list" id="incentive-levels"></ul>
+                <p>Cash incentives are extra. The weekly total comes from the incentive sheet, including any adjustments, and "Paid" follows the sheet's checkbox. These are staff earnings, separate from cash received from students.</p>
+                <p>The link to the incentive sheet will show here once real figures are connected.</p>
+              </div>
+            </details>
           </section>
 
           <section class="panel span-7" aria-labelledby="league-title">

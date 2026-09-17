@@ -72,7 +72,7 @@ function rangeLabel(from, to) {
 function buildMessage(figures) {
   const title = ROUNDUP_PERIODS.find(([key]) => key === state.period)[1];
   const lines = [];
-  lines.push(`*Every Sale Matters · ${title} round-up*`);
+  lines.push(`*Sales Scoreboard · ${title} round-up*`);
   lines.push(`${rangeLabel(figures.from, figures.to)}${figures.to === TODAY ? ` (so far, ${SNAPSHOT.time})` : ''}`);
   if (state.college !== 'All') lines.push(state.college);
   lines.push('');

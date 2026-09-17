@@ -77,6 +77,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   text-decoration: none;
 }
 .brand img { display: block; }
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+.brand-text small { font-family: var(--body); font-size: 12px; font-weight: 700; opacity: .75; letter-spacing: .02em; }
 
 /* Two columns on laptops: the navy panel sits beside the form */
 .auth-layout {
@@ -568,6 +570,23 @@ a.menu-item:hover { background: rgba(255, 255, 255, .08); color: var(--on-navy);
 .about[open] summary::after { content: "−"; }
 .about-body { display: flex; flex-direction: column; gap: 10px; max-width: 75ch; padding-bottom: 20px; color: var(--muted); }
 
+/* Staff incentives on Home */
+.span-12 { grid-column: span 12; }
+.incentive-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.incentive-lines div:last-child { padding-top: 12px; border-top: 2px solid var(--line); }
+.incentive-lines div:last-child dt { color: var(--ink); font-weight: 700; }
+.incentive-lines div:last-child dd { font-family: var(--heading); font-size: 22px; font-weight: 600; }
+.incentive-progress { padding: 18px; border-radius: 12px; background: var(--field); }
+.incentive-count { color: var(--muted); }
+.incentive-count b { margin-right: 4px; color: var(--ink); font-family: var(--heading); font-size: 32px; font-weight: 600; }
+.level-track { position: relative; margin: 14px 0 26px; }
+.level-track .track { background: var(--card); }
+.level-end { position: absolute; top: 20px; left: 0; font-size: 13px; font-weight: 700; color: var(--muted); }
+.level-end-next { left: auto; right: 0; color: var(--sage-ink); }
+.incentive-nudge { font-weight: 700; }
+.about-inline { padding: 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: none; }
+.level-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px 16px; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
+
 /* Team page */
 .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .tile { padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow); }
@@ -901,6 +920,7 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.5; }
 
 @media (max-width: 1100px) {
   .span-5, .span-7 { grid-column: span 12; }
+  .incentive-layout { grid-template-columns: minmax(0, 1fr); }
   #admin-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .maker { grid-template-columns: minmax(0, 1fr); }
   .maker-preview { position: static; }
@@ -943,6 +963,7 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.5; }
 
 @media (max-width: 560px) {
   .select { width: 100%; }
+  .level-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .weeks { grid-template-columns: minmax(0, 1fr); }
   .choice-group { grid-template-columns: minmax(0, 1fr); }
   .segmented { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }

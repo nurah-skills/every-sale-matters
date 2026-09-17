@@ -155,6 +155,54 @@ function showLatestCard(person) {
   holder.append(preview, footer);
 }
 
+const rands = (value) => `R${value.toLocaleString('en-ZA')}`;
+
+// Incentives are weekly, so they don't change with the period picker
+function showIncentives(person) {
+  const incentives = incentivesFor(person);
+  document.getElementById('incentive-week').textContent = `${INCENTIVE_WEEK} · weekly amounts, whatever period is chosen above`;
+  document.getElementById('incentive-paid').replaceChildren(
+    statusChip(incentives.paid ? { tone: 'good', text: 'Marked as paid' } : { tone: 'waiting', text: 'Not marked as paid' })
+  );
+
+  fillFigures(document.getElementById('incentive-lines'), [
+    ['Weekly enrolment incentive', formatMoney(incentives.enrolment)],
+    ['Additional cash incentive', formatMoney(incentives.cash)],
+    ['Registration fees and referrals', formatMoney(incentives.fees)],
+    ['Total recorded this week', formatMoney(incentives.total)]
+  ]);
+
+  document.getElementById('incentive-qualifying').textContent = String(incentives.qualifying);
+
+  // Show the stretch from the level already reached to the next one
+  const track = document.getElementById('incentive-track');
+  track.replaceChildren();
+  const from = incentives.current ? incentives.current[0] : 0;
+  const to = incentives.next ? incentives.next[0] : from;
+  const fill = create('span', 'track-fill');
+  fill.style.width = incentives.next ? `${((incentives.qualifying - from) / (to - from)) * 100}%` : '100%';
+  const start = create('span', 'level-end', incentives.current ? `${from} · ${rands(incentives.current[1])}` : '0 · R0');
+  const end = create('span', 'level-end level-end-next', incentives.next ? `${to} · ${rands(incentives.next[1])}` : 'Top level');
+  const bar = create('div', 'track');
+  bar.append(fill);
+  track.append(bar, start, end);
+
+  const firstName = person.name.split(' ')[0];
+  const nudge = document.getElementById('incentive-nudge');
+  if (incentives.next) {
+    const needed = incentives.next[0] - incentives.qualifying;
+    const extra = incentives.next[1] - incentives.enrolment;
+    nudge.textContent = `${firstName}, ${needed} more qualifying enrolment${needed === 1 ? ' reaches' : 's reach'} the ${rands(incentives.next[1])} weekly level. That's another ${rands(extra)} in enrolment incentive.`;
+  } else {
+    nudge.textContent = `${firstName} has reached the top weekly level of ${rands(incentives.enrolment)}.`;
+  }
+
+  const levels = document.getElementById('incentive-levels');
+  if (!levels.children.length) {
+    INCENTIVE_LEVELS.forEach(([count, amount]) => levels.append(create('li', '', `${count} enrolments · ${rands(amount)}`)));
+  }
+}
+
 function showLeague(person) {
   document.getElementById('league-name').textContent = person.league;
   const list = document.getElementById('league');
@@ -226,6 +274,7 @@ function render() {
   showRecord(figures);
   showCash(person, figures);
   showLatestCard(person);
+  showIncentives(person);
   showLeague(person);
   showColleges();
 }

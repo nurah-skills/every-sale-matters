@@ -323,3 +323,34 @@ function latestCardFor(person) {
   }
   return null;
 }
+
+// Weekly staff incentives, following the incentive sheet: the enrolment incentive uses
+// debit-order registrations, and only the highest level reached is paid.
+const INCENTIVE_LEVELS = [
+  [25, 400], [30, 550], [35, 650], [40, 750], [45, 850], [50, 1000], [55, 1100], [60, 1200],
+  [65, 1300], [70, 1400], [75, 1500], [80, 1600], [85, 1700], [90, 1800], [95, 1900], [100, 2000]
+];
+
+const INCENTIVE_WEEK = 'Monday 14 September to Friday 18 September 2026';
+
+function incentivesFor(person) {
+  const random = seededRandom(`${person.name} incentives`);
+  const weekRegistrations = sumBetween(person.days, WEEK_START, TODAY);
+  const qualifying = Math.round(weekRegistrations * (1.4 + random() * 1.2));
+  const reached = INCENTIVE_LEVELS.filter(([count]) => qualifying >= count).pop();
+  const next = INCENTIVE_LEVELS.find(([count]) => qualifying < count);
+  const enrolment = reached ? reached[1] : 0;
+  const cash = [0, 0, 150, 150, 300, 450][Math.floor(random() * 6)];
+  const fees = random() < 0.3 ? 100 * (1 + Math.floor(random() * 3)) : 0;
+
+  return {
+    qualifying,
+    enrolment,
+    cash,
+    fees,
+    total: enrolment + cash + fees,
+    paid: false,
+    current: reached || null,
+    next: next || null
+  };
+}
