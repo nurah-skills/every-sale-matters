@@ -45,6 +45,40 @@ function recall(key) {
   }
 }
 
+// Card statuses are kept in this browser until there's a shared database
+const CARD_STATUS_KEY = 'esm-card-status';
+
+function savedCardStatuses() {
+  try {
+    return JSON.parse(localStorage.getItem(CARD_STATUS_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveCardStatus(id, status) {
+  const statuses = savedCardStatuses();
+  statuses[id] = status;
+  try {
+    localStorage.setItem(CARD_STATUS_KEY, JSON.stringify(statuses));
+  } catch {
+    // Without storage the change lasts until the page is reloaded.
+  }
+}
+
+function cardsWithStatus() {
+  const statuses = savedCardStatuses();
+  return buildCards().map((card) => ({ ...card, status: statuses[card.id] || card.startingStatus }));
+}
+
+function showReadyCount() {
+  const badge = document.getElementById('cards-ready-count');
+  if (!badge) return;
+  const ready = cardsWithStatus().filter((card) => card.status === 'ready').length;
+  badge.textContent = String(ready);
+  badge.hidden = ready === 0;
+}
+
 function buildSegmented(container, options, current, onChange) {
   container.replaceChildren();
   options.forEach(([value, label]) => {
@@ -84,5 +118,6 @@ function setUpShell() {
     location.href = 'index.html';
   });
 
+  showReadyCount();
   return user;
 }

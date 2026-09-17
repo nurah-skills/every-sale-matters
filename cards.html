@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; base-uri 'self'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
-  <title>Team · Every Sale Matters</title>
+  <title>Cards ready · Every Sale Matters</title>
   <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,13 +24,13 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
           <span>Home</span>
         </a>
-        <a class="menu-item" href="team.html" aria-current="page">
+        <a class="menu-item" href="team.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6"/></svg>
           <span>Team</span>
         </a>
 
         <p class="menu-label">Recognition</p>
-        <a class="menu-item" href="cards.html">
+        <a class="menu-item" href="cards.html" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>
           <span>Cards ready</span><em class="count" id="cards-ready-count" hidden></em>
         </a>
@@ -80,52 +80,77 @@
       <main class="app-main">
         <div class="page-header">
           <div>
-            <p class="eyebrow">Whole group</p>
-            <h1>Team</h1>
-            <p class="page-note" id="team-note"></p>
+            <p class="eyebrow">Recognition</p>
+            <h1>Cards ready</h1>
+            <p class="page-note" id="cards-note"></p>
           </div>
           <span class="tag">Sample figures · updated <span id="snapshot-time"></span></span>
         </div>
 
+        <ol class="steps" aria-label="How to share a card">
+          <li><span>1</span>Download the card</li>
+          <li><span>2</span>Send it in the WhatsApp group</li>
+          <li><span>3</span>Mark it as sent</li>
+        </ol>
+
         <div class="controls">
-          <div class="segmented" id="period-picker" role="group" aria-label="Period"></div>
-          <label class="sr-only" for="college-select">College</label>
-          <select class="select" id="college-select">
-            <option value="All">All colleges</option>
-            <option>Skills Academy</option>
-            <option>Matric College</option>
-            <option>Bellview</option>
-          </select>
+          <div class="segmented" id="status-picker" role="group" aria-label="Status"></div>
+          <label class="sr-only" for="person-filter">Salesperson</label>
+          <select class="select" id="person-filter"></select>
+          <button class="button button-secondary button-inline" id="check-cards" type="button">Check for new cards</button>
         </div>
 
-        <section class="tiles tiles-six" id="team-tiles" aria-label="Totals"></section>
+        <p class="notice">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+          <span>In this demo anyone can mark cards as sent or skipped, and changes are saved in this browser only. Later, only card admins will be able to do this. Nothing is posted to WhatsApp automatically.</span>
+        </p>
 
-        <section class="panel" aria-labelledby="college-totals-title">
-          <div class="panel-head">
-            <h2 id="college-totals-title">College totals</h2>
-            <div class="legend" id="college-legend"></div>
-          </div>
-          <div class="college-cards" id="college-cards"></div>
-        </section>
+        <div class="card-grid" id="card-grid" aria-live="polite"></div>
 
-        <section class="panel" aria-labelledby="results-title">
-          <div class="panel-head">
-            <h2 id="results-title">Individual results</h2>
-            <label class="sr-only" for="search">Search names</label>
-            <input class="search" id="search" type="search" placeholder="Search names" autocomplete="off">
-          </div>
-          <p class="panel-note">Select a name to open their progress. Select a column heading to sort.</p>
-          <div class="table-wrap">
-            <table class="results" id="results"></table>
-          </div>
-          <p class="panel-note">August average is August's registrations divided by 20 recorded days, multiplied by the days in the period. The latest day may still be in progress.</p>
-        </section>
+        <div class="about-group">
+          <details class="about">
+            <summary>When do we make a card?</summary>
+            <div class="about-body">
+              <p><strong>Sales in one day:</strong> Bronze for the first sale, Silver for 3, Gold for 5 and Diamond for 10. The levels start again each day.</p>
+              <p><strong>Beat your own best:</strong> more sales than your previous best day or week, or a month so far that beats your previous whole month. Matching a best doesn't count.</p>
+              <p><strong>Cash:</strong> first payment of any size, then R1 000, R2 500, R5 000 and R10 000 in a day. Weekly milestones are R5 000, R10 000 and R20 000, and monthly milestones are R5 000, R10 000, R20 000 and R50 000. Only the highest milestone in each period gets a card.</p>
+              <p><strong>Steady improvement:</strong> beat your August daily average on at least 4 recorded days in the same week. One card per person per week.</p>
+              <p><strong>Thank you for an assist:</strong> a colleague nominates someone, and an admin approves a short thank-you. It doesn't add a sale or cash to anyone's totals.</p>
+            </div>
+          </details>
+          <details class="about">
+            <summary>How the queue works</summary>
+            <div class="about-body">
+              <p>Unsent wins for the same person on the same day share one card, and the biggest personal best leads.</p>
+              <p>If more sales come in after a card was sent, the card shows as "Figures changed" so an admin can check it. The card that was sent stays as it was.</p>
+              <p>Cash is the amount recorded under Paid on the sheet date. Cancelled rows, missing amounts and missing CRM IDs are left out, and repeated CRM IDs count once a month.</p>
+            </div>
+          </details>
+        </div>
       </main>
     </div>
   </div>
 
+  <dialog class="dialog" id="card-preview" aria-labelledby="preview-title">
+    <div class="dialog-head">
+      <h2 id="preview-title">Card preview</h2>
+      <button class="icon-button" id="close-preview" type="button" aria-label="Close preview">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <img class="preview-image" id="preview-image" alt="">
+    <label class="field-hint" for="preview-caption">WhatsApp caption</label>
+    <textarea class="input caption" id="preview-caption" rows="3" readonly></textarea>
+    <div class="dialog-actions">
+      <button class="button button-inline" id="preview-download" type="button">Download PNG</button>
+      <button class="button button-secondary button-inline" id="preview-copy" type="button">Copy caption</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
   <script src="assets/js/data.js"></script>
   <script src="assets/js/app.js"></script>
-  <script src="assets/js/team.js"></script>
+  <script src="assets/js/cards.js"></script>
 </body>
 </html>

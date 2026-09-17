@@ -62,7 +62,7 @@ p { margin: 0; }
 a { color: var(--sage-ink); font-weight: 700; text-underline-offset: 3px; }
 a:hover { color: var(--ink); }
 img { max-width: 100%; }
-button, input, select { font: inherit; color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
 [hidden] { display: none !important; }
 
@@ -232,7 +232,6 @@ select.input {
 
 .auth-switch { text-align: center; color: var(--muted); }
 
-
 @media (max-width: 900px) {
   .auth-layout { grid-template-columns: minmax(0, 1fr); }
   .auth-panel { display: none; }
@@ -303,6 +302,19 @@ a.menu-item:hover { background: rgba(255, 255, 255, .08); color: var(--on-navy);
   font-weight: 700;
   font-style: normal;
   letter-spacing: .02em;
+}
+.count {
+  margin-left: auto;
+  min-width: 24px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--sage);
+  color: #1A2C45;
+  font-size: 12px;
+  font-weight: 700;
+  font-style: normal;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .sidebar-user {
@@ -610,6 +622,137 @@ a.menu-item:hover { background: rgba(255, 255, 255, .08); color: var(--on-navy);
 .results tfoot th,
 .results tfoot td { font-weight: 700; border-bottom: 0; }
 
+/* Cards ready page */
+.status-changed { background: color-mix(in srgb, var(--now) 20%, transparent); color: var(--ink); }
+
+.button-inline { width: auto; min-height: 40px; padding: 6px 16px; font-size: 14px; }
+.button-quiet {
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--sage-ink);
+  font-family: var(--body);
+  font-weight: 700;
+}
+.button-quiet:hover { background: var(--sage-soft); color: var(--ink); }
+
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 28px; }
+.steps li { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.steps span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--on-navy);
+  font-family: var(--heading);
+  font-size: 13px;
+}
+
+.notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--info-soft);
+  color: var(--info-ink);
+  font-size: 15px;
+}
+.notice svg { flex: none; margin-top: 2px; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); gap: 18px; }
+
+.card-tile {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.card-art {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 18px;
+  background: linear-gradient(160deg, #243B5A 0%, #1A2C45 100%);
+  color: #FFFFFF;
+}
+.card-art b { margin-top: auto; font-family: var(--heading); font-size: 40px; font-weight: 600; line-height: 1.05; white-space: nowrap; }
+.card-art span:last-child { color: #DCE6D8; font-size: 14px; font-weight: 700; line-height: 1.3; }
+.card-art.kind-cash b { font-size: 28px; }
+.card-pill {
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: #1E1E1E;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.card-details { display: flex; flex-direction: column; gap: 4px; padding: 18px 20px; min-width: 0; }
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.card-top h3 { margin: 0; font-family: var(--heading); font-size: 17px; font-weight: 600; }
+.card-title { font-weight: 700; }
+.card-detail { color: var(--muted); }
+.card-also { font-size: 14px; font-weight: 700; color: var(--sage-ink); }
+.card-meta { font-size: 13px; color: var(--muted); }
+.card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.card-manage { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0 0 -10px; }
+
+.about-group { display: flex; flex-direction: column; gap: 12px; }
+.about-body strong { color: var(--ink); }
+
+.dialog {
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .45);
+}
+.dialog[open] { display: flex; flex-direction: column; gap: 12px; }
+.dialog::backdrop { background: rgba(17, 22, 29, .6); }
+.dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dialog-head h2 { font-size: 18px; font-weight: 600; }
+.dialog-head .icon-button:hover { background: var(--field); }
+.preview-image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 55dvh;
+  aspect-ratio: 1080 / 1350;
+  object-fit: contain;
+  border-radius: 12px;
+  background: var(--field);
+}
+.caption { resize: none; font-size: 14px; }
+.dialog-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 60;
+  max-width: calc(100vw - 32px);
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--page);
+  font-weight: 700;
+  transform: translateX(-50%);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, .4);
+}
+
 @media (max-width: 1100px) {
   .span-5, .span-7 { grid-column: span 12; }
   .college-cards { grid-template-columns: minmax(0, 1fr); }
@@ -656,6 +799,10 @@ a.menu-item:hover { background: rgba(255, 255, 255, .08); color: var(--on-navy);
   .tile { padding: 14px; }
   .tile b { font-size: 22px; }
   .big-number b { font-size: 44px; }
+  .card-tile { grid-template-columns: minmax(0, 1fr); }
+  .card-art { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 12px; }
+  .card-art .card-pill { flex-basis: 100%; flex-grow: 0; margin-bottom: 8px; align-self: auto; max-width: max-content; }
+  .card-art b { margin-top: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

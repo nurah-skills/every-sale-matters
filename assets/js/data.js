@@ -98,6 +98,18 @@ const PEOPLE = SAMPLE_PEOPLE.map(([name, collegeIndex, august]) => {
   };
 });
 
+// A few standout results so every kind of celebration has an example
+(function addHighlights() {
+  const bestDay = PEOPLE.find((person) => person.name === 'Sipho Dlamini');
+  bestDay.days[TODAY - 1] = bestDay.best + 1;
+
+  const bestMonth = PEOPLE.find((person) => person.name === 'Busisiwe Nkosi');
+  bestMonth.bestMonth = bestMonth.days.reduce((sum, day) => sum + day, 0) - 4;
+
+  const bestCash = PEOPLE.find((person) => person.name === 'Zanele Ndlovu');
+  bestCash.cash[TODAY - 1] = bestCash.cashBest + 400;
+})();
+
 // Leagues group people with similar August averages
 PEOPLE.slice()
   .sort((a, b) => a.august - b.august)
@@ -148,6 +160,108 @@ const TIERS = [
   { count: 1, name: 'Bronze' }
 ];
 
+// 1 September 2026 is a Tuesday
+const dayName = (index) => `${WEEKDAY_NAMES[(WORKDAYS[index] + 1) % 7]} ${WORKDAYS[index]} September 2026`;
+const slugFor = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const KIND_ORDER = { best: 0, cash: 1, sales: 2 };
+
+// Follows the current scoreboard: unsent wins for the same person and day share one card,
+// with the biggest personal best leading.
+function buildCards() {
+  const cards = [];
+
+  PEOPLE.forEach((person) => {
+    [TODAY, TODAY - 1].forEach((day) => {
+      const count = person.days[day];
+      const cash = person.cash[day];
+      const wins = [];
+
+      if (count > person.best) {
+        wins.push({ kind: 'best', title: 'New best day', value: count, unit: 'registrations in a day', detail: `Previous best day: ${person.best}` });
+      }
+      if (person.cashBest && cash > person.cashBest) {
+        wins.push({ kind: 'best', title: 'Best cash day', value: cash, money: true, unit: 'cash recorded in a day', detail: `Previous best cash day: R${person.cashBest.toLocaleString('en-ZA')}` });
+      }
+
+      const tier = TIERS.find((level) => count >= level.count);
+      if (tier) {
+        const firstSale = tier.name === 'Bronze';
+        wins.push({
+          kind: 'sales',
+          tier: tier.name,
+          title: firstSale ? 'First sale · Bronze' : `${tier.count} sales · ${tier.name}`,
+          value: firstSale ? 1 : count,
+          unit: firstSale ? 'first registration' : 'registrations reached',
+          detail: `${count} registration${count === 1 ? '' : 's'} in the day's snapshot`
+        });
+      }
+
+      const milestone = CASH_MILESTONES.day.slice().reverse().find((amount) => cash >= amount);
+      if (milestone) {
+        wins.push({
+          kind: 'cash',
+          title: milestone === 1 ? 'First payment' : `R${milestone.toLocaleString('en-ZA')} in a day`,
+          value: cash,
+          money: true,
+          unit: 'cash recorded this day',
+          detail: milestone === 1 ? 'Every rand counts' : `Reached the R${milestone.toLocaleString('en-ZA')} milestone`
+        });
+      }
+
+      if (!wins.length) return;
+      wins.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
+      cards.push({
+        id: `${slugFor(person.name)}-${WORKDAYS[day]}-september`,
+        person: person.name,
+        college: person.college,
+        date: dayName(day),
+        read: day === TODAY ? `17 September at ${SNAPSHOT.time}` : '16 September at 17:02',
+        lead: wins[0],
+        also: wins.slice(1).map((win) => win.title),
+        startingStatus: day === TODAY || wins[0].kind === 'best'
+          ? 'ready'
+          : (WORKDAYS[day] + person.name.length) % 4 === 0 ? 'skipped' : 'sent'
+      });
+    });
+
+    const monthCount = sumBetween(person.days, 0, TODAY);
+    const monthCash = sumBetween(person.cash, 0, TODAY);
+    const monthWins = [];
+    if (monthCount > person.bestMonth) {
+      monthWins.push({ kind: 'best', title: 'Best month', value: monthCount, unit: 'registrations this month so far', detail: `Previous whole-month best: ${person.bestMonth}` });
+    }
+    const monthMilestone = CASH_MILESTONES.month.slice().reverse().find((amount) => monthCash >= amount);
+    if (monthMilestone) {
+      monthWins.push({
+        kind: 'cash',
+        title: `R${monthMilestone.toLocaleString('en-ZA')} this month`,
+        value: monthCash,
+        money: true,
+        unit: 'cash recorded this month',
+        detail: `Reached the R${monthMilestone.toLocaleString('en-ZA')} milestone`
+      });
+    }
+    if (monthWins.length) {
+      cards.push({
+        id: `${slugFor(person.name)}-september-month`,
+        person: person.name,
+        college: person.college,
+        date: '1 to 17 September 2026',
+        read: `17 September at ${SNAPSHOT.time}`,
+        lead: monthWins[0],
+        also: monthWins.slice(1).map((win) => win.title),
+        startingStatus: 'ready'
+      });
+    }
+  });
+
+  // One card that was sent earlier today, where the person has kept going since
+  const grown = cards.find((card) => card.date === dayName(TODAY) && card.lead.kind === 'sales' && card.lead.value >= 3);
+  if (grown) grown.startingStatus = 'changed';
+
+  return cards.sort((a, b) => KIND_ORDER[a.lead.kind] - KIND_ORDER[b.lead.kind] || b.lead.value - a.lead.value);
+}
+
 function latestCardFor(person) {
   for (let index = TODAY; index >= 0; index -= 1) {
     const count = person.days[index];
@@ -159,8 +273,7 @@ function latestCardFor(person) {
       count: firstSale ? 1 : count,
       unit: firstSale ? 'first registration' : 'registrations reached',
       label: firstSale ? 'First sale' : `${tier.count} sales`,
-      // 1 September 2026 is a Tuesday
-      date: `${WEEKDAY_NAMES[(WORKDAYS[index] + 1) % 7]} ${WORKDAYS[index]} September 2026`,
+      date: dayName(index),
       status: index === TODAY ? 'Ready to send' : 'Sent'
     };
   }
