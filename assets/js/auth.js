@@ -1,4 +1,4 @@
-// Accounts aren't set up yet, so the forms show a notice instead of sending anything.
+// Real accounts aren't set up yet, so the forms show a notice instead of sending anything.
 
 document.querySelectorAll('[data-toggle-password]').forEach((button) => {
   const input = document.getElementById(button.getAttribute('aria-controls'));
@@ -19,3 +19,17 @@ document.querySelectorAll('form[data-not-connected]').forEach((form) => {
     notice.focus();
   });
 });
+
+const demoButton = document.querySelector('[data-demo-sign-in]');
+
+if (demoButton) {
+  demoButton.addEventListener('click', () => {
+    if (startDemoSession()) {
+      location.href = 'home.html';
+      return;
+    }
+    const notice = document.getElementById('demo-blocked');
+    notice.hidden = false;
+    notice.focus();
+  });
+}

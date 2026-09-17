@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-page="auth">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="assets/js/session.js"></script>
 </head>
 <body>
   <div class="auth-layout">
@@ -63,6 +64,16 @@
             <span>Signing in isn't switched on yet. You'll be able to use this page once accounts are set up.</span>
           </div>
         </form>
+
+        <div class="demo">
+          <p class="divider">or</p>
+          <button class="button button-secondary" type="button" data-demo-sign-in>Continue with demo account</button>
+          <p class="field-hint">Look around with sample figures. No account needed.</p>
+          <div class="form-notice" id="demo-blocked" role="status" tabindex="-1" hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+            <span>Your browser is blocking site storage, so the demo can't sign you in. Try a normal (not private) window.</span>
+          </div>
+        </div>
 
         <p class="auth-switch">New to Every Sale Matters? <a href="signup.html">Create an account</a></p>
       </div>
