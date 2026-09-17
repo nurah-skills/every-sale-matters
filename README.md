@@ -30,27 +30,27 @@ The pages follow the order of the menu.
 
 | Page | What it does |
 | --- | --- |
-| `home.html` | One person’s progress. An at-a-glance strip (registrations, the next record, this week’s incentives, any sales streak), then registrations against their August average and usual pace, cash recorded, staff incentives, their latest celebration, their suggested league and the three colleges. |
-| `team.html` | The whole group: totals, college totals and everyone’s results, with filters, sorting, grouping by college and your own row highlighted. Selecting a name opens their details. |
+| `pages/home.html` | One person’s progress. An at-a-glance strip (registrations, the next record, this week’s incentives, any sales streak), then registrations against their August average and usual pace, cash recorded, staff incentives, their latest celebration, their suggested league and the three colleges. |
+| `pages/team.html` | The whole group: totals, college totals and everyone’s results, with filters, sorting, grouping by college and your own row highlighted. Selecting a name opens their details. |
 
 ### Recognition
 
 | Page | What it does |
 | --- | --- |
-| `cards.html` | Cards ready: the queue grouped by kind — personal bests, streaks, cash milestones, sales levels (Bronze to Black), steady progress, staff incentives and approved assists. Anyone can download a card, preview it or copy the caption; only managers mark one as sent (with Undo) or skip it. |
-| `make.html` | Managers only. Make a single card: choose a person and an achievement, add a cheer, pick a design or your own background, and add a photo with zoom and move controls. |
-| `roundups.html` | A daily, weekly or monthly WhatsApp round-up for the whole team or one college. |
-| `fame.html` | Wall of fame: every card sent this month, with filters by college, person and kind of card, this week’s highlights, and a September calendar of the bigger moments. |
-| `streaks.html` | Who has made a sale on working days in a row, grouped by length, with the streak cards reached today and the longest streaks this month. |
-| `shoutouts.html` | Send a short well done to a colleague. Once an admin approves it, it shows on the board. |
+| `pages/cards.html` | Cards ready: the queue grouped by kind — personal bests, streaks, cash milestones, sales levels (Bronze to Black), steady progress, staff incentives and approved assists. Anyone can download a card, preview it or copy the caption; only managers mark one as sent (with Undo) or skip it. |
+| `pages/make.html` | Managers only. Make a single card: choose a person and an achievement, add a cheer, pick a design or your own background, and add a photo with zoom and move controls. |
+| `pages/roundups.html` | A daily, weekly or monthly WhatsApp round-up for the whole team or one college. |
+| `pages/fame.html` | Wall of fame: every card sent this month, with filters by college, person and kind of card, this week’s highlights, and a September calendar of the bigger moments. |
+| `pages/streaks.html` | Who has made a sale on working days in a row, grouped by length, with the streak cards reached today and the longest streaks this month. |
+| `pages/shoutouts.html` | Send a short well done to a colleague. Once an admin approves it, it shows on the board. |
 
 ### Team health
 
 | Page | What it does |
 | --- | --- |
-| `progress.html` | The four-week check: weekly registrations against the August average and a short survey on whether the scoreboard feels encouraging and fair. |
-| `feedback.html` | Report a problem, share an idea or nominate a colleague for an assist, and see your own submissions and replies. |
-| `admin.html` | An overview, the inbox (feedback, assists and shout-outs), the admin list and a button to reset the demo data. |
+| `pages/progress.html` | The four-week check: weekly registrations against the August average and a short survey on whether the scoreboard feels encouraging and fair. |
+| `pages/feedback.html` | Report a problem, share an idea or nominate a colleague for an assist, and see your own submissions and replies. |
+| `pages/admin.html` | An overview, the inbox (feedback, assists and shout-outs), the admin list and a button to reset the demo data. |
 
 ### Accounts
 
@@ -80,7 +80,9 @@ The counting rules match the current scoreboard: a registration counts when a ro
 ## Folders
 
 ```
-*.html                 one file per page, kept at the top so the web addresses stay the same
+index.html             sign in, the way into the site
+signup.html            create an account
+pages/                 the signed-in pages, one file each
 assets/css/styles.css  all styles, in the same order as the menu
 assets/img/            the logo, and colleges/ with the college logos used on cards
 assets/js/shared/      used by several pages

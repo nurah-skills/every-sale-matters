@@ -101,9 +101,9 @@ function wrapText(context, text, x, y, maxWidth, lineHeight, maxLines) {
 }
 
 const COLLEGE_LOGOS = {
-  'Skills Academy': 'assets/img/colleges/skills-academy.webp',
-  'Matric College': 'assets/img/colleges/matric-college.webp',
-  Bellview: 'assets/img/colleges/bellview.webp'
+  'Skills Academy': '../assets/img/colleges/skills-academy.webp',
+  'Matric College': '../assets/img/colleges/matric-college.webp',
+  Bellview: '../assets/img/colleges/bellview.webp'
 };
 
 const CARD_DESIGNS = [

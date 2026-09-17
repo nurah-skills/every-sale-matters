@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-page="app" data-access="manager">
+<html lang="en" data-page="app">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -8,19 +8,20 @@
   <meta name="theme-color" content="#11161D" media="(prefers-color-scheme: dark)">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
-  <title>Our progress · Sales Scoreboard</title>
-  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <meta name="description" content="Say well done to a colleague.">
+  <title>Shout-outs · Sales Scoreboard</title>
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <script src="assets/js/shared/session.js"></script>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <script src="../assets/js/shared/session.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="app" id="app">
     <aside class="sidebar" id="sidebar" aria-label="Main menu">
-      <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="36" height="36" alt=""><span class="brand-text"><b>Sales Scoreboard</b><small>Every sale matters</small></span></a>
+      <a class="brand" href="home.html"><img src="../assets/img/logo.svg" width="36" height="36" alt=""><span class="brand-text"><b>Sales Scoreboard</b><small>Every sale matters</small></span></a>
 
       <nav class="menu" aria-label="Pages">
         <a class="menu-item" href="home.html">
@@ -53,13 +54,13 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c4 0 7-2.8 7-7 0-3.5-2.5-6-4-8-.5 2-1.5 3-3 3 0-3-1-6-4-8 0 4-3 6.5-3 11 0 4.2 3 9 7 9z"/></svg>
           <span>Streaks</span>
         </a>
-        <a class="menu-item" href="shoutouts.html">
+        <a class="menu-item" href="shoutouts.html" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 9a4 4 0 0 1 0 6M7 14l1.5 5h2.5l-1.5-5"/></svg>
           <span>Shout-outs</span>
         </a>
 
         <p class="menu-label">Team health</p>
-        <a class="menu-item" href="progress.html" aria-current="page">
+        <a class="menu-item" href="progress.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>
           <span>Our progress</span>
         </a>
@@ -89,76 +90,56 @@
         <button class="icon-button" id="menu-button" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         </button>
-        <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="30" height="30" alt=""><span>Sales Scoreboard</span></a>
+        <a class="brand" href="home.html"><img src="../assets/img/logo.svg" width="30" height="30" alt=""><span>Sales Scoreboard</span></a>
       </header>
 
       <main class="app-main" id="main" tabindex="-1">
         <div class="page-header">
           <div>
-            <h1>Our progress</h1>
-            <p class="page-note">Is the scoreboard helping? A four-week check on three questions: are sales improving, do people feel encouraged, and does it feel fair?</p>
+            <h1>Shout-outs</h1>
+            <p class="page-note">Say well done to a colleague. Your shout-out shows on the board once an admin approves it.</p>
           </div>
-          <span class="tag">Sample figures · updated <span id="snapshot-time"></span></span>
+          <button class="button button-inline shout-toggle" id="shout-toggle" type="button" aria-expanded="false" aria-controls="shout-form-panel">Give a shout-out</button>
         </div>
 
-        <section class="panel" id="setup-panel" aria-labelledby="setup-title" hidden>
-          <div class="panel-head">
-            <h2 id="setup-title">The four-week check hasn't started</h2>
-            <span class="status status-waiting">Not started</span>
-          </div>
-          <p>Pick the Monday the check starts. Each week's registrations are compared with the August average, and a short pulse survey opens for the team.</p>
-          <div class="controls">
-            <label class="sr-only" for="start-week">Start date</label>
-            <select class="select" id="start-week"></select>
-            <button class="button button-inline" id="start-check" type="button">Start the check</button>
-          </div>
-          <p class="panel-note">In this demo anyone can set the start date. Later, only admins will. It's saved in this browser only.</p>
-        </section>
-
-        <div id="check" hidden>
-          <div class="check-summary">
-            <p><strong id="check-dates"></strong> <span class="status status-info" id="check-status"></span></p>
-            <button class="button button-inline button-quiet" id="stop-check" type="button">Change the start date</button>
-          </div>
-
-          <section class="weeks" id="weeks" aria-label="Weekly results"></section>
-
-          <div class="grid">
-            <section class="panel span-7" aria-labelledby="pulse-title">
-              <div class="panel-head">
-                <h2 id="pulse-title">Pulse survey</h2>
-                <span class="panel-note">Anonymous · about 30 seconds</span>
+        <div class="grid">
+          <section class="panel span-4 shout-form-panel" id="shout-form-panel" aria-labelledby="shout-form-title">
+            <div class="panel-head">
+              <h2 id="shout-form-title">Give a shout-out</h2>
+            </div>
+            <form class="form" id="shout-form" novalidate>
+              <p class="form-error" id="shout-error" role="alert" tabindex="-1" hidden></p>
+              <div class="field">
+                <label for="shout-to">Who is it for?</label>
+                <select class="select" id="shout-to"></select>
               </div>
-              <form class="form" id="pulse-form" novalidate>
-                <fieldset class="scale">
-                  <legend>The scoreboard encourages me</legend>
-                  <div class="scale-options" id="scale-encouraged"></div>
-                  <p class="scale-ends"><span>Not at all</span><span>Very much</span></p>
-                </fieldset>
-                <fieldset class="scale">
-                  <legend>The way results are compared feels fair</legend>
-                  <div class="scale-options" id="scale-fair"></div>
-                  <p class="scale-ends"><span>Not at all</span><span>Very much</span></p>
-                </fieldset>
-                <div class="field">
-                  <label for="pulse-comment">Anything else? <span class="optional">(optional)</span></label>
-                  <textarea class="input" id="pulse-comment" rows="3" maxlength="500"></textarea>
-                </div>
-                <p class="form-error" id="pulse-error" role="alert" hidden></p>
-                <div class="dialog-actions">
-                  <button class="button button-inline" type="submit">Send response</button>
-                </div>
-              </form>
-            </section>
-
-            <section class="panel span-5" aria-labelledby="results-title">
-              <div class="panel-head">
-                <h2 id="results-title">What the team says</h2>
-                <span class="status status-info" id="response-count"></span>
+              <div class="field">
+                <label for="shout-message">Your message</label>
+                <textarea class="input" id="shout-message" rows="4" maxlength="140" placeholder="Thanks for sharing your follow-up script…" aria-describedby="shout-count"></textarea>
+                <p class="field-hint" id="shout-count">0 of 140 characters</p>
               </div>
-              <div id="pulse-results"></div>
-            </section>
-          </div>
+              <button class="button" type="submit">Send for approval</button>
+              <p class="field-hint">Keep it kind and about work. Please leave out student names, phone numbers and payment details. Shout-outs don’t add a sale to anyone’s totals.</p>
+            </form>
+            <div>
+              <p class="subheading">Waiting for approval</p>
+              <ul class="submissions" id="shout-pending"></ul>
+            </div>
+          </section>
+
+          <section class="span-8 shout-board-section" aria-labelledby="board-title">
+            <div class="panel-head">
+              <h2 id="board-title">Board</h2>
+              <label class="sr-only" for="shout-college">College</label>
+              <select class="select" id="shout-college">
+                <option value="All">All colleges</option>
+            <option>Skills Academy</option>
+            <option>Matric College</option>
+            <option>Bellview</option>
+              </select>
+            </div>
+            <ul class="shout-board" id="shout-board"></ul>
+          </section>
         </div>
       </main>
     </div>
@@ -166,8 +147,8 @@
 
   <div class="toast" id="toast" role="status" hidden></div>
 
-  <script src="assets/js/shared/data.js"></script>
-  <script src="assets/js/shared/app.js"></script>
-  <script src="assets/js/pages/progress.js"></script>
+  <script src="../assets/js/shared/data.js"></script>
+  <script src="../assets/js/shared/app.js"></script>
+  <script src="../assets/js/pages/shoutouts.js"></script>
 </body>
 </html>

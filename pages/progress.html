@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-page="app">
+<html lang="en" data-page="app" data-access="manager">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -8,19 +8,19 @@
   <meta name="theme-color" content="#11161D" media="(prefers-color-scheme: dark)">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
-  <title>Feedback · Sales Scoreboard</title>
-  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <title>Our progress · Sales Scoreboard</title>
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <script src="assets/js/shared/session.js"></script>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <script src="../assets/js/shared/session.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="app" id="app">
     <aside class="sidebar" id="sidebar" aria-label="Main menu">
-      <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="36" height="36" alt=""><span class="brand-text"><b>Sales Scoreboard</b><small>Every sale matters</small></span></a>
+      <a class="brand" href="home.html"><img src="../assets/img/logo.svg" width="36" height="36" alt=""><span class="brand-text"><b>Sales Scoreboard</b><small>Every sale matters</small></span></a>
 
       <nav class="menu" aria-label="Pages">
         <a class="menu-item" href="home.html">
@@ -59,11 +59,11 @@
         </a>
 
         <p class="menu-label">Team health</p>
-        <a class="menu-item" href="progress.html">
+        <a class="menu-item" href="progress.html" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>
           <span>Our progress</span>
         </a>
-        <a class="menu-item" href="feedback.html" aria-current="page">
+        <a class="menu-item" href="feedback.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>
           <span>Feedback</span>
         </a>
@@ -89,105 +89,74 @@
         <button class="icon-button" id="menu-button" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         </button>
-        <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="30" height="30" alt=""><span>Sales Scoreboard</span></a>
+        <a class="brand" href="home.html"><img src="../assets/img/logo.svg" width="30" height="30" alt=""><span>Sales Scoreboard</span></a>
       </header>
 
       <main class="app-main" id="main" tabindex="-1">
         <div class="page-header">
           <div>
-            <h1>Feedback</h1>
-            <p class="page-note">Spot a problem, have an idea, or want to thank someone who helped you make a sale? Tell us here.</p>
+            <h1>Our progress</h1>
+            <p class="page-note">Is the scoreboard helping? A four-week check on three questions: are sales improving, do people feel encouraged, and does it feel fair?</p>
           </div>
+          <span class="tag">Sample figures · updated <span id="snapshot-time"></span></span>
         </div>
 
-        <div class="grid">
-          <section class="panel span-7" aria-labelledby="form-title">
-            <div class="panel-head">
-              <h2 id="form-title">What would you like to tell us?</h2>
-            </div>
+        <section class="panel" id="setup-panel" aria-labelledby="setup-title" hidden>
+          <div class="panel-head">
+            <h2 id="setup-title">The four-week check hasn't started</h2>
+            <span class="status status-waiting">Not started</span>
+          </div>
+          <p>Pick the Monday the check starts. Each week's registrations are compared with the August average, and a short pulse survey opens for the team.</p>
+          <div class="controls">
+            <label class="sr-only" for="start-week">Start date</label>
+            <select class="select" id="start-week"></select>
+            <button class="button button-inline" id="start-check" type="button">Start the check</button>
+          </div>
+          <p class="panel-note">In this demo anyone can set the start date. Later, only admins will. It's saved in this browser only.</p>
+        </section>
 
-            <form class="form" id="feedback-form" novalidate>
-              <fieldset class="choice-group">
-                <legend class="sr-only">Type of feedback</legend>
-                <label class="choice">
-                  <input type="radio" name="type" value="problem" checked>
-                  <span><b>Something is wrong</b><small>A missing sale, wrong total or missed celebration.</small></span>
-                </label>
-                <label class="choice">
-                  <input type="radio" name="type" value="idea">
-                  <span><b>I have an idea</b><small>A way to improve how this works.</small></span>
-                </label>
-                <label class="choice">
-                  <input type="radio" name="type" value="assist">
-                  <span><b>Nominate an assist</b><small>Tell us who helped and what they did.</small></span>
-                </label>
-              </fieldset>
+        <div id="check" hidden>
+          <div class="check-summary">
+            <p><strong id="check-dates"></strong> <span class="status status-info" id="check-status"></span></p>
+            <button class="button button-inline button-quiet" id="stop-check" type="button">Change the start date</button>
+          </div>
 
-              <div class="form-row">
-                <div class="field">
-                  <label for="feedback-name">Your name</label>
-                  <input class="input" id="feedback-name" type="text" autocomplete="name" required>
-                </div>
-                <div class="field">
-                  <label for="feedback-college">Your college</label>
-                  <select class="select" id="feedback-college">
-                    <option>Skills Academy</option>
-                    <option>Matric College</option>
-                    <option>Bellview</option>
-                  </select>
-                </div>
-              </div>
+          <section class="weeks" id="weeks" aria-label="Weekly results"></section>
 
-              <div class="field" id="helper-field" hidden>
-                <label for="feedback-helper">Who helped you?</label>
-                <select class="select" id="feedback-helper"></select>
-              </div>
-
-              <div class="field">
-                <label for="feedback-message" id="feedback-message-label">What happened, and what should it show?</label>
-                <textarea class="input" id="feedback-message" rows="5" maxlength="1000" aria-describedby="feedback-privacy" required></textarea>
-                <p class="field-hint" id="feedback-privacy">Please leave out student names, phone numbers and payment details.</p>
-              </div>
-
-              <div class="form-row">
-                <div class="field">
-                  <label for="feedback-date">When? <span class="optional">(optional)</span></label>
-                  <input class="input" id="feedback-date" type="date">
-                </div>
-                <div class="field">
-                  <label for="feedback-reference">Sale reference <span class="optional">(optional)</span></label>
-                  <input class="input" id="feedback-reference" type="text" spellcheck="false" maxlength="40" placeholder="CRM ID" autocomplete="off">
-                </div>
-              </div>
-
-              <p class="form-error" id="feedback-error" role="alert" hidden></p>
-
-              <div class="dialog-actions">
-                <button class="button button-inline" type="submit">Submit feedback</button>
-                <span class="panel-note">Your message goes to the admin inbox. Reporting an error doesn't change sales totals by itself.</span>
-              </div>
-            </form>
-          </section>
-
-          <div class="span-5 stack">
-            <section class="panel" aria-labelledby="next-title">
+          <div class="grid">
+            <section class="panel span-7" aria-labelledby="pulse-title">
               <div class="panel-head">
-                <h2 id="next-title">What happens next?</h2>
+                <h2 id="pulse-title">Pulse survey</h2>
+                <span class="panel-note">Anonymous · about 30 seconds</span>
               </div>
-              <ol class="timeline">
-                <li><b>Submitted</b><span>Your message is saved with a reference number.</span></li>
-                <li><b>Reviewed by a manager</b><span>They check the sale or ask about the assist.</span></li>
-                <li><b>An outcome</b><span>The result is corrected, the assist is recognised, or the decision is explained.</span></li>
-              </ol>
-              <p class="panel-note">Approved assists get a thank-you card. They don't add another sale.</p>
+              <form class="form" id="pulse-form" novalidate>
+                <fieldset class="scale">
+                  <legend>The scoreboard encourages me</legend>
+                  <div class="scale-options" id="scale-encouraged"></div>
+                  <p class="scale-ends"><span>Not at all</span><span>Very much</span></p>
+                </fieldset>
+                <fieldset class="scale">
+                  <legend>The way results are compared feels fair</legend>
+                  <div class="scale-options" id="scale-fair"></div>
+                  <p class="scale-ends"><span>Not at all</span><span>Very much</span></p>
+                </fieldset>
+                <div class="field">
+                  <label for="pulse-comment">Anything else? <span class="optional">(optional)</span></label>
+                  <textarea class="input" id="pulse-comment" rows="3" maxlength="500"></textarea>
+                </div>
+                <p class="form-error" id="pulse-error" role="alert" hidden></p>
+                <div class="dialog-actions">
+                  <button class="button button-inline" type="submit">Send response</button>
+                </div>
+              </form>
             </section>
 
-            <section class="panel" aria-labelledby="submissions-title">
+            <section class="panel span-5" aria-labelledby="results-title">
               <div class="panel-head">
-                <h2 id="submissions-title">Your submissions</h2>
+                <h2 id="results-title">What the team says</h2>
+                <span class="status status-info" id="response-count"></span>
               </div>
-              <ul class="submissions" id="submissions"></ul>
-              <p class="panel-note">In this demo, submissions are saved in this browser only.</p>
+              <div id="pulse-results"></div>
             </section>
           </div>
         </div>
@@ -197,8 +166,8 @@
 
   <div class="toast" id="toast" role="status" hidden></div>
 
-  <script src="assets/js/shared/data.js"></script>
-  <script src="assets/js/shared/app.js"></script>
-  <script src="assets/js/pages/feedback.js"></script>
+  <script src="../assets/js/shared/data.js"></script>
+  <script src="../assets/js/shared/app.js"></script>
+  <script src="../assets/js/pages/progress.js"></script>
 </body>
 </html>

@@ -68,7 +68,11 @@ function endSession() {
 // Runs in the <head> so people never see a flash of the wrong page.
 const pageType = document.documentElement.dataset.page;
 const signedIn = readSession();
-if (pageType === 'app' && !signedIn) location.replace('index.html');
-if (pageType === 'auth' && signedIn) location.replace('home.html');
+// The signed-in pages live in pages/, so the way back out is one level up
+const SIGN_IN_PAGE = '../index.html';
+const HOME_PAGE = pageType === 'app' ? 'home.html' : 'pages/home.html';
+
+if (pageType === 'app' && !signedIn) location.replace(SIGN_IN_PAGE);
+if (pageType === 'auth' && signedIn) location.replace(HOME_PAGE);
 // Some pages are for managers only
 if (document.documentElement.dataset.access === 'manager' && signedIn && !signedIn.manager) location.replace('home.html');

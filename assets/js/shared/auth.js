@@ -23,7 +23,7 @@ document.querySelectorAll('form[data-not-connected]').forEach((form) => {
 document.querySelectorAll('[data-demo-sign-in]').forEach((button) => {
   button.addEventListener('click', () => {
     if (startDemoSession(button.dataset.demoSignIn)) {
-      location.href = 'home.html';
+      location.href = HOME_PAGE;
       return;
     }
     const notice = document.getElementById('demo-blocked');

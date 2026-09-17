@@ -138,7 +138,7 @@ form.addEventListener('submit', (event) => {
     summary.focus();
     return;
   }
-  location.href = 'home.html';
+  location.href = HOME_PAGE;
 });
 
 fillScoreboardNames();

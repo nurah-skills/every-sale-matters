@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-page="app">
+<html lang="en" data-page="app" data-access="manager">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -8,19 +8,19 @@
   <meta name="theme-color" content="#11161D" media="(prefers-color-scheme: dark)">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
-  <title>Cards ready · Sales Scoreboard</title>
-  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <title>Admin · Sales Scoreboard</title>
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <script src="assets/js/shared/session.js"></script>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <script src="../assets/js/shared/session.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="app" id="app">
     <aside class="sidebar" id="sidebar" aria-label="Main menu">
-      <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="36" height="36" alt=""><span class="brand-text"><b>Sales Scoreboard</b><small>Every sale matters</small></span></a>
+      <a class="brand" href="home.html"><img src="../assets/img/logo.svg" width="36" height="36" alt=""><span class="brand-text"><b>Sales Scoreboard</b><small>Every sale matters</small></span></a>
 
       <nav class="menu" aria-label="Pages">
         <a class="menu-item" href="home.html">
@@ -33,7 +33,7 @@
         </a>
 
         <p class="menu-label">Recognition</p>
-        <a class="menu-item" href="cards.html" aria-current="page">
+        <a class="menu-item" href="cards.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>
           <span>Cards ready</span><em class="count" id="cards-ready-count" hidden></em>
         </a>
@@ -67,7 +67,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>
           <span>Feedback</span>
         </a>
-        <a class="menu-item" href="admin.html">
+        <a class="menu-item" href="admin.html" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
           <span>Admin</span><em class="count" id="inbox-count" hidden></em>
         </a>
@@ -89,87 +89,69 @@
         <button class="icon-button" id="menu-button" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         </button>
-        <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="30" height="30" alt=""><span>Sales Scoreboard</span></a>
+        <a class="brand" href="home.html"><img src="../assets/img/logo.svg" width="30" height="30" alt=""><span>Sales Scoreboard</span></a>
       </header>
 
       <main class="app-main" id="main" tabindex="-1">
         <div class="page-header">
           <div>
-            <h1>Cards ready</h1>
-            <p class="page-note" id="cards-note"></p>
+            <h1>Admin</h1>
+            <p class="page-note">Look after the celebrations, answer feedback and approve assists.</p>
           </div>
-          <span class="tag">Sample figures · updated <span id="snapshot-time"></span></span>
-        </div>
-
-        <ol class="steps" aria-label="How to share a card">
-          <li><span>1</span>Download the card</li>
-          <li><span>2</span>Send it in the WhatsApp group</li>
-          <li><span>3</span>Mark it as sent</li>
-        </ol>
-
-        <div class="controls">
-          <div class="segmented" id="status-picker" role="group" aria-label="Status"></div>
-          <label class="sr-only" for="person-filter">Salesperson</label>
-          <select class="select" id="person-filter"></select>
-          <button class="button button-secondary button-inline" id="check-cards" type="button">Check for new cards</button>
         </div>
 
         <p class="notice">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
-          <span>Anyone can download a card and send it in the group. Only managers mark a card as sent or skipped, and in this demo those changes are saved in this browser only. Nothing is posted to WhatsApp automatically.</span>
+          <span>In this demo anyone can open Admin, and changes are saved in this browser only. Later, only people on the admin list will be able to sign in here.</span>
         </p>
 
-        <h2 class="sr-only" id="card-list-title">Cards</h2>
-        <div id="card-groups"></div>
+        <section class="tiles" id="admin-tiles" aria-label="Overview"></section>
 
-        <div class="about-group">
-          <details class="about">
-            <summary>When do we make a card?</summary>
-            <div class="about-body">
-              <p><strong>Staff incentives earned:</strong> a new cash incentive entry or a higher weekly enrolment level makes a card with the new amount and the weekly total. Earnings already in the sheet aren't announced again. These are recorded earnings, not confirmation of payment.</p>
-              <p><strong>Sales in one day:</strong> Bronze for the first sale, Silver for 3, Gold for 5, Diamond for 10, Platinum for 15 and Black for 20. The levels start again each day.</p>
-              <p><strong>Beat your own best:</strong> more sales than your previous best day or week, or a month so far that beats your previous whole month. Matching a best doesn't count.</p>
-              <p><strong>Cash:</strong> first payment of any size, then R1 000, R2 500, R5 000 and R10 000 in a day. Weekly milestones are R5 000, R10 000 and R20 000, and monthly milestones are R5 000, R10 000, R20 000 and R50 000. Only the highest milestone in each period gets a card.</p>
-              <p><strong>Beat your own cash best:</strong> more cash than your previous best day or week, or a month so far that beats your previous whole-month cash.</p>
-              <p><strong>Streaks:</strong> a sale on 5, 10 or 20 working days in a row. Weekends and public holidays don't break a streak.</p>
-              <p><strong>Steady improvement:</strong> beat your August daily average on at least 4 recorded days in the same week. One card per person per week.</p>
-              <p><strong>Thank you for an assist:</strong> a colleague nominates someone, and an admin approves a short thank-you. It doesn't add a sale or cash to anyone's totals.</p>
+        <section class="panel" aria-labelledby="inbox-title">
+          <div class="panel-head">
+            <h2 id="inbox-title" tabindex="-1">Feedback inbox</h2>
+            <div class="segmented segmented-three" id="inbox-filter" role="group" aria-label="Show"></div>
+          </div>
+          <ul class="inbox" id="inbox"></ul>
+        </section>
+
+        <div class="grid">
+          <section class="panel span-7" aria-labelledby="access-title">
+            <div class="panel-head">
+              <h2 id="access-title">Admin access</h2>
             </div>
-          </details>
-          <details class="about">
-            <summary>How the queue works</summary>
-            <div class="about-body">
-              <p>Unsent wins for the same person on the same day share one card, and the biggest personal best leads.</p>
-              <p>If more sales come in after a card was sent, the card shows as “Figures changed” so an admin can check it. The card that was sent stays as it was.</p>
-              <p>Cash is the amount recorded under Paid on the sheet date. Cancelled rows, missing amounts and missing CRM IDs are left out, and repeated CRM IDs count once a month.</p>
+            <p class="panel-note">People on this list can mark cards as sent, answer feedback, approve assists and set up the four-week check.</p>
+            <ul class="access-list" id="access-list"></ul>
+            <form class="controls" id="access-form" novalidate>
+              <label class="sr-only" for="access-email">Work email</label>
+              <input class="input access-input" id="access-email" type="email" spellcheck="false" placeholder="name@college.co.za" autocomplete="off">
+              <button class="button button-inline" type="submit">Add admin</button>
+            </form>
+            <p class="form-error" id="access-error" role="alert" hidden></p>
+          </section>
+
+          <section class="panel span-5" aria-labelledby="data-title">
+            <div class="panel-head">
+              <h2 id="data-title">Demo data</h2>
             </div>
-          </details>
+            <dl class="figure-list">
+              <div><dt>Figures last read</dt><dd>17 September, <span id="snapshot-time"></span></dd></div>
+              <div><dt>Where figures come from</dt><dd>Sample data</dd></div>
+            </dl>
+            <p class="panel-note">Resetting clears card statuses, feedback, approved assists and the four-week check saved in this browser. Your demo sign-in stays.</p>
+            <div class="dialog-actions">
+              <button class="button button-secondary button-inline" id="reset-demo" type="button">Reset demo data</button>
+            </div>
+          </section>
         </div>
       </main>
     </div>
   </div>
 
-  <dialog class="dialog" id="card-preview" aria-labelledby="preview-title">
-    <div class="dialog-head">
-      <h2 id="preview-title">Card preview</h2>
-      <button class="icon-button" id="close-preview" type="button" aria-label="Close preview">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-    </div>
-    <img class="preview-image" id="preview-image" alt="">
-    <label class="field-hint" for="preview-caption">WhatsApp caption</label>
-    <textarea class="input caption" id="preview-caption" rows="3" readonly></textarea>
-    <div class="dialog-actions">
-      <button class="button button-inline" id="preview-download" type="button">Download PNG</button>
-      <button class="button button-secondary button-inline" id="preview-copy" type="button">Copy caption</button>
-    </div>
-  </dialog>
-
   <div class="toast" id="toast" role="status" hidden></div>
 
-  <script src="assets/js/shared/data.js"></script>
-  <script src="assets/js/shared/app.js"></script>
-  <script src="assets/js/shared/card-image.js"></script>
-  <script src="assets/js/pages/cards.js"></script>
+  <script src="../assets/js/shared/data.js"></script>
+  <script src="../assets/js/shared/app.js"></script>
+  <script src="../assets/js/pages/admin.js"></script>
 </body>
 </html>

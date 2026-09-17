@@ -288,7 +288,7 @@ function setUpShell() {
 
   document.getElementById('sign-out').addEventListener('click', () => {
     endSession();
-    location.href = 'index.html';
+    location.href = SIGN_IN_PAGE;
   });
 
   showReadyCount();
