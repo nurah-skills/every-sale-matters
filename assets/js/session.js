@@ -15,14 +15,16 @@ function readSession() {
   }
 }
 
-function startDemoSession() {
+function startSession(user) {
   try {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(DEMO_USER));
+    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
     return true;
   } catch {
     return false;
   }
 }
+
+const startDemoSession = () => startSession(DEMO_USER);
 
 function endSession() {
   try {

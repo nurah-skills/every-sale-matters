@@ -143,7 +143,13 @@ function statusChip(pace) {
 
 function setUpShell() {
   const user = readSession();
-  document.getElementById('user-initials').textContent = initials(user.name);
+  const avatar = document.getElementById('user-initials');
+  if (user.photo) {
+    avatar.style.backgroundImage = 'url("' + user.photo + '")';
+    avatar.classList.add('has-photo');
+  } else {
+    avatar.textContent = initials(user.name);
+  }
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-role').textContent = `${user.role} · ${user.college}`;
 

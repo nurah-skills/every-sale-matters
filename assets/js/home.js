@@ -2,7 +2,7 @@ const PERIOD_OPTIONS = Object.entries(PERIODS).map(([key, period]) => [key, peri
 
 const user = setUpShell();
 const state = {
-  person: recall('person') || user.name,
+  person: recall('person') || user.person || user.name,
   period: PERIODS[recall('period')] ? recall('period') : 'today'
 };
 

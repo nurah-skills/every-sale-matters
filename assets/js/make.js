@@ -1,7 +1,7 @@
 const user = setUpShell();
 
 const state = {
-  person: findPerson(recall('make-person') || user.name).name,
+  person: findPerson(recall('make-person') || user.person || user.name).name,
   choice: 0,
   cheer: '',
   design: 'match',

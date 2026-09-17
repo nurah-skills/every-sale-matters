@@ -14,6 +14,7 @@
   --now: #C98A2B;
   --info-soft: #E6ECF4;
   --info-ink: #2E4A6B;
+  --error: #B03A2E;
   --on-navy: #FFFFFF;
   --on-navy-muted: rgba(255, 255, 255, .8);
   --heading: "Lexend", "Segoe UI", system-ui, sans-serif;
@@ -39,6 +40,7 @@
     --now: #E0AE55;
     --info-soft: #1F2A38;
     --info-ink: #B9CCE3;
+    --error: #F08A7E;
     --shadow: 0 2px 4px rgba(0, 0, 0, .3), 0 14px 32px -16px rgba(0, 0, 0, .7);
   }
 }
@@ -331,6 +333,7 @@ a.menu-item:hover { background: rgba(255, 255, 255, .08); color: var(--on-navy);
   font-weight: 600;
   font-size: 14px;
 }
+.avatar.has-photo { background: var(--field) center / cover no-repeat; }
 .avatar-soft { background: var(--sage-soft); color: var(--sage-ink); }
 
 .icon-button {
@@ -858,7 +861,26 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.5; }
 .choice input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
 
 .form-error { padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, #C0392B 12%, transparent); color: var(--ink); font-weight: 700; }
-[aria-invalid='true'] { border-color: #C0392B; }
+[aria-invalid='true'] { border-color: var(--error); }
+.field-error { font-size: 13px; font-weight: 700; color: var(--error); }
+
+.photo-picker { display: flex; align-items: center; gap: 16px; }
+.photo-circle {
+  flex: none;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: var(--field) center / cover no-repeat;
+  border: 2px dashed var(--line);
+}
+.photo-circle.has-photo { border-style: solid; }
+.photo-circle.has-photo svg { display: none; }
+.photo-circle.is-invalid { border-color: var(--error); }
+.photo-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.photo-actions input:focus-visible + .upload-button { outline: 3px solid var(--focus); outline-offset: 2px; }
 
 .timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: step; }
 .timeline li { position: relative; display: flex; flex-direction: column; padding-left: 40px; counter-increment: step; }

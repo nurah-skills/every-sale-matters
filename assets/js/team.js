@@ -236,7 +236,8 @@ function groupRow(label, rows) {
 }
 
 function showTable() {
-  const me = readSession().name;
+  const session = readSession();
+  const me = session.person || session.name;
   const search = state.search.trim().toLowerCase();
   const everyone = rowsFor(state.college);
   const searched = everyone.filter((row) => row.person.name.toLowerCase().includes(search));

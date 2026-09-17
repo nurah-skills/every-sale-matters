@@ -36,54 +36,113 @@
 
         <header>
           <h1>Create your account</h1>
-          <p>It only takes a minute. Use the email you use for work.</p>
+          <p>It only takes a minute. Fields marked with * are required.</p>
         </header>
 
-        <form class="form" method="post" data-not-connected>
-          <div class="field">
-            <label for="name">Full name</label>
-            <input class="input" id="name" name="name" type="text" autocomplete="name" required>
+        <form class="form" id="signup-form" method="post" novalidate>
+          <p class="form-error" id="signup-error" role="alert" tabindex="-1" hidden>Please fix the highlighted details below.</p>
+
+          <div class="field photo-field">
+            <span class="field-label" id="photo-label">Profile photo *</span>
+            <div class="photo-picker">
+              <span class="photo-circle" id="photo-preview" aria-hidden="true">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+              </span>
+              <div class="photo-actions">
+                <input class="sr-only" id="photo" name="photo" type="file" accept="image/png, image/jpeg, image/webp" aria-labelledby="photo-label photo-button" aria-describedby="photo-hint photo-error">
+                <label class="button button-secondary button-inline upload-button" id="photo-button" for="photo">Choose a photo</label>
+                <p class="field-hint" id="photo-hint">A clear photo of your face. JPG, PNG or WebP, up to 5 MB.</p>
+              </div>
+            </div>
+            <p class="field-error" id="photo-error" hidden></p>
           </div>
 
           <div class="form-row">
             <div class="field">
-              <label for="email">Work email</label>
-              <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="name@college.co.za" required>
+              <label for="first-name">First name *</label>
+              <input class="input" id="first-name" name="first-name" type="text" autocomplete="given-name" maxlength="40" aria-describedby="first-name-error">
+              <p class="field-error" id="first-name-error" hidden></p>
             </div>
             <div class="field">
-              <label for="college">College</label>
-              <select class="input" id="college" name="college" required>
-                <option value="" selected disabled>Choose one</option>
+              <label for="surname">Surname *</label>
+              <input class="input" id="surname" name="surname" type="text" autocomplete="family-name" maxlength="40" aria-describedby="surname-error">
+              <p class="field-error" id="surname-error" hidden></p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="preferred-name">Preferred name</label>
+              <input class="input" id="preferred-name" name="preferred-name" type="text" autocomplete="nickname" maxlength="40" aria-describedby="preferred-name-hint">
+              <p class="field-hint" id="preferred-name-hint">What colleagues call you, if it's different.</p>
+            </div>
+            <div class="field">
+              <label for="job-title">Job title *</label>
+              <input class="input" id="job-title" name="job-title" type="text" list="job-titles" autocomplete="organization-title" maxlength="60" aria-describedby="job-title-error">
+              <datalist id="job-titles">
+                <option value="Sales consultant"></option>
+                <option value="Senior sales consultant"></option>
+                <option value="Team lead"></option>
+                <option value="Sales manager"></option>
+              </datalist>
+              <p class="field-error" id="job-title-error" hidden></p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="email">Work email *</label>
+              <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="name@college.co.za" aria-describedby="email-error">
+              <p class="field-error" id="email-error" hidden></p>
+            </div>
+            <div class="field">
+              <label for="mobile">Mobile number</label>
+              <input class="input" id="mobile" name="mobile" type="tel" autocomplete="tel" placeholder="082 123 4567" maxlength="16" aria-describedby="mobile-error">
+              <p class="field-error" id="mobile-error" hidden></p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="college">College *</label>
+              <select class="input" id="college" name="college" aria-describedby="college-error">
+                <option value="" selected>Choose one</option>
                 <option>Skills Academy</option>
                 <option>Matric College</option>
                 <option>Bellview</option>
               </select>
+              <p class="field-error" id="college-error" hidden></p>
+            </div>
+            <div class="field">
+              <label for="scoreboard-name">Your name on the scoreboard</label>
+              <select class="input" id="scoreboard-name" name="scoreboard-name" aria-describedby="scoreboard-hint">
+                <option value="">I'm not on the scoreboard</option>
+              </select>
+              <p class="field-hint" id="scoreboard-hint">So your own results show first when you sign in.</p>
             </div>
           </div>
 
           <div class="field">
-            <label for="password">Password</label>
+            <label for="password">Password *</label>
             <div class="password">
-              <input class="input" id="password" name="password" type="password" autocomplete="new-password" minlength="8" aria-describedby="password-hint" required>
+              <input class="input" id="password" name="password" type="password" autocomplete="new-password" aria-describedby="password-hint password-error">
               <button type="button" data-toggle-password aria-controls="password" aria-pressed="false">Show</button>
             </div>
             <p class="field-hint" id="password-hint">At least 8 characters.</p>
+            <p class="field-error" id="password-error" hidden></p>
           </div>
 
           <div class="field">
-            <label for="password-confirm">Confirm password</label>
+            <label for="password-confirm">Confirm password *</label>
             <div class="password">
-              <input class="input" id="password-confirm" name="password-confirm" type="password" autocomplete="new-password" minlength="8" required>
+              <input class="input" id="password-confirm" name="password-confirm" type="password" autocomplete="new-password" aria-describedby="password-confirm-error">
               <button type="button" data-toggle-password aria-controls="password-confirm" aria-pressed="false">Show</button>
             </div>
+            <p class="field-error" id="password-confirm-error" hidden></p>
           </div>
 
           <button class="button" type="submit">Create account</button>
-
-          <div class="form-notice" role="status" tabindex="-1" hidden>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
-            <span>Creating accounts isn't switched on yet. Your details haven't been saved or sent anywhere.</span>
-          </div>
+          <p class="field-hint">In this demo your details and photo are saved in this browser only, and your password isn't stored anywhere.</p>
         </form>
 
         <p class="auth-switch">Already have an account? <a href="index.html">Sign in</a></p>
@@ -91,6 +150,8 @@
     </main>
   </div>
 
+  <script src="assets/js/data.js"></script>
   <script src="assets/js/auth.js"></script>
+  <script src="assets/js/signup.js"></script>
 </body>
 </html>

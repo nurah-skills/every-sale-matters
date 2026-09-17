@@ -112,7 +112,7 @@ document.getElementById('feedback-date').max = '2026-09-17';
 
 const helperSelect = document.getElementById('feedback-helper');
 helperSelect.append(new Option('Choose a colleague', ''));
-PEOPLE.filter((person) => person.name !== user.name)
+PEOPLE.filter((person) => person.name !== (user.person || user.name))
   .sort((a, b) => a.name.localeCompare(b.name))
   .forEach((person) => helperSelect.append(new Option(person.name, person.name)));
 
