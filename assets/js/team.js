@@ -7,7 +7,9 @@ const state = {
   college: recall('team-college') || 'All',
   search: '',
   sortKey: 'count',
-  sortDirection: -1
+  sortDirection: -1,
+  filter: 'all',
+  group: recall('team-group') !== 'off'
 };
 
 function totalsFor(rows) {
@@ -121,42 +123,48 @@ function showColleges() {
   });
 }
 
-const COLUMNS = [
-  { key: 'name', label: 'Name', group: null, value: (row) => row.person.name },
-  { key: 'college', label: 'College', group: null, value: (row) => row.person.college, text: true },
-  { key: 'count', label: 'Total', group: 'Registrations', value: (row) => row.figures.count },
-  { key: 'august', label: 'August', group: 'Registrations', value: (row) => row.figures.august, format: formatNumber },
-  { key: 'byNow', label: `By ${SNAPSHOT.time}`, group: 'Registrations', value: (row) => row.figures.byNow, format: formatNumber, inProgressOnly: true },
-  { key: 'change', label: 'Change', group: 'Registrations', value: (row) => row.figures.count - row.figures.august,
-    format: (value, row) => describeChange(row.figures.count, row.figures.august) },
-  { key: 'best', label: 'Best day', group: 'Registrations', value: (row) => row.person.best },
-  { key: 'cash', label: 'Total', group: 'Cash recorded', value: (row) => row.figures.cash, format: formatMoney },
-  { key: 'cashAugust', label: 'August', group: 'Cash recorded', value: (row) => row.figures.cashAugust, format: formatMoney },
-  { key: 'cashChange', label: 'Change', group: 'Cash recorded', value: (row) => row.figures.cash - row.figures.cashAugust,
-    format: (value) => `${value > 0 ? '+' : value < 0 ? '−' : ''}${formatMoney(Math.abs(value))}` },
-  { key: 'cashBest', label: 'Best day', group: 'Cash recorded', value: (row) => row.person.cashBest, format: formatMoney },
-  { key: 'progress', label: 'Progress', group: null, value: (row) => row.figures.count / Math.max(row.figures.august, 0.1), text: true }
-];
-
-function visibleColumns() {
-  return COLUMNS.filter((column) => !column.inProgressOnly || state.period !== 'yesterday');
+// Quick filters follow the same status label shown on each row
+function progressGroup(figures) {
+  if (!figures.count) return 'none';
+  const tone = paceFor(figures, state.period).tone;
+  if (tone === 'best' || tone === 'good') return 'ahead';
+  return tone === 'info' ? 'track' : 'behind';
 }
 
-function sortButton(column) {
-  const cell = create('th', column.text || column.key === 'name' ? 'is-text' : '');
+function filterLabels() {
+  const finished = state.period === 'yesterday';
+  return [
+    ['all', 'Everyone'],
+    ['ahead', finished ? 'Above August' : 'Ahead of pace'],
+    ...(finished ? [] : [['track', 'On track']]),
+    ['behind', finished ? 'Below August' : 'Behind pace'],
+    ['none', finished ? 'No registrations' : 'Not started yet']
+  ];
+}
+
+const SORTS = {
+  name: (row) => row.person.name,
+  count: (row) => row.figures.count,
+  pace: (row) => row.figures.count / Math.max(row.figures.byNow, 0.1),
+  best: (row) => row.figures.previousBest,
+  cash: (row) => row.figures.cash
+};
+
+function sortHeader(key, label, className = '') {
+  const cell = create('th', className);
   cell.scope = 'col';
-  const button = create('button', '', column.label);
+  const button = create('button', '', label);
   button.type = 'button';
-  if (state.sortKey === column.key) {
+  if (state.sortKey === key) {
     cell.setAttribute('aria-sort', state.sortDirection > 0 ? 'ascending' : 'descending');
     button.append(create('span', 'sort-arrow', state.sortDirection > 0 ? ' ↑' : ' ↓'));
   }
   button.addEventListener('click', () => {
-    if (state.sortKey === column.key) {
+    if (state.sortKey === key) {
       state.sortDirection *= -1;
     } else {
-      state.sortKey = column.key;
-      state.sortDirection = column.key === 'name' || column.key === 'college' ? 1 : -1;
+      state.sortKey = key;
+      state.sortDirection = key === 'name' ? 1 : -1;
     }
     showTable();
   });
@@ -164,104 +172,152 @@ function sortButton(column) {
   return cell;
 }
 
+function registrationsCell(row, scale) {
+  const { figures } = row;
+  const cell = create('td', 'cell-registrations');
+  const top = create('div', 'reg-top');
+  top.append(create('b', '', String(figures.count)), create('span', '', `of ${formatNumber(figures.august)} August average`));
+
+  const track = create('div', 'track track-small');
+  const fill = create('span', 'track-fill');
+  fill.style.width = `${Math.min(100, (figures.count / scale) * 100)}%`;
+  track.append(fill);
+  const markers = [['is-august', figures.august]];
+  if (state.period !== 'yesterday') markers.push(['is-now', figures.byNow]);
+  markers.forEach(([className, value]) => {
+    const marker = create('span', `track-marker ${className}`);
+    marker.style.left = `${Math.min(100, (value / scale) * 100)}%`;
+    track.append(marker);
+  });
+
+  cell.append(top, track);
+  return cell;
+}
+
+function personRow(row, scale, me, grouped) {
+  const line = create('tr', row.person.name === me ? 'is-me' : '');
+
+  const nameCell = create('th', 'cell-name');
+  nameCell.scope = 'row';
+  const link = create('button', 'person-link', row.person.name);
+  link.type = 'button';
+  link.setAttribute('aria-haspopup', 'dialog');
+  link.addEventListener('click', () => showDetails(row));
+  nameCell.append(link);
+  if (row.person.name === me) nameCell.append(create('span', 'you-tag', 'You'));
+  // The college heading already names it when rows are grouped
+  if (!grouped) nameCell.append(create('small', '', row.person.college));
+
+  const statusCell = create('td', 'cell-status');
+  statusCell.append(statusChip(paceFor(row.figures, state.period)));
+
+  const bestCell = create('td', 'cell-best');
+  bestCell.append(create('b', '', String(row.figures.previousBest)), create('small', '', `best ${PERIODS[state.period].unit}`));
+
+  const cashCell = create('td', 'cell-cash');
+  cashCell.append(create('b', '', `R${Math.round(row.figures.cash).toLocaleString('en-ZA')}`), create('small', '', 'cash'));
+
+  line.append(nameCell, registrationsCell(row, scale), statusCell, bestCell, cashCell);
+  return line;
+}
+
+function groupRow(label, rows) {
+  const totals = totalsFor(rows);
+  const line = create('tr', 'group-row');
+  const cell = create('th', '');
+  cell.colSpan = 5;
+  cell.scope = 'rowgroup';
+  cell.append(
+    create('span', 'group-name', label),
+    create('span', 'group-figures', `${totals.count} registrations · ${formatPercent(totals.count, totals.august)} of August average · ${rows.length} ${rows.length === 1 ? 'person' : 'people'}`)
+  );
+  line.append(cell);
+  return line;
+}
+
 function showTable() {
-  const columns = visibleColumns();
-  const table = document.getElementById('results');
-  table.replaceChildren();
-
-  const head = create('thead');
-  const groupRow = create('tr');
-  const labelRow = create('tr');
-  let index = 0;
-  while (index < columns.length) {
-    const column = columns[index];
-    if (!column.group) {
-      const cell = sortButton(column);
-      cell.rowSpan = 2;
-      groupRow.append(cell);
-      index += 1;
-      continue;
-    }
-    const span = columns.slice(index).findIndex((other) => other.group !== column.group);
-    const size = span === -1 ? columns.length - index : span;
-    const groupCell = create('th', 'is-group', column.group);
-    groupCell.colSpan = size;
-    groupCell.scope = 'colgroup';
-    groupRow.append(groupCell);
-    columns.slice(index, index + size).forEach((grouped) => labelRow.append(sortButton(grouped)));
-    index += size;
-  }
-  head.append(groupRow, labelRow);
-
+  const me = readSession().name;
   const search = state.search.trim().toLowerCase();
-  const rows = rowsFor(state.college).filter((row) => row.person.name.toLowerCase().includes(search));
-  const sortColumn = COLUMNS.find((column) => column.key === state.sortKey) || COLUMNS[2];
+  const everyone = rowsFor(state.college);
+  const searched = everyone.filter((row) => row.person.name.toLowerCase().includes(search));
+
+  const counts = { all: searched.length, ahead: 0, track: 0, behind: 0, none: 0 };
+  searched.forEach((row) => { counts[progressGroup(row.figures)] += 1; });
+  buildSegmented(
+    document.getElementById('results-filter'),
+    filterLabels().map(([key, label]) => [key, `${label} ${counts[key]}`]),
+    filterLabels().some(([key]) => key === state.filter) ? state.filter : 'all',
+    (filter) => {
+      state.filter = filter;
+      showTable();
+    }
+  );
+
+  if (!filterLabels().some(([key]) => key === state.filter)) state.filter = 'all';
+  const rows = searched.filter((row) => state.filter === 'all' || progressGroup(row.figures) === state.filter);
+  const sortValue = SORTS[state.sortKey] || SORTS.count;
   rows.sort((a, b) => {
-    const first = sortColumn.value(a);
-    const second = sortColumn.value(b);
+    const first = sortValue(a);
+    const second = sortValue(b);
     const order = typeof first === 'string' ? first.localeCompare(second) : first - second;
     return order * state.sortDirection || a.person.name.localeCompare(b.person.name);
   });
 
-  const body = create('tbody');
-  rows.forEach((row) => {
-    const line = create('tr');
-    columns.forEach((column) => {
-      if (column.key === 'name') {
-        const cell = create('th', 'is-text');
-        cell.scope = 'row';
-        const link = create('button', 'person-link', row.person.name);
-        link.type = 'button';
-        link.setAttribute('aria-haspopup', 'dialog');
-        link.addEventListener('click', () => showDetails(row));
-        cell.append(link);
-        line.append(cell);
-        return;
-      }
-      if (column.key === 'progress') {
-        const cell = create('td', 'is-text');
-        cell.append(statusChip(paceFor(row.figures, state.period)));
-        line.append(cell);
-        return;
-      }
-      const value = column.value(row);
-      const cell = create('td', column.text ? 'is-text' : '', column.format ? column.format(value, row) : String(value));
-      if (column.key === 'change' || column.key === 'cashChange') cell.classList.add(value >= 0 ? 'is-up' : 'is-down');
-      line.append(cell);
-    });
-    body.append(line);
-  });
+  // One scale for every bar, so bars can be compared down the list
+  const scale = Math.max(1, ...everyone.map((row) => Math.max(row.figures.count, row.figures.august))) * 1.05;
+
+  const table = document.getElementById('results');
+  table.replaceChildren();
+
+  const head = create('thead');
+  const headRow = create('tr');
+  headRow.append(
+    sortHeader('name', 'Name', 'cell-name'),
+    sortHeader('count', 'Registrations', 'cell-registrations'),
+    sortHeader('pace', 'Status', 'cell-status'),
+    sortHeader('best', 'Best', 'cell-best'),
+    sortHeader('cash', 'Cash', 'cell-cash')
+  );
+  head.append(headRow);
+  table.append(head);
 
   if (!rows.length) {
+    const body = create('tbody');
     const line = create('tr');
-    const cell = create('td', 'is-empty', `No one matches "${state.search.trim()}".`);
-    cell.colSpan = columns.length;
+    const cell = create('td', 'is-empty', search ? `No one matches "${state.search.trim()}".` : 'No one in this group right now.');
+    cell.colSpan = 5;
     line.append(cell);
     body.append(line);
+    table.append(body);
+    return;
   }
+
+  const grouped = state.group && state.college === 'All';
+  const sections = grouped
+    ? COLLEGES.map((college) => [college, rows.filter((row) => row.person.college === college)]).filter(([, list]) => list.length)
+    : [[null, rows]];
+
+  sections.forEach(([college, list]) => {
+    const body = create('tbody');
+    if (college) body.append(groupRow(college, list));
+    list.forEach((row) => body.append(personRow(row, scale, me, Boolean(college))));
+    table.append(body);
+  });
 
   const totals = totalsFor(rows);
   const foot = create('tfoot');
-  const totalRow = create('tr');
-  columns.forEach((column) => {
-    const values = {
-      name: `Total · ${rows.length} people`,
-      count: String(totals.count),
-      august: formatNumber(totals.august),
-      byNow: formatNumber(totals.byNow),
-      change: describeChange(totals.count, totals.august),
-      cash: formatMoney(totals.cash),
-      cashAugust: formatMoney(totals.cashAugust),
-      cashChange: `${totals.cash - totals.cashAugust >= 0 ? '+' : '−'}${formatMoney(Math.abs(totals.cash - totals.cashAugust))}`,
-      progress: `${totals.bests} new best${totals.bests === 1 ? '' : 's'}`
-    };
-    const cell = create(column.key === 'name' ? 'th' : 'td', column.text || column.key === 'name' ? 'is-text' : '', values[column.key] || '');
-    if (column.key === 'name') cell.scope = 'row';
-    totalRow.append(cell);
-  });
-  foot.append(totalRow);
-
-  table.append(head, body, foot);
+  const line = create('tr');
+  const label = create('th', 'cell-name', `Total · ${rows.length} ${rows.length === 1 ? 'person' : 'people'}`);
+  label.scope = 'row';
+  line.append(
+    label,
+    create('td', 'cell-registrations', `${totals.count} of ${formatNumber(totals.august)} August average`),
+    create('td', 'cell-status', `${totals.bests} new best${totals.bests === 1 ? '' : 's'}`),
+    create('td', 'cell-best', ''),
+    create('td', 'cell-cash', `R${Math.round(totals.cash).toLocaleString('en-ZA')}`)
+  );
+  foot.append(line);
+  table.append(foot);
 }
 
 function showDetails(row) {
@@ -292,7 +348,11 @@ function showDetails(row) {
 
   const rows = [['Compared with August', describeChange(figures.count, figures.august)]];
   if (state.period !== 'yesterday') rows.push([`Usually by ${SNAPSHOT.time}`, formatNumber(figures.byNow)]);
-  rows.push(['Cash recorded', formatMoney(figures.cash)]);
+  rows.push(
+    ['Cash recorded', formatMoney(figures.cash)],
+    ['Cash at August pace', formatMoney(figures.cashAugust)],
+    ['Best cash day', person.cashBest ? formatMoney(person.cashBest) : 'None yet']
+  );
   const list = document.getElementById('details-figures');
   list.replaceChildren();
   rows.forEach(([term, value]) => {
@@ -367,6 +427,13 @@ document.getElementById('person-details').addEventListener('click', (event) => {
   if (event.target.id === 'person-details') event.target.close();
 });
 document.getElementById('thank-assist').addEventListener('click', () => remember('feedback-type', 'assist'));
+
+document.getElementById('group-toggle').checked = state.group;
+document.getElementById('group-toggle').addEventListener('change', (event) => {
+  state.group = event.target.checked;
+  remember('team-group', state.group ? 'on' : 'off');
+  showTable();
+});
 
 document.getElementById('search').addEventListener('input', (event) => {
   state.search = event.target.value;

@@ -114,11 +114,19 @@
             <label class="sr-only" for="search">Search names</label>
             <input class="search" id="search" type="search" placeholder="Search names" autocomplete="off">
           </div>
-          <p class="panel-note">Select a name for details. Select a column heading to sort.</p>
+          <div class="results-tools">
+            <div class="segmented" id="results-filter" role="group" aria-label="Show"></div>
+            <label class="checkbox"><input type="checkbox" id="group-toggle"> Group by college</label>
+          </div>
+          <div class="legend">
+            <span><i class="key-fill"></i>Registrations</span>
+            <span><i class="key-august"></i>August average</span>
+            <span><i class="key-now"></i>Usually by now</span>
+          </div>
           <div class="table-wrap">
             <table class="results" id="results"></table>
           </div>
-          <p class="panel-note">August average is August's registrations divided by 20 recorded days, multiplied by the days in the period. The latest day may still be in progress.</p>
+          <p class="panel-note">Select a name for more detail, including cash compared with August. Select a column heading to sort. August average is August's registrations divided by 20 recorded days, multiplied by the days in the period.</p>
         </section>
 
         <div class="grid">
