@@ -822,6 +822,8 @@ a.button:not(.button-secondary), a.button:not(.button-secondary):hover { color: 
 .upload-row input:focus-visible + .upload-button { outline: 3px solid var(--focus); outline-offset: 2px; }
 .field-label { font-weight: 700; font-size: 15px; }
 .photo-preview { width: 44px; height: 44px; border-radius: 50%; background: var(--field) center / cover no-repeat; border: 1px solid var(--line); }
+.photo-adjust { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 8px 14px; font-size: 15px; }
+.range { width: 100%; margin: 0; accent-color: var(--sage-ink); }
 
 /* Round-ups page */
 .chat { padding: 18px; border-radius: 12px; background: var(--field); }

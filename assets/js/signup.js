@@ -39,9 +39,9 @@ function preparePhoto(file) {
       image.onload = () => {
         const size = Math.min(image.width, image.height);
         const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 320;
-        canvas.getContext('2d').drawImage(image, (image.width - size) / 2, (image.height - size) / 2, size, size, 0, 0, 320, 320);
+        canvas.width = 480;
+        canvas.height = 480;
+        canvas.getContext('2d').drawImage(image, (image.width - size) / 2, (image.height - size) / 2, size, size, 0, 0, 480, 480);
         resolve(canvas.toDataURL('image/jpeg', 0.85));
       };
       image.src = reader.result;
@@ -127,6 +127,8 @@ form.addEventListener('submit', (event) => {
     person: scoreboardSelect.value || null,
     photo: photoData
   });
+
+  if (signedUp && scoreboardSelect.value) savePhoto(scoreboardSelect.value, photoData);
 
   if (!signedUp) {
     summary.textContent = "Your browser is blocking site storage, so the demo can't create your account. Try a normal (not private) window.";

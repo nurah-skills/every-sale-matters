@@ -7,7 +7,8 @@ const state = {
   design: 'match',
   decoration: null,
   background: null,
-  photo: null
+  photo: null,
+  photoFrame: { zoom: 1, x: 50, y: 50 }
 };
 
 const personSelect = document.getElementById('maker-person');
@@ -16,6 +17,7 @@ const cheerInput = document.getElementById('maker-cheer');
 const designSelect = document.getElementById('maker-design');
 const captionBox = document.getElementById('maker-caption');
 const image = document.getElementById('maker-image');
+const photoSliders = { zoom: 'maker-photo-zoom', x: 'maker-photo-x', y: 'maker-photo-y' };
 
 const MAX_UPLOAD = 8 * 1024 * 1024;
 
@@ -24,7 +26,7 @@ const currentCard = () => achievementsFor(findPerson(state.person))[state.choice
 function drawOptions() {
   const card = currentCard();
   const design = state.design === 'match' ? matchingDesign(card) : CARD_DESIGNS.find((item) => item.id === state.design);
-  return { design, decoration: state.decoration, background: state.background, photo: state.photo };
+  return { design, decoration: state.decoration, background: state.background, photo: state.photo, photoFrame: state.photoFrame };
 }
 
 function fillPeople() {
@@ -87,10 +89,34 @@ function readPicture(input, onLoaded) {
   reader.readAsDataURL(file);
 }
 
+function showPhoto(picture, dataUrl, source) {
+  state.photo = picture;
+  state.photoFrame = { zoom: 1, x: 50, y: 50 };
+  Object.entries(photoSliders).forEach(([key, id]) => { document.getElementById(id).value = String(state.photoFrame[key]); });
+  document.getElementById('maker-photo-preview').style.backgroundImage = `url("${dataUrl}")`;
+  document.getElementById('maker-photo-clear').hidden = false;
+  document.getElementById('maker-photo-adjust').hidden = false;
+  const note = document.getElementById('maker-photo-source');
+  note.textContent = source;
+  note.hidden = false;
+}
+
 function clearPhoto() {
   state.photo = null;
   document.getElementById('maker-photo-preview').style.backgroundImage = '';
   document.getElementById('maker-photo-clear').hidden = true;
+  document.getElementById('maker-photo-adjust').hidden = true;
+  document.getElementById('maker-photo-source').hidden = true;
+}
+
+async function loadSavedPhoto() {
+  const person = state.person;
+  const saved = savedPhotos()[person];
+  clearPhoto();
+  if (!saved) return;
+  const picture = await loadImage(saved);
+  if (!picture || person !== state.person) return;
+  showPhoto(picture, saved, `Saved photo for ${person}`);
 }
 
 async function setUpSharing() {
@@ -116,9 +142,8 @@ async function setUpSharing() {
 personSelect.addEventListener('change', () => {
   state.person = personSelect.value;
   remember('make-person', state.person);
-  clearPhoto();
   fillAchievements();
-  updatePreview();
+  loadSavedPhoto().then(updatePreview);
 });
 
 achievementSelect.addEventListener('change', () => {
@@ -164,9 +189,7 @@ document.getElementById('maker-background-clear').addEventListener('click', (eve
 
 document.getElementById('maker-photo').addEventListener('change', (event) => {
   readPicture(event.target, (picture, dataUrl) => {
-    state.photo = picture;
-    document.getElementById('maker-photo-preview').style.backgroundImage = `url("${dataUrl}")`;
-    document.getElementById('maker-photo-clear').hidden = false;
+    showPhoto(picture, dataUrl, 'Photo for this card only');
     updatePreview();
   });
 });
@@ -174,6 +197,15 @@ document.getElementById('maker-photo').addEventListener('change', (event) => {
 document.getElementById('maker-photo-clear').addEventListener('click', () => {
   clearPhoto();
   updatePreview();
+});
+
+let sliderTimer;
+Object.entries(photoSliders).forEach(([key, id]) => {
+  document.getElementById(id).addEventListener('input', (event) => {
+    state.photoFrame = { ...state.photoFrame, [key]: Number(event.target.value) };
+    clearTimeout(sliderTimer);
+    sliderTimer = setTimeout(updatePreview, 60);
+  });
 });
 
 document.getElementById('maker-download').addEventListener('click', () => downloadCard(currentCard(), state.cheer, drawOptions()));
@@ -191,5 +223,5 @@ document.getElementById('maker-copy').addEventListener('click', async () => {
 fillPeople();
 fillAchievements();
 fillDesigns();
-updatePreview();
+loadSavedPhoto().then(updatePreview);
 setUpSharing();

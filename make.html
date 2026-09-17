@@ -129,7 +129,16 @@
                   <label class="button button-secondary button-inline upload-button" for="maker-photo">Choose the salesperson's photo</label>
                   <button class="button button-quiet button-inline" id="maker-photo-clear" type="button" hidden>Remove photo</button>
                 </div>
-                <p class="field-hint">The photo stays in this browser and is only added to the card you download. It isn't uploaded or saved. Choosing another person clears it.</p>
+                <p class="field-hint" id="maker-photo-source" hidden></p>
+                <div class="photo-adjust" id="maker-photo-adjust" hidden>
+                  <label for="maker-photo-zoom">Zoom</label>
+                  <input class="range" id="maker-photo-zoom" type="range" min="1" max="3" step="0.05" value="1">
+                  <label for="maker-photo-x">Move left or right</label>
+                  <input class="range" id="maker-photo-x" type="range" min="0" max="100" value="50">
+                  <label for="maker-photo-y">Move up or down</label>
+                  <input class="range" id="maker-photo-y" type="range" min="0" max="100" value="50">
+                </div>
+                <p class="field-hint">The photo people add when they create their account goes on their cards automatically. A photo you choose here is only used for this card and isn't saved. Choosing another person loads their own saved photo.</p>
               </div>
 
               <div class="field">

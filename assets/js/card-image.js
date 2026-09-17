@@ -197,7 +197,13 @@ async function drawCard(card, cheer = '', options = {}) {
 
   const design = options.design || CARD_DESIGNS[0];
   const decoration = options.decoration || design.decoration;
-  const [logo] = await Promise.all([COLLEGE_LOGOS[card.college] ? loadImage(COLLEGE_LOGOS[card.college]) : null]);
+  // Leaving the photo out uses the person's saved photo; null means no photo at all
+  const savedPhoto = savedPhotos()[card.person];
+  const [logo, photo] = await Promise.all([
+    COLLEGE_LOGOS[card.college] ? loadImage(COLLEGE_LOGOS[card.college]) : null,
+    options.photo === undefined ? (savedPhoto ? loadImage(savedPhoto) : null) : options.photo
+  ]);
+  const frame = { zoom: 1, x: 50, y: 50, ...options.photoFrame };
 
   const canvas = document.createElement('canvas');
   canvas.width = 1080;
@@ -258,16 +264,18 @@ async function drawCard(card, cheer = '', options = {}) {
     context.drawImage(logo, 970 - logoWidth - 16, 146 - drawHeight / 2, logoWidth, drawHeight);
   }
 
-  const textWidth = options.photo ? 600 : 860;
+  const textWidth = photo ? 600 : 860;
 
-  if (options.photo) {
+  if (photo) {
     context.save();
     context.beginPath();
     context.arc(840, 420, 130, 0, Math.PI * 2);
     context.closePath();
     context.clip();
-    const size = Math.min(options.photo.width, options.photo.height);
-    context.drawImage(options.photo, (options.photo.width - size) / 2, (options.photo.height - size) / 2, size, size, 710, 290, 260, 260);
+    const size = Math.min(photo.width, photo.height) / frame.zoom;
+    const left = (photo.width - size) * (frame.x / 100);
+    const top = (photo.height - size) * (frame.y / 100);
+    context.drawImage(photo, left, top, size, size, 710, 290, 260, 260);
     context.restore();
     context.beginPath();
     context.arc(840, 420, 132, 0, Math.PI * 2);

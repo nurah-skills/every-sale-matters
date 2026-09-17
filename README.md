@@ -13,7 +13,7 @@ Live site: https://nurah-skills.github.io/every-sale-matters/
 - `home.html` shows one person's progress: registrations against their August average and usual pace, the next record, cash recorded, this week's staff incentives, their most recent celebration, their suggested league and the three colleges.
 - `team.html` shows the whole group: totals, college totals and everyone's results with a bar against their August average and usual pace, quick filters (ahead, on track, behind, not started), optional grouping by college and your own row highlighted. Selecting a name opens their details. Below the table, Celebrate next shows new bests or the people closest to one.
 - `cards.html` is the queue of celebration cards: sales levels from Bronze to Black, personal bests for registrations and cash, cash milestones, steady progress, staff incentives and approved assists. Each card can be previewed, downloaded as a 1080 × 1350 image for WhatsApp, have its caption copied, and be marked as sent or skipped. In the demo those statuses are saved in your browser only.
-- `make.html` makes a single card: choose a person, one of the achievements their figures support, an optional cheer, a design (or your own background) and an optional photo of the salesperson, then download the image, share it or copy the caption. Backgrounds and photos stay in the browser.
+- `make.html` makes a single card: choose a person, one of the achievements their figures support, an optional cheer, a design (or your own background) and a photo of the salesperson with zoom and move controls, then download the image, share it or copy the caption. The photo someone adds when they create their account goes on their cards automatically, including in Cards ready. Backgrounds, photos you choose for one card and saved photos stay in the browser.
 - `roundups.html` writes a daily, weekly or monthly WhatsApp round-up for the whole team or one college, with a summary alongside.
 - `feedback.html` lets people report a problem, share an idea or nominate a colleague for an assist, and shows their own submissions and replies. In the demo, submissions are saved in your browser only.
 - `progress.html` is the four-week check: weekly registrations against the August average, plus a short pulse survey on whether the scoreboard feels encouraging and fair.
@@ -29,7 +29,7 @@ The measures are the same as the current scoreboard. The names and numbers are s
 
 ```
 assets/css   styles
-assets/js    session.js  demo sign-in and sign-out
+assets/js    session.js  demo sign-in, sign-out and saved photos
              auth.js     sign-in and create account pages
              signup.js   create account checks and photo
              data.js     sample people, the calculations and the card rules

@@ -26,6 +26,25 @@ function startSession(user) {
 
 const startDemoSession = () => startSession(DEMO_USER);
 
+// Profile photos are kept apart from the session so they stay on cards after someone signs out
+const PHOTOS_KEY = 'esm-photos';
+
+function savedPhotos() {
+  try {
+    return JSON.parse(localStorage.getItem(PHOTOS_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function savePhoto(person, dataUrl) {
+  try {
+    localStorage.setItem(PHOTOS_KEY, JSON.stringify({ ...savedPhotos(), [person]: dataUrl }));
+  } catch {
+    // The card just goes without a photo if storage is full or blocked.
+  }
+}
+
 function endSession() {
   try {
     localStorage.removeItem(SESSION_KEY);
