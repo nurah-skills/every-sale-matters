@@ -90,6 +90,11 @@ function cardTile(card) {
     create('p', 'card-title', card.lead.title),
     create('p', 'card-detail', card.lead.detail)
   );
+  if (card.lead.breakdown) {
+    const lines = create('ul', 'card-breakdown');
+    card.lead.breakdown.forEach((line) => lines.append(create('li', '', line)));
+    details.append(lines);
+  }
   if (card.also.length) details.append(create('p', 'card-also', `Also: ${card.also.join(' · ')}`));
   details.append(create('p', 'card-meta', `${card.college} · ${card.date} · ${readLine(card).charAt(0).toLowerCase()}${readLine(card).slice(1)}`));
 

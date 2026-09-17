@@ -115,26 +115,35 @@
           <select class="select" id="fame-person"></select>
         </div>
 
+        <div class="filter-chips" id="fame-types" role="group" aria-label="Kind of celebration"></div>
+
+        <section class="fame-highlights" id="fame-highlights" aria-labelledby="highlights-title" hidden>
+          <h2 id="highlights-title">This week’s highlights</h2>
+          <div class="highlight-grid" id="highlight-grid"></div>
+        </section>
+
         <section class="fame-gallery" id="fame-gallery" aria-labelledby="gallery-title">
           <h2 class="sr-only" id="gallery-title">Cards sent</h2>
           <div id="fame-days"></div>
-          <button class="button button-secondary button-inline fame-more" id="fame-more" type="button" hidden>Show earlier cards</button>
+          <button class="button button-secondary button-inline fame-more" id="fame-more" type="button" hidden>Show earlier days</button>
         </section>
 
-        <section class="panel" id="fame-calendar" aria-labelledby="calendar-title" hidden>
-          <div class="panel-head">
-            <h2 id="calendar-title">September 2026</h2>
+        <div class="calendar-layout" id="fame-calendar" hidden>
+          <section class="panel" aria-labelledby="calendar-title">
+            <div class="panel-head">
+              <h2 id="calendar-title">September 2026</h2>
+            </div>
             <div class="legend">
-              <span><i class="dot dot-best"></i>Personal best</span>
-              <span><i class="dot dot-streak"></i>Streak</span>
+              <span><i class="dot dot-best"></i>Personal bests</span>
+              <span><i class="dot dot-streak"></i>Streaks</span>
               <span><i class="dot dot-level"></i>Gold or higher</span>
             </div>
-          </div>
-          <table class="calendar" id="calendar">
-            <caption class="sr-only">Milestones in September 2026. Choose a day to see who reached what.</caption>
-          </table>
-          <div class="calendar-detail" id="calendar-detail" aria-live="polite"></div>
-        </section>
+            <table class="calendar" id="calendar">
+              <caption class="sr-only">Milestones in September 2026. Choose a day to see who reached what.</caption>
+            </table>
+          </section>
+          <section class="panel calendar-detail" id="calendar-detail" aria-live="polite" aria-label="Milestones on the chosen day"></section>
+        </div>
 
         <details class="about">
           <summary>What shows here</summary>

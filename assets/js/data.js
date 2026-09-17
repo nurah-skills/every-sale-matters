@@ -325,14 +325,19 @@ function weekWins(person) {
   return wins.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
 }
 
-// Newly recorded staff earnings get their own card, separate from sales and student cash
+const cents = (value) => `R${value.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+// Like the current scoreboard: the card leads with the amount just recorded, then the week so far
 function incentiveWin(person) {
   const incentives = incentivesFor(person);
   if (!incentives.total) return null;
-  const [value, unit] = incentives.enrolment
-    ? [incentives.enrolment, `weekly enrolment incentive · ${incentives.qualifying} enrolments`]
-    : incentives.cash ? [incentives.cash, 'additional cash incentive'] : [incentives.fees, 'registration fees and referrals'];
-  return { kind: 'incentive', title: 'Staff incentive earned', value, money: true, unit, detail: `Weekly total so far: ${rand(incentives.total)}` };
+  const [value, unit] = incentives.cash
+    ? [incentives.cash, 'new cash incentive recorded']
+    : incentives.enrolment ? [incentives.enrolment, 'new enrolment incentive recorded'] : [incentives.fees, 'new registration fee or referral recorded'];
+  const breakdown = [`${cents(incentives.enrolment)} enrolment + ${cents(incentives.cash)} cash`];
+  if (incentives.fees) breakdown.push(`${cents(incentives.fees)} other incentives`);
+  breakdown.push('Recorded so far. Payment tracked separately.');
+  return { kind: 'incentive', title: 'New staff incentive', value, money: true, unit, detail: `Your weekly total: ${cents(incentives.total)}`, breakdown };
 }
 
 // Follows the current scoreboard: unsent wins for the same person and day share one card,

@@ -1,13 +1,24 @@
 setUpShell();
 
 const VIEWS = [['gallery', 'Gallery'], ['calendar', 'Calendar']];
-const DAYS_PER_STEP = 4;
+const TYPES = [
+  ['all', 'All', () => true],
+  ['best', 'Personal bests', (card) => card.lead.kind === 'best'],
+  ['streak', 'Streaks', (card) => card.lead.kind === 'streak'],
+  ['sales', 'Levels', (card) => card.lead.kind === 'sales'],
+  ['cash', 'Cash', (card) => card.lead.kind === 'cash'],
+  ['incentive', 'Incentives', (card) => card.lead.kind === 'incentive'],
+  ['thanks', 'Steady and thanks', (card) => card.lead.kind === 'steady' || card.lead.kind === 'assist']
+];
+const DAYS_PER_STEP = 3;
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const CALENDAR_TYPES = [['best', 'Personal bests', 'personal bests'], ['streak', 'Streaks', 'streaks'], ['level', 'Gold or higher', 'Gold or higher']];
 
 const state = {
   view: recall('fame-view') === 'calendar' ? 'calendar' : 'gallery',
   college: recall('fame-college') || 'All',
   person: recall('fame-person') || 'all',
+  type: TYPES.some(([key]) => key === recall('fame-type')) ? recall('fame-type') : 'all',
   shownDays: DAYS_PER_STEP,
   day: TODAY,
   previewing: null
@@ -28,6 +39,8 @@ function sentCards() {
     .sort((a, b) => sortDay(b) - sortDay(a) || KIND_ORDER[a.lead.kind] - KIND_ORDER[b.lead.kind]);
 }
 
+const typeTest = () => TYPES.find(([key]) => key === state.type)[2];
+
 function fillPeople() {
   const select = document.getElementById('fame-person');
   const people = PEOPLE.filter((person) => state.college === 'All' || person.college === state.college)
@@ -35,6 +48,29 @@ function fillPeople() {
   if (state.person !== 'all' && !people.some((person) => person.name === state.person)) state.person = 'all';
   select.replaceChildren(new Option('Everyone', 'all'), ...people.map((person) => new Option(person.name, person.name)));
   select.value = state.person;
+}
+
+// Chips only show kinds that have cards, each with its count
+function showTypes(cards) {
+  const holder = document.getElementById('fame-types');
+  holder.replaceChildren();
+  holder.hidden = state.view !== 'gallery';
+  TYPES.forEach(([key, label, test]) => {
+    const count = cards.filter(test).length;
+    if (!count && key !== 'all' && key !== state.type) return;
+    const chip = create('button', 'filter-chip');
+    chip.type = 'button';
+    chip.dataset.focus = `type:${key}`;
+    chip.setAttribute('aria-pressed', String(key === state.type));
+    chip.append(document.createTextNode(label), create('span', 'filter-count', String(count)));
+    chip.addEventListener('click', () => keepFocus(() => {
+      state.type = key;
+      state.shownDays = DAYS_PER_STEP;
+      remember('fame-type', key);
+      render();
+    }));
+    holder.append(chip);
+  });
 }
 
 async function openPreview(card) {
@@ -50,8 +86,8 @@ async function openPreview(card) {
   showCanvas(blank, await drawCard(card), `${card.lead.title} card for ${card.person}`);
 }
 
-function fameCard(card) {
-  const button = create('button', 'fame-card');
+function fameCard(card, className = 'fame-card') {
+  const button = create('button', className);
   button.type = 'button';
   button.setAttribute('aria-haspopup', 'dialog');
 
@@ -59,7 +95,7 @@ function fameCard(card) {
   const pill = create('span', 'card-pill', pillText(card));
   pill.style.background = pillColour(card);
   pill.style.color = pillTextColour(card);
-  art.append(pill, create('b', '', shortValueText(card.lead)), create('span', '', card.lead.unit));
+  art.append(pill, create('b', '', shortValueText(card.lead)));
 
   const body = create('span', 'fame-card-body');
   body.append(create('b', '', card.person), create('span', '', card.lead.title), create('small', '', card.college));
@@ -68,19 +104,41 @@ function fameCard(card) {
   return button;
 }
 
+// The moments worth a second look: bests, long streaks and the top daily levels from this week
+function showHighlights(cards) {
+  const section = document.getElementById('fame-highlights');
+  const big = (card) => card.lead.kind === 'best'
+    || (card.lead.kind === 'streak' && card.lead.value >= 10)
+    || ['Platinum', 'Black'].includes(card.lead.tier);
+  const picks = cards.filter((card) => sortDay(card) >= WEEK_START - 0.5 && big(card) && typeTest()(card))
+    .sort((a, b) => KIND_ORDER[a.lead.kind] - KIND_ORDER[b.lead.kind] || b.lead.value - a.lead.value)
+    .slice(0, 4);
+
+  section.hidden = state.view !== 'gallery' || !picks.length;
+  const grid = document.getElementById('highlight-grid');
+  grid.replaceChildren();
+  picks.forEach((card) => {
+    const tile = fameCard(card, 'fame-card fame-card-large');
+    tile.querySelector('.card-art').append(create('span', 'highlight-unit', card.lead.unit));
+    tile.querySelector('.fame-card-body small').textContent = `${card.college} · ${card.date.replace(' 2026', '')}`;
+    grid.append(tile);
+  });
+}
+
 function showGallery(cards) {
   const holder = document.getElementById('fame-days');
   holder.replaceChildren();
+  const shown = cards.filter(typeTest());
 
-  if (!cards.length) {
-    holder.append(create('p', 'empty', 'No cards sent for this selection yet.'));
+  if (!shown.length) {
+    holder.append(create('p', 'empty', 'No cards of this kind for this selection yet.'));
     document.getElementById('fame-more').hidden = true;
     return;
   }
 
   // Cards come sorted newest first, so each date forms one group
   const groups = [];
-  cards.forEach((card) => {
+  shown.forEach((card) => {
     const last = groups[groups.length - 1];
     if (last && last.date === card.date) last.cards.push(card);
     else groups.push({ date: card.date, cards: [card] });
@@ -88,10 +146,11 @@ function showGallery(cards) {
 
   groups.slice(0, state.shownDays).forEach((group) => {
     const section = create('section', 'fame-day');
-    const heading = create('h3', '', group.date.replace(' 2026', ''));
-    const count = create('span', 'panel-note', `${group.cards.length} card${group.cards.length === 1 ? '' : 's'}`);
     const top = create('div', 'fame-day-head');
-    top.append(heading, count);
+    top.append(
+      create('h3', '', group.date.replace(' 2026', '')),
+      create('span', 'panel-note', `${group.cards.length} card${group.cards.length === 1 ? '' : 's'}`)
+    );
     const grid = create('div', 'fame-grid');
     group.cards.forEach((card) => grid.append(fameCard(card)));
     section.append(top, grid);
@@ -101,11 +160,11 @@ function showGallery(cards) {
   document.getElementById('fame-more').hidden = groups.length <= state.shownDays;
 }
 
+const eventType = (win) => (win.kind === 'best' ? 'best' : win.kind === 'streak' ? 'streak' : 'level');
+
 function eventsOn(day) {
   return milestonesOn(day).filter(({ person }) => matches(person.name, person.college));
 }
-
-const eventType = (win) => (win.kind === 'best' ? 'best' : win.kind === 'streak' ? 'streak' : 'level');
 
 function showCalendar() {
   const table = document.getElementById('calendar');
@@ -130,23 +189,28 @@ function showCalendar() {
     }
     const cell = create('td');
     const day = WORKDAYS.indexOf(date);
-    if (date === 0) {
+    if (day === -1) {
       cell.className = 'calendar-off';
-    } else if (day === -1) {
-      cell.className = 'calendar-off';
-      cell.append(create('span', 'calendar-date', String(date)));
+      if (date > 0) cell.append(create('span', 'calendar-date', String(date)));
     } else {
       const events = eventsOn(day);
       const button = create('button', 'calendar-day');
       button.type = 'button';
       button.dataset.focus = `day:${day}`;
       button.setAttribute('aria-pressed', String(day === state.day));
-      button.setAttribute('aria-label', `${dayName(day)}: ${events.length} milestone${events.length === 1 ? '' : 's'}`);
-      const dots = create('span', 'calendar-dots');
-      ['best', 'streak', 'level'].forEach((type) => {
-        if (events.some(({ win }) => eventType(win) === type)) dots.append(create('i', `dot dot-${type}`));
+
+      const tally = create('span', 'calendar-tally');
+      const spoken = [];
+      CALENDAR_TYPES.forEach(([type, , spokenLabel]) => {
+        const count = events.filter(({ win }) => eventType(win) === type).length;
+        if (!count) return;
+        const item = create('span', 'tally');
+        item.append(create('i', `dot dot-${type}`), document.createTextNode(String(count)));
+        tally.append(item);
+        spoken.push(`${count} ${spokenLabel}`);
       });
-      button.append(create('span', 'calendar-date', String(date)), dots, create('span', 'calendar-count', events.length ? String(events.length) : ''));
+      button.setAttribute('aria-label', `${dayName(day)}: ${spoken.length ? spoken.join(', ') : 'no big milestones'}`);
+      button.append(create('span', 'calendar-date', String(date)), tally);
       button.addEventListener('click', () => keepFocus(() => {
         state.day = day;
         showCalendar();
@@ -163,8 +227,8 @@ function showCalendar() {
 function showDay() {
   const holder = document.getElementById('calendar-detail');
   holder.replaceChildren();
-  const events = eventsOn(state.day).sort((a, b) => KIND_ORDER[a.win.kind] - KIND_ORDER[b.win.kind]);
-  holder.append(create('h3', '', dayName(state.day).replace(' 2026', '')));
+  const events = eventsOn(state.day);
+  holder.append(create('h2', '', dayName(state.day).replace(' 2026', '')));
 
   if (!events.length) {
     holder.append(create('p', 'empty', 'No big milestones on this day for this selection.'));
@@ -172,17 +236,22 @@ function showDay() {
   }
 
   const tones = { best: 'best', streak: 'changed', level: 'good' };
-  const list = create('ul', 'league');
-  events.forEach(({ person, win }) => {
-    const item = create('li');
-    const who = create('div');
-    who.append(create('b', '', person.name), create('small', '', person.college));
-    const now = create('div', 'now');
-    now.append(statusChip({ tone: tones[eventType(win)], text: win.title }));
-    item.append(create('span', 'avatar avatar-soft', initials(person.name)), who, now);
-    list.append(item);
+  CALENDAR_TYPES.forEach(([type, label]) => {
+    const group = events.filter(({ win }) => eventType(win) === type)
+      .sort((a, b) => b.win.value - a.win.value);
+    if (!group.length) return;
+    const heading = create('p', 'subheading day-group');
+    heading.append(create('i', `dot dot-${type}`), document.createTextNode(`${label} · ${group.length}`));
+    const list = create('ul', 'day-list');
+    group.forEach(({ person, win }) => {
+      const item = create('li');
+      const who = create('span');
+      who.append(create('b', '', person.name), create('small', '', person.college));
+      item.append(who, statusChip({ tone: tones[type], text: win.title }));
+      list.append(item);
+    });
+    holder.append(heading, list);
   });
-  holder.append(list);
 }
 
 function render() {
@@ -198,6 +267,8 @@ function render() {
     render();
   });
 
+  showTypes(cards);
+  showHighlights(cards);
   document.getElementById('fame-gallery').hidden = state.view !== 'gallery';
   document.getElementById('fame-calendar').hidden = state.view !== 'calendar';
   if (state.view === 'gallery') showGallery(cards);

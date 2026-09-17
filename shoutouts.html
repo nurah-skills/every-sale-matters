@@ -99,10 +99,11 @@
             <h1>Shout-outs</h1>
             <p class="page-note">Say well done to a colleague. Your shout-out shows on the board once an admin approves it.</p>
           </div>
+          <button class="button button-inline shout-toggle" id="shout-toggle" type="button" aria-expanded="false" aria-controls="shout-form-panel">Give a shout-out</button>
         </div>
 
         <div class="grid">
-          <section class="panel span-5" aria-labelledby="shout-form-title">
+          <section class="panel span-4 shout-form-panel" id="shout-form-panel" aria-labelledby="shout-form-title">
             <div class="panel-head">
               <h2 id="shout-form-title">Give a shout-out</h2>
             </div>
@@ -118,7 +119,7 @@
                 <p class="field-hint" id="shout-count">0 of 140 characters</p>
               </div>
               <button class="button" type="submit">Send for approval</button>
-              <p class="field-hint">Keep it kind and about work. Please leave out student names, phone numbers and payment details. Shout-outs don't add a sale to anyone's totals.</p>
+              <p class="field-hint">Keep it kind and about work. Please leave out student names, phone numbers and payment details. Shout-outs don’t add a sale to anyone’s totals.</p>
             </form>
             <div>
               <p class="subheading">Waiting for approval</p>
@@ -126,7 +127,7 @@
             </div>
           </section>
 
-          <section class="panel span-7" aria-labelledby="board-title">
+          <section class="span-8 shout-board-section" aria-labelledby="board-title">
             <div class="panel-head">
               <h2 id="board-title">Board</h2>
               <label class="sr-only" for="shout-college">College</label>

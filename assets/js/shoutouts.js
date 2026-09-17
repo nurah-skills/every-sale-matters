@@ -34,11 +34,14 @@ function showBoard() {
   items.forEach((item) => {
     const entry = create('li', 'shout');
     const top = create('div', 'shout-top');
-    top.append(create('span', 'avatar avatar-soft', initials(item.to)));
+    top.append(create('span', 'avatar', initials(item.to)));
     const who = create('div');
-    who.append(create('b', '', item.to), create('small', '', findPerson(item.to).college));
+    who.append(create('small', '', 'Shout-out to'), create('b', '', item.to));
     top.append(who);
-    entry.append(top, create('p', 'shout-message', item.message), create('p', 'panel-note', `From ${item.from} · ${item.when}`));
+    const quote = create('blockquote', 'shout-message', `“${item.message}”`);
+    const foot = create('p', 'shout-from');
+    foot.append(create('b', '', item.from), document.createTextNode(` · ${item.when}`));
+    entry.append(top, quote, foot);
     board.append(entry);
   });
 }
@@ -121,6 +124,17 @@ form.addEventListener('submit', (event) => {
   showPending();
   showInboxCount();
   showToast(`Sent. Your shout-out for ${firstName} shows on the board once it’s approved.`);
+});
+
+// On phones the form folds away so the board comes first
+const toggle = document.getElementById('shout-toggle');
+const formPanel = document.getElementById('shout-form-panel');
+toggle.addEventListener('click', () => {
+  const open = !formPanel.classList.contains('is-open');
+  formPanel.classList.toggle('is-open', open);
+  toggle.setAttribute('aria-expanded', String(open));
+  toggle.textContent = open ? 'Close the form' : 'Give a shout-out';
+  if (open) toSelect.focus();
 });
 
 document.getElementById('shout-college').value = state.college;
