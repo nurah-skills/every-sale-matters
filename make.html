@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; base-uri 'self'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
-  <title>Home · Every Sale Matters</title>
+  <title>Make a card · Every Sale Matters</title>
   <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
       <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="36" height="36" alt=""><span>Every Sale Matters</span></a>
 
       <nav class="menu" aria-label="Pages">
-        <a class="menu-item" href="home.html" aria-current="page">
+        <a class="menu-item" href="home.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
           <span>Home</span>
         </a>
@@ -34,7 +34,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>
           <span>Cards ready</span><em class="count" id="cards-ready-count" hidden></em>
         </a>
-        <a class="menu-item" href="make.html">
+        <a class="menu-item" href="make.html" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>
           <span>Make a card</span>
         </a>
@@ -80,98 +80,66 @@
       <main class="app-main">
         <div class="page-header">
           <div>
-            <p class="eyebrow">Individual progress</p>
-            <h1 id="person-name">Progress</h1>
-            <p class="page-note" id="person-note"></p>
+            <p class="eyebrow">Recognition</p>
+            <h1>Make a card</h1>
+            <p class="page-note">Choose a person and a win. The names and numbers come from the scoreboard.</p>
           </div>
-          <span class="tag">Sample figures · updated <span id="snapshot-time"></span></span>
+          <a class="text-link" href="cards.html">Open cards ready</a>
         </div>
 
-        <div class="controls">
-          <label class="sr-only" for="person-select">Choose a person</label>
-          <select class="select" id="person-select"></select>
-          <div class="segmented" id="period-picker" role="group" aria-label="Period"></div>
-        </div>
+        <div class="maker">
+          <section class="panel" aria-label="Card details">
+            <div class="form">
+              <div class="field">
+                <label for="maker-person"><span class="step-number">1</span>Who are we celebrating?</label>
+                <select class="select" id="maker-person"></select>
+              </div>
 
-        <div class="grid">
-          <section class="panel span-7" aria-labelledby="registrations-title">
-            <div class="panel-head">
-              <h2 id="registrations-title">Registrations</h2>
-              <span id="registrations-status"></span>
+              <div class="field">
+                <label for="maker-achievement"><span class="step-number">2</span>Choose the achievement</label>
+                <select class="select" id="maker-achievement"></select>
+                <p class="field-hint">Only achievements the figures support are listed. Check Cards ready to see what has already been sent.</p>
+              </div>
+
+              <div class="field">
+                <label for="maker-cheer"><span class="step-number">3</span>Add your cheer <span class="optional">(optional)</span></label>
+                <input class="input" id="maker-cheer" type="text" maxlength="80" placeholder="Your best month yet, what a win!" autocomplete="off">
+                <p class="field-hint" id="maker-cheer-count">0 of 80 characters</p>
+              </div>
+
+              <div class="field">
+                <label for="maker-caption">WhatsApp caption</label>
+                <textarea class="input caption" id="maker-caption" rows="4" readonly></textarea>
+              </div>
+
+              <div class="dialog-actions">
+                <button class="button button-inline" id="maker-download" type="button">Download image</button>
+                <button class="button button-secondary button-inline" id="maker-share" type="button" hidden>Share image</button>
+                <button class="button button-secondary button-inline" id="maker-copy" type="button">Copy caption</button>
+              </div>
             </div>
-            <div class="big-number"><b id="registrations-count">0</b><span id="registrations-label">registrations</span></div>
-            <div class="track" id="registrations-track" aria-hidden="true"></div>
-            <div class="legend" id="registrations-legend"></div>
-            <dl class="figure-list" id="registrations-figures"></dl>
           </section>
 
-          <section class="panel span-5" aria-labelledby="record-title">
-            <div class="panel-head">
-              <h2 id="record-title">The next record</h2>
-            </div>
-            <div class="record" id="record"></div>
-            <dl class="figure-list" id="record-figures"></dl>
-            <p class="panel-note">Based on the history loaded since August.</p>
-          </section>
-
-          <section class="panel span-7" aria-labelledby="cash-title">
-            <div class="panel-head">
-              <h2 id="cash-title">Cash recorded</h2>
-              <span class="panel-note">Recorded under Paid</span>
-            </div>
-            <div class="big-number"><b id="cash-amount">R0,00</b></div>
-            <dl class="figure-list" id="cash-figures"></dl>
-            <div>
-              <p class="subheading" id="cash-milestones-title">Milestones</p>
-              <div class="chips" id="cash-milestones"></div>
-            </div>
-            <p class="panel-note">Daily cash incentive: your team's existing cash rules still apply. Earned amounts aren't connected yet.</p>
-          </section>
-
-          <section class="panel span-5" aria-labelledby="card-title">
-            <div class="panel-head">
-              <h2 id="card-title">Most recent celebration</h2>
-            </div>
-            <div id="latest-card"></div>
-          </section>
-
-          <section class="panel span-7" aria-labelledby="league-title">
-            <div class="panel-head">
-              <h2 id="league-title">Suggested league</h2>
-              <span class="status status-info" id="league-name"></span>
-            </div>
-            <p class="panel-note">People with similar August daily averages. Each person is compared with their own August figures.</p>
-            <ul class="league" id="league"></ul>
-          </section>
-
-          <section class="panel span-5" aria-labelledby="colleges-title">
-            <div class="panel-head">
-              <h2 id="colleges-title">Our colleges</h2>
-            </div>
-            <div class="legend">
-              <span><i class="key-fill"></i>Registrations</span>
-              <span><i class="key-august"></i>August average</span>
-              <span><i class="key-now"></i>Usually by now</span>
-            </div>
-            <ul class="colleges colleges-stacked" id="colleges"></ul>
+          <section class="panel maker-preview" aria-label="Card preview">
+            <img class="preview-image" id="maker-image" alt="">
+            <p class="panel-note">Portrait PNG · 1080 × 1350 · ready to attach as a photo</p>
+            <ol class="send-steps">
+              <li>Download the image.</li>
+              <li>Open your WhatsApp group and attach it as a photo.</li>
+              <li>Paste the caption if you like, then send.</li>
+            </ol>
+            <p class="panel-note">On phones that support it, Share image opens the sharing menu so you can choose WhatsApp yourself. Nothing is sent automatically.</p>
           </section>
         </div>
-
-        <details class="about">
-          <summary>How these numbers work</summary>
-          <div class="about-body">
-            <p>A registration counts when a row has a salesperson's name and either a student name or CRM ID. "Confirmed" and "Docs Received" both count. "Cancelled" doesn't.</p>
-            <p>The August average is August's registrations divided by its 20 recorded days, multiplied by the days in the period you're looking at. "Usually by now" scales that to how much of today's working day (08:00 to 17:00) has passed.</p>
-            <p>Cash is the amount recorded under Paid on the sheet date. These are registrations and sheet amounts, not money received in the bank.</p>
-            <p>The figures on this page are samples while the site is being designed.</p>
-          </div>
-        </details>
       </main>
     </div>
   </div>
 
+  <div class="toast" id="toast" role="status" hidden></div>
+
   <script src="assets/js/data.js"></script>
   <script src="assets/js/app.js"></script>
-  <script src="assets/js/home.js"></script>
+  <script src="assets/js/card-image.js"></script>
+  <script src="assets/js/make.js"></script>
 </body>
 </html>

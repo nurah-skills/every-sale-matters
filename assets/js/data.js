@@ -165,6 +165,69 @@ const dayName = (index) => `${WEEKDAY_NAMES[(WORKDAYS[index] + 1) % 7]} ${WORKDA
 const slugFor = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const KIND_ORDER = { best: 0, cash: 1, sales: 2 };
 
+const readTime = (day) => (day === TODAY ? `17 September at ${SNAPSHOT.time}` : '16 September at 17:02');
+
+function dayWins(person, day) {
+  const count = person.days[day];
+  const cash = person.cash[day];
+  const wins = [];
+
+  if (count > person.best) {
+    wins.push({ kind: 'best', title: 'New best day', value: count, unit: 'registrations in a day', detail: `Previous best day: ${person.best}` });
+  }
+  if (person.cashBest && cash > person.cashBest) {
+    wins.push({ kind: 'best', title: 'Best cash day', value: cash, money: true, unit: 'cash recorded in a day', detail: `Previous best cash day: R${person.cashBest.toLocaleString('en-ZA')}` });
+  }
+
+  const tier = TIERS.find((level) => count >= level.count);
+  if (tier) {
+    const firstSale = tier.name === 'Bronze';
+    wins.push({
+      kind: 'sales',
+      tier: tier.name,
+      title: firstSale ? 'First sale · Bronze' : `${tier.count} sales · ${tier.name}`,
+      value: firstSale ? 1 : count,
+      unit: firstSale ? 'first registration' : 'registrations reached',
+      detail: `${count} registration${count === 1 ? '' : 's'} in the day's snapshot`
+    });
+  }
+
+  const milestone = CASH_MILESTONES.day.slice().reverse().find((amount) => cash >= amount);
+  if (milestone) {
+    wins.push({
+      kind: 'cash',
+      title: milestone === 1 ? 'First payment' : `R${milestone.toLocaleString('en-ZA')} in a day`,
+      value: cash,
+      money: true,
+      unit: 'cash recorded this day',
+      detail: milestone === 1 ? 'Every rand counts' : `Reached the R${milestone.toLocaleString('en-ZA')} milestone`
+    });
+  }
+
+  return wins.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
+}
+
+function monthWins(person) {
+  const count = sumBetween(person.days, 0, TODAY);
+  const cash = sumBetween(person.cash, 0, TODAY);
+  const wins = [];
+  if (count > person.bestMonth) {
+    wins.push({ kind: 'best', title: 'Best month', value: count, unit: 'registrations this month so far', detail: `Previous whole-month best: ${person.bestMonth}` });
+  }
+  const milestone = CASH_MILESTONES.month.slice().reverse().find((amount) => cash >= amount);
+  if (milestone) {
+    wins.push({
+      kind: 'cash',
+      title: `R${milestone.toLocaleString('en-ZA')} this month`,
+      value: cash,
+      money: true,
+      unit: 'cash recorded this month',
+      detail: `Reached the R${milestone.toLocaleString('en-ZA')} milestone`
+    });
+  }
+  return wins;
+}
+
 // Follows the current scoreboard: unsent wins for the same person and day share one card,
 // with the biggest personal best leading.
 function buildCards() {
@@ -172,50 +235,14 @@ function buildCards() {
 
   PEOPLE.forEach((person) => {
     [TODAY, TODAY - 1].forEach((day) => {
-      const count = person.days[day];
-      const cash = person.cash[day];
-      const wins = [];
-
-      if (count > person.best) {
-        wins.push({ kind: 'best', title: 'New best day', value: count, unit: 'registrations in a day', detail: `Previous best day: ${person.best}` });
-      }
-      if (person.cashBest && cash > person.cashBest) {
-        wins.push({ kind: 'best', title: 'Best cash day', value: cash, money: true, unit: 'cash recorded in a day', detail: `Previous best cash day: R${person.cashBest.toLocaleString('en-ZA')}` });
-      }
-
-      const tier = TIERS.find((level) => count >= level.count);
-      if (tier) {
-        const firstSale = tier.name === 'Bronze';
-        wins.push({
-          kind: 'sales',
-          tier: tier.name,
-          title: firstSale ? 'First sale · Bronze' : `${tier.count} sales · ${tier.name}`,
-          value: firstSale ? 1 : count,
-          unit: firstSale ? 'first registration' : 'registrations reached',
-          detail: `${count} registration${count === 1 ? '' : 's'} in the day's snapshot`
-        });
-      }
-
-      const milestone = CASH_MILESTONES.day.slice().reverse().find((amount) => cash >= amount);
-      if (milestone) {
-        wins.push({
-          kind: 'cash',
-          title: milestone === 1 ? 'First payment' : `R${milestone.toLocaleString('en-ZA')} in a day`,
-          value: cash,
-          money: true,
-          unit: 'cash recorded this day',
-          detail: milestone === 1 ? 'Every rand counts' : `Reached the R${milestone.toLocaleString('en-ZA')} milestone`
-        });
-      }
-
+      const wins = dayWins(person, day);
       if (!wins.length) return;
-      wins.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
       cards.push({
         id: `${slugFor(person.name)}-${WORKDAYS[day]}-september`,
         person: person.name,
         college: person.college,
         date: dayName(day),
-        read: day === TODAY ? `17 September at ${SNAPSHOT.time}` : '16 September at 17:02',
+        read: readTime(day),
         lead: wins[0],
         also: wins.slice(1).map((win) => win.title),
         startingStatus: day === TODAY || wins[0].kind === 'best'
@@ -224,32 +251,16 @@ function buildCards() {
       });
     });
 
-    const monthCount = sumBetween(person.days, 0, TODAY);
-    const monthCash = sumBetween(person.cash, 0, TODAY);
-    const monthWins = [];
-    if (monthCount > person.bestMonth) {
-      monthWins.push({ kind: 'best', title: 'Best month', value: monthCount, unit: 'registrations this month so far', detail: `Previous whole-month best: ${person.bestMonth}` });
-    }
-    const monthMilestone = CASH_MILESTONES.month.slice().reverse().find((amount) => monthCash >= amount);
-    if (monthMilestone) {
-      monthWins.push({
-        kind: 'cash',
-        title: `R${monthMilestone.toLocaleString('en-ZA')} this month`,
-        value: monthCash,
-        money: true,
-        unit: 'cash recorded this month',
-        detail: `Reached the R${monthMilestone.toLocaleString('en-ZA')} milestone`
-      });
-    }
-    if (monthWins.length) {
+    const wins = monthWins(person);
+    if (wins.length) {
       cards.push({
         id: `${slugFor(person.name)}-september-month`,
         person: person.name,
         college: person.college,
         date: '1 to 17 September 2026',
-        read: `17 September at ${SNAPSHOT.time}`,
-        lead: monthWins[0],
-        also: monthWins.slice(1).map((win) => win.title),
+        read: readTime(TODAY),
+        lead: wins[0],
+        also: wins.slice(1).map((win) => win.title),
         startingStatus: 'ready'
       });
     }
@@ -260,6 +271,39 @@ function buildCards() {
   if (grown) grown.startingStatus = 'changed';
 
   return cards.sort((a, b) => KIND_ORDER[a.lead.kind] - KIND_ORDER[b.lead.kind] || b.lead.value - a.lead.value);
+}
+
+// Everything one person could be celebrated for, one achievement per card
+function achievementsFor(person) {
+  const options = [];
+  const add = (win, day, date) => options.push({
+    id: `${slugFor(person.name)}-${slugFor(win.title)}-${slugFor(String(date))}`,
+    person: person.name,
+    college: person.college,
+    date: day === null ? date : dayName(day),
+    shortDate: day === null ? 'this month' : `${WORKDAYS[day]} Sep`,
+    read: readTime(day === null ? TODAY : day),
+    lead: win,
+    also: []
+  });
+
+  [TODAY, TODAY - 1].forEach((day) => {
+    dayWins(person, day).forEach((win) => add(win, day, WORKDAYS[day]));
+    add({ kind: 'sales', tier: 'Total', title: 'Day total', value: person.days[day], unit: 'registrations this day', detail: dayName(day) }, day, WORKDAYS[day]);
+  });
+  monthWins(person).forEach((win) => add(win, null, '1 to 17 September 2026'));
+  add({
+    kind: 'sales',
+    tier: 'Total',
+    title: 'Month so far',
+    value: sumBetween(person.days, 0, TODAY),
+    unit: 'registrations this month',
+    detail: `Previous whole-month best: ${person.bestMonth}`
+  }, null, '1 to 17 September 2026');
+
+  // Personal bests first and plain totals last, like the card queue
+  const rank = (card) => (card.lead.tier === 'Total' ? 3 : KIND_ORDER[card.lead.kind]);
+  return options.sort((a, b) => rank(a) - rank(b));
 }
 
 function latestCardFor(person) {
