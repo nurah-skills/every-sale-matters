@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; base-uri 'self'; object-src 'none'">
+  <meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#11161D" media="(prefers-color-scheme: dark)">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
   <title>Home · Sales Scoreboard</title>
@@ -15,6 +17,7 @@
   <script src="assets/js/session.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <div class="app" id="app">
     <aside class="sidebar" id="sidebar" aria-label="Main menu">
       <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="36" height="36" alt=""><span class="brand-text"><b>Sales Scoreboard</b><small>Every sale matters</small></span></a>
@@ -77,7 +80,7 @@
         <a class="brand" href="home.html"><img src="assets/img/logo.svg" width="30" height="30" alt=""><span>Sales Scoreboard</span></a>
       </header>
 
-      <main class="app-main">
+      <main class="app-main" id="main" tabindex="-1">
         <div class="page-header">
           <div>
             <h1 id="person-name">Progress</h1>
@@ -177,7 +180,7 @@
               <div class="about-body">
                 <p>The weekly enrolment incentive uses debit-order registrations. Below 25 it's R0. Only the highest level reached applies; levels aren't added together.</p>
                 <ul class="level-list" id="incentive-levels"></ul>
-                <p>Cash incentives are extra. The weekly total comes from the incentive sheet, including any adjustments, and "Paid" follows the sheet's checkbox. These are staff earnings, separate from cash received from students.</p>
+                <p>Cash incentives are extra. The weekly total comes from the incentive sheet, including any adjustments, and “Paid” follows the sheet's checkbox. These are staff earnings, separate from cash received from students.</p>
                 <p>The link to the incentive sheet will show here once real figures are connected.</p>
               </div>
             </details>
@@ -208,8 +211,8 @@
         <details class="about">
           <summary>How these numbers work</summary>
           <div class="about-body">
-            <p>A registration counts when a row has a salesperson's name and either a student name or CRM ID. "Confirmed" and "Docs Received" both count. "Cancelled" doesn't.</p>
-            <p>The August average is August's registrations divided by its 20 recorded days, multiplied by the days in the period you're looking at. "Usually by now" scales that to how much of today's working day (08:00 to 17:00) has passed.</p>
+            <p>A registration counts when a row has a salesperson's name and either a student name or CRM ID. “Confirmed” and “Docs Received” both count. “Cancelled” doesn't.</p>
+            <p>The August average is August's registrations divided by its 20 recorded days, multiplied by the days in the period you're looking at. “Usually by now” scales that to how much of today's working day (08:00 to 17:00) has passed.</p>
             <p>Cash is the amount recorded under Paid on the sheet date. These are registrations and sheet amounts, not money received in the bank.</p>
             <p>The figures on this page are samples while the site is being designed.</p>
           </div>

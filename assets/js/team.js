@@ -290,7 +290,7 @@ function showTable() {
   if (!rows.length) {
     const body = create('tbody');
     const line = create('tr');
-    const cell = create('td', 'is-empty', search ? `No one matches "${state.search.trim()}".` : 'No one in this group right now.');
+    const cell = create('td', 'is-empty', search ? `No one matches “${state.search.trim()}”.` : 'No one in this group right now.');
     cell.colSpan = 5;
     line.append(cell);
     body.append(line);
