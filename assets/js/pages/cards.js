@@ -8,6 +8,16 @@ const STATUSES = [
   ['all', 'All']
 ];
 
+const CATEGORIES = [
+  ['best', 'Personal bests'],
+  ['streak', 'Streaks'],
+  ['cash', 'Cash milestones'],
+  ['sales', 'Sales levels'],
+  ['steady', 'Steady progress'],
+  ['incentive', 'Staff incentives'],
+  ['assist', 'Thank you for an assist']
+];
+
 const STATUS_CHIPS = {
   ready: { tone: 'info', text: 'Ready' },
   changed: { tone: 'changed', text: 'Figures changed' },
@@ -84,7 +94,7 @@ function cardTile(card) {
 
   const details = create('div', 'card-details');
   const top = create('div', 'card-top');
-  top.append(create('h3', '', card.person), statusChip(STATUS_CHIPS[card.status]));
+  top.append(create('h4', '', card.person), statusChip(STATUS_CHIPS[card.status]));
   details.append(
     top,
     create('p', 'card-title', card.lead.title),
@@ -157,14 +167,26 @@ function render() {
   const shown = cards.filter((card) =>
     (state.status === 'all' || card.status === state.status) && (state.person === 'all' || card.person === state.person));
 
-  const grid = document.getElementById('card-grid');
-  grid.replaceChildren();
+  const holder = document.getElementById('card-groups');
+  holder.replaceChildren();
   if (!shown.length) {
     const label = STATUSES.find(([key]) => key === state.status)[1].toLowerCase();
-    grid.append(create('p', 'empty', state.status === 'all' ? 'No cards for this person yet.' : `No ${label} cards here right now.`));
+    holder.append(create('p', 'empty', state.status === 'all' ? 'No cards for this person yet.' : `No ${label} cards here right now.`));
     return;
   }
-  shown.forEach((card) => grid.append(cardTile(card)));
+
+  // Same order as the card rules: personal bests first, then streaks, cash, levels and the rest
+  CATEGORIES.forEach(([kind, label]) => {
+    const group = shown.filter((card) => card.lead.kind === kind);
+    if (!group.length) return;
+    const section = create('section', 'card-group');
+    const head = create('div', 'card-group-head');
+    head.append(create('h3', '', label), create('span', 'panel-note', `${group.length} card${group.length === 1 ? '' : 's'}`));
+    const grid = create('div', 'card-grid');
+    group.forEach((card) => grid.append(cardTile(card)));
+    section.append(head, grid);
+    holder.append(section);
+  });
 }
 
 document.getElementById('person-filter').addEventListener('change', (event) => {

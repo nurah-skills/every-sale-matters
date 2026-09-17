@@ -726,6 +726,9 @@ a.button-secondary, a.button-secondary:hover { color: var(--ink); }
 a.button:not(.button-secondary), a.button:not(.button-secondary):hover { color: var(--on-navy); }
 
 /* Cards ready page */
+#card-groups { display: flex; flex-direction: column; gap: 26px; }
+.card-group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.card-group-head h3 { margin: 0; font-family: var(--heading); font-size: 17px; font-weight: 600; }
 .status-changed { background: color-mix(in srgb, var(--now) 20%, transparent); color: var(--ink); }
 
 .button-inline { width: auto; min-height: 44px; padding: 6px 16px; font-size: 15px; }
@@ -803,7 +806,7 @@ a.button:not(.button-secondary), a.button:not(.button-secondary):hover { color: 
 
 .card-details { display: flex; flex-direction: column; gap: 4px; padding: 18px 20px; min-width: 0; }
 .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-.card-top h3 { margin: 0; font-family: var(--heading); font-size: 17px; font-weight: 600; }
+.card-top h4 { margin: 0; font-family: var(--heading); font-size: 17px; font-weight: 600; }
 .card-title { font-weight: 700; }
 .card-detail { color: var(--muted); }
 .card-also { font-size: 14px; font-weight: 700; color: var(--sage-ink); }

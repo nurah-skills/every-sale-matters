@@ -233,7 +233,7 @@ function statusChip(pace) {
 }
 
 // Round-ups, Our progress and Admin are for managers; everything else is the same for everyone
-const MANAGER_PAGES = ['roundups.html', 'progress.html', 'admin.html'];
+const MANAGER_PAGES = ['make.html', 'roundups.html', 'progress.html', 'admin.html'];
 
 function setUpShell() {
   const user = readSession();

@@ -149,6 +149,8 @@ function filterLabels() {
 
 const COLUMNS = isManager ? 5 : 3;
 
+document.getElementById('celebrate-make').hidden = !isManager;
+
 const SORTS = {
   name: (row) => row.person.name,
   count: (row) => row.figures.count,
@@ -382,6 +384,7 @@ function showDetails(row) {
   });
 
   const cardLink = document.getElementById('details-card');
+  cardLink.hidden = !isManager;
   cardLink.textContent = `Make a card for ${person.name.split(' ')[0]}`;
   cardLink.onclick = () => remember('make-person', person.name);
   document.getElementById('details-progress').onclick = () => {
