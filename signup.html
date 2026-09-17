@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="Create your Every Sale Matters account.">
+  <title>Create account · Every Sale Matters</title>
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="auth-layout">
+    <aside class="auth-panel">
+      <a class="brand" href="index.html"><img src="assets/img/logo.svg" width="40" height="40" alt=""><span>Every Sale Matters</span></a>
+      <div class="auth-panel-copy">
+        <h2>Join your team's scoreboard.</h2>
+        <p>Create your account to follow your registrations, see when you've hit a new best and cheer on your colleagues.</p>
+        <ul class="auth-points">
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>Your own results first when you sign in</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>Milestones and personal bests as they happen</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>A place to give feedback and thank a colleague</li>
+        </ul>
+      </div>
+      <p class="auth-panel-foot">Skills Academy · Matric College · Bellview</p>
+    </aside>
+
+    <main class="auth-main">
+      <div class="auth-card">
+        <a class="brand brand-mobile" href="index.html"><img src="assets/img/logo.svg" width="36" height="36" alt=""><span>Every Sale Matters</span></a>
+
+        <header>
+          <h1>Create your account</h1>
+          <p>It only takes a minute. Use the email you use for work.</p>
+        </header>
+
+        <form class="form" method="post" data-not-connected>
+          <div class="field">
+            <label for="name">Full name</label>
+            <input class="input" id="name" name="name" type="text" autocomplete="name" required>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="email">Work email</label>
+              <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="name@college.co.za" required>
+            </div>
+            <div class="field">
+              <label for="college">College</label>
+              <select class="input" id="college" name="college" required>
+                <option value="" selected disabled>Choose one</option>
+                <option>Skills Academy</option>
+                <option>Matric College</option>
+                <option>Bellview</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="password">
+              <input class="input" id="password" name="password" type="password" autocomplete="new-password" minlength="8" aria-describedby="password-hint" required>
+              <button type="button" data-toggle-password aria-controls="password" aria-pressed="false">Show</button>
+            </div>
+            <p class="field-hint" id="password-hint">At least 8 characters.</p>
+          </div>
+
+          <div class="field">
+            <label for="password-confirm">Confirm password</label>
+            <div class="password">
+              <input class="input" id="password-confirm" name="password-confirm" type="password" autocomplete="new-password" minlength="8" required>
+              <button type="button" data-toggle-password aria-controls="password-confirm" aria-pressed="false">Show</button>
+            </div>
+          </div>
+
+          <button class="button" type="submit">Create account</button>
+
+          <div class="form-notice" role="status" tabindex="-1" hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+            <span>Creating accounts isn't switched on yet. Your details haven't been saved or sent anywhere.</span>
+          </div>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="index.html">Sign in</a></p>
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>

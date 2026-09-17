@@ -1,0 +1,234 @@
+:root {
+  --page: #FAFAF7;
+  --card: #FFFFFF;
+  --field: #F4F3EC;
+  --ink: #1E1E1E;
+  --muted: #6B645E;
+  --line: #E4E1D6;
+  --navy: #243B5A;
+  --navy-deep: #1A2C45;
+  --sage: #8FB39A;
+  --sage-ink: #3D6A4A;
+  --sage-soft: #DCE6D8;
+  --focus: #3E6E9E;
+  --on-navy: #FFFFFF;
+  --on-navy-muted: rgba(255, 255, 255, .8);
+  --heading: "Lexend", "Segoe UI", system-ui, sans-serif;
+  --body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --radius: 14px;
+  --shadow: 0 2px 4px rgba(36, 59, 90, .06), 0 14px 32px -16px rgba(36, 59, 90, .3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #11161D;
+    --card: #1A212B;
+    --field: #222A35;
+    --ink: #EEF0EA;
+    --muted: #A8AEB5;
+    --line: #2E3744;
+    --navy: #1D3252;
+    --navy-deep: #152641;
+    --sage: #9CC0A6;
+    --sage-ink: #A9D2B3;
+    --sage-soft: #22332A;
+    --focus: #8DB7E3;
+    --shadow: 0 2px 4px rgba(0, 0, 0, .3), 0 14px 32px -16px rgba(0, 0, 0, .7);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { min-height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2 { font-family: var(--heading); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--sage-ink); font-weight: 700; text-underline-offset: 3px; }
+a:hover { color: var(--ink); }
+img { max-width: 100%; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+[hidden] { display: none !important; }
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--heading);
+  font-weight: 600;
+  font-size: 18px;
+  color: inherit;
+  text-decoration: none;
+}
+.brand img { display: block; }
+
+/* Two columns on laptops: the navy panel sits beside the form */
+.auth-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.auth-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding: 40px 48px;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color: var(--on-navy);
+}
+.auth-panel::after {
+  content: "";
+  position: absolute;
+  right: -160px;
+  bottom: -160px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(143, 179, 154, .28), rgba(143, 179, 154, 0) 70%);
+  pointer-events: none;
+}
+.auth-panel .brand { color: var(--on-navy); }
+
+.auth-panel-copy { margin-block: auto; max-width: 440px; position: relative; z-index: 1; }
+.auth-panel-copy h2 { font-size: clamp(32px, 3.4vw, 44px); font-weight: 600; line-height: 1.1; }
+.auth-panel-copy > p { margin-top: 16px; color: var(--on-navy-muted); font-size: 17px; }
+
+.auth-points { list-style: none; margin: 32px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.auth-points li { display: flex; align-items: flex-start; gap: 12px; color: var(--on-navy); }
+.auth-points svg { flex: none; margin-top: 3px; color: var(--sage); }
+
+.auth-panel-foot { position: relative; z-index: 1; font-size: 14px; color: var(--on-navy-muted); }
+
+.auth-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.auth-card { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 28px; }
+.auth-card .brand-mobile { display: none; }
+.auth-card header { display: flex; flex-direction: column; gap: 8px; }
+.auth-card h1 { font-size: 30px; font-weight: 600; }
+.auth-card header p { color: var(--muted); }
+
+.form { display: flex; flex-direction: column; gap: 18px; }
+.form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-weight: 700; font-size: 15px; }
+.field-hint { font-size: 13px; color: var(--muted); }
+
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.input::placeholder { color: var(--muted); opacity: .8; }
+.input:hover { border-color: var(--muted); }
+.input:focus { outline: none; border-color: var(--focus); background: var(--card); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 25%, transparent); }
+
+select.input {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%237A716A' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+}
+
+.password { position: relative; }
+.password .input { padding-right: 76px; }
+.password button {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--sage-ink);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.password button:hover { background: var(--sage-soft); }
+
+.form-split { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+.checkbox { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; cursor: pointer; }
+.checkbox input { width: 18px; height: 18px; margin: 0; accent-color: var(--navy); }
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 50px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--navy);
+  color: var(--on-navy);
+  font-family: var(--heading);
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color .15s ease, transform .15s ease;
+}
+.button:hover { background: var(--navy-deep); }
+.button:active { transform: translateY(1px); }
+
+.form-notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--sage-soft);
+  color: var(--ink);
+  font-size: 15px;
+}
+.form-notice svg { flex: none; margin-top: 2px; color: var(--sage-ink); }
+
+.auth-switch { text-align: center; color: var(--muted); }
+
+.auth-legal { font-size: 13px; color: var(--muted); text-align: center; }
+
+@media (max-width: 900px) {
+  .auth-layout { grid-template-columns: minmax(0, 1fr); }
+  .auth-panel { display: none; }
+  .auth-main { align-items: flex-start; padding: 32px 16px 48px; }
+  .auth-card { gap: 24px; }
+  .auth-card .brand-mobile { display: inline-flex; }
+}
+
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: minmax(0, 1fr); }
+  .auth-card h1 { font-size: 26px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
