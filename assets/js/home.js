@@ -276,6 +276,14 @@ function showSummary(person, figures) {
   document.getElementById('summary-count').textContent = String(figures.count);
   document.getElementById('summary-pace').replaceChildren(statusChip(paceFor(figures, state.period)));
 
+  const streak = streakFor(person);
+  const streakLink = document.getElementById('summary-streak');
+  streakLink.hidden = streak.current < 2;
+  streakLink.replaceChildren(
+    icon(['M12 22c4 0 7-2.8 7-7 0-3.5-2.5-6-4-8-.5 2-1.5 3-3 3 0-3-1-6-4-8 0 4-3 6.5-3 11 0 4.2 3 9 7 9z'], 16),
+    document.createTextNode(`${streak.current}-day sales streak`)
+  );
+
   const needed = figures.previousBest + 1 - figures.count;
   document.getElementById('summary-record').textContent = needed > 0 ? `${needed} more` : 'New best';
   document.getElementById('summary-record-note').textContent = needed > 0

@@ -14,10 +14,13 @@ Live site: https://nurah-skills.github.io/every-sale-matters/
 - `team.html` shows the whole group: totals, college totals and everyone's results with a bar against their August average and usual pace, quick filters (ahead, on track, behind, not started), optional grouping by college and your own row highlighted. Selecting a name opens their details. Below the table, Celebrate next shows new bests or the people closest to one.
 - `cards.html` is the queue of celebration cards: sales levels from Bronze to Black, personal bests for registrations and cash, cash milestones, steady progress, staff incentives and approved assists. Each card can be previewed, downloaded as a 1080 × 1350 image for WhatsApp, have its caption copied, and be marked as sent or skipped. In the demo those statuses are saved in your browser only.
 - `make.html` makes a single card: choose a person, one of the achievements their figures support, an optional cheer, a design (or your own background) and a photo of the salesperson with zoom and move controls, then download the image, share it or copy the caption. The photo someone adds when they create their account goes on their cards automatically, including in Cards ready. Backgrounds, photos you choose for one card and saved photos stay in the browser.
+- `fame.html` is the wall of fame: every card sent this month in a gallery, grouped by day and filterable by college or person, plus a September calendar of the bigger moments (personal bests, streaks and Gold or higher). Selecting a card shows it full size to download again.
+- `streaks.html` lists who has made a sale on working days in a row, the longest streaks this month and how many people have reached the 5, 10 and 20-day cards. Streak cards also appear in Cards ready.
+- `shoutouts.html` lets anyone send a short well done to a colleague. It goes to the admin inbox, and once approved it shows on the board. Shout-outs don’t add to anyone’s totals.
 - `roundups.html` writes a daily, weekly or monthly WhatsApp round-up for the whole team or one college, with a summary alongside.
 - `feedback.html` lets people report a problem, share an idea or nominate a colleague for an assist, and shows their own submissions and replies. In the demo, submissions are saved in your browser only.
 - `progress.html` is the four-week check: weekly registrations against the August average, plus a short pulse survey on whether the scoreboard feels encouraging and fair.
-- `admin.html` is for admins: an overview, the feedback inbox (reply, resolve, approve or decline assists), the admin list and a button to reset the demo data. Approving an assist adds a thank-you card to Cards ready.
+- `admin.html` is for admins: an overview, the feedback inbox (reply, resolve, approve or decline assists), the admin list and a button to reset the demo data. Shout-outs are approved here too. Approving an assist adds a thank-you card to Cards ready.
 
 On phones the menu moves behind a button, with Home, Team, Cards and More along the bottom of the screen.
 
@@ -35,6 +38,9 @@ assets/js    session.js  demo sign-in, sign-out and saved photos
              auth.js     sign-in and create account pages
              signup.js   create account checks and photo
              data.js     sample people, the calculations and the card rules
+             fame.js     wall of fame gallery and calendar
+             streaks.js  streaks page
+             shoutouts.js shout-out form and board
              app.js      menu, signed-in person and formatting shared by signed-in pages
              home.js     home page
              team.js     team page

@@ -10,6 +10,8 @@ const SNAPSHOT = {
 
 const WORKDAYS = [1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 16, 17];
 const TODAY = WORKDAYS.length - 1;
+// The last working days of August, so streaks can run back past 1 September
+const AUGUST_DAYS = 12;
 const WEEK_START = WORKDAYS.indexOf(14);
 
 const PERIODS = {
@@ -70,12 +72,16 @@ const roundToFive = (value) => Math.round(value / 5) * 5;
 
 const PEOPLE = SAMPLE_PEOPLE.map(([name, collegeIndex, august]) => {
   const random = seededRandom(name);
+  const quiet = seededRandom(`${name} quiet days`);
   const best = Math.max(3, Math.round(august * (1.7 + random() * 0.7)));
 
+  // Some days have no sales at all, which is what ends a streak
   const days = WORKDAYS.map((_, index) => {
     if (index === TODAY) return Math.round(august * SNAPSHOT.dayFraction * random() * 2.4);
-    return Math.min(best, Math.max(0, Math.round(august * (0.35 + random() * 1.25))));
+    const count = Math.min(best, Math.max(0, Math.round(august * (0.35 + random() * 1.25))));
+    return quiet() < 0.2 ? 0 : count;
   });
+  const lateAugust = Array.from({ length: AUGUST_DAYS }, () => (quiet() < 0.2 ? 0 : Math.max(1, Math.round(august * (0.4 + quiet())))));
   if (name === 'Lerato Mokoena') days[TODAY] = 2;
 
   const cashAugust = random() < 0.15 ? 0 : roundToFive(40 + random() * 900);
@@ -94,6 +100,7 @@ const PEOPLE = SAMPLE_PEOPLE.map(([name, collegeIndex, august]) => {
     cashAugust,
     cashBest: cashAugust ? roundToFive(cashAugust * (5 + random() * 8)) : 0,
     days,
+    lateAugust,
     cash
   };
 });
@@ -116,6 +123,22 @@ const PEOPLE = SAMPLE_PEOPLE.map(([name, collegeIndex, august]) => {
   const steady = PEOPLE.find((person) => person.name === 'Megan Fourie');
   [WEEK_START, WEEK_START + 1, WEEK_START + 2].forEach((index) => { steady.days[index] = Math.ceil(steady.august) + 1; });
   steady.days[TODAY] = Math.ceil(steady.august);
+
+  // Streaks of 20, 10 and 5 working days reached today, plus a few still running
+  const streak = (name, length, endDay = TODAY) => {
+    const person = PEOPLE.find((someone) => someone.name === name);
+    const history = [...person.lateAugust, ...person.days];
+    const end = AUGUST_DAYS + endDay;
+    for (let index = end - length + 1; index <= end; index += 1) history[index] = Math.max(1, history[index]);
+    history[end - length] = 0;
+    person.lateAugust = history.slice(0, AUGUST_DAYS);
+    person.days = history.slice(AUGUST_DAYS);
+  };
+  streak('Nomsa Khumalo', 20);
+  streak('Karabo Radebe', 10);
+  streak('Kagiso Tau', 5);
+  streak('Lerato Mokoena', 6);
+  streak('Themba Kekana', 5, TODAY - 1);
 })();
 
 PEOPLE.forEach((person) => {
@@ -178,7 +201,24 @@ const TIERS = [
 // 1 September 2026 is a Tuesday
 const dayName = (index) => `${WEEKDAY_NAMES[(WORKDAYS[index] + 1) % 7]} ${WORKDAYS[index]} September 2026`;
 const slugFor = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const KIND_ORDER = { best: 0, cash: 1, sales: 2, steady: 3, incentive: 4, assist: 5 };
+const KIND_ORDER = { best: 0, streak: 1, cash: 2, sales: 3, steady: 4, incentive: 5, assist: 6 };
+const STREAK_MILESTONES = [5, 10, 20];
+
+// Working days in a row with at least one registration, counting back from a September day
+function streakEnding(person, day) {
+  const history = [...person.lateAugust, ...person.days];
+  let length = 0;
+  for (let index = AUGUST_DAYS + day; index >= 0 && history[index] > 0; index -= 1) length += 1;
+  return length;
+}
+
+// Today only adds to a streak once there's a sale; an empty morning doesn't end it yet
+function streakFor(person) {
+  const current = person.days[TODAY] > 0 ? streakEnding(person, TODAY) : streakEnding(person, TODAY - 1);
+  const longest = Math.max(...WORKDAYS.map((_, day) => streakEnding(person, day)));
+  const next = STREAK_MILESTONES.find((milestone) => milestone > current) || null;
+  return { current, longest, next, waitingToday: person.days[TODAY] === 0 && current > 0 };
+}
 const WEEK_LABEL = 'Monday 14 to Thursday 17 September 2026';
 const rand = (value) => `R${Math.round(value).toLocaleString('en-ZA')}`;
 
@@ -206,6 +246,17 @@ function dayWins(person, day) {
       value: firstSale ? 1 : count,
       unit: firstSale ? 'first registration' : 'registrations reached',
       detail: `${count} registration${count === 1 ? '' : 's'} in the day's snapshot`
+    });
+  }
+
+  const streak = count > 0 ? streakEnding(person, day) : 0;
+  if (STREAK_MILESTONES.includes(streak)) {
+    wins.push({
+      kind: 'streak',
+      title: `${streak}-day streak`,
+      value: streak,
+      unit: 'working days in a row with a sale',
+      detail: `A sale every working day for ${streak} days`
     });
   }
 
@@ -286,25 +337,33 @@ function incentiveWin(person) {
 
 // Follows the current scoreboard: unsent wins for the same person and day share one card,
 // with the biggest personal best leading.
+function dayCard(person, day, startingStatus) {
+  const wins = dayWins(person, day);
+  if (!wins.length) return null;
+  return {
+    id: `${slugFor(person.name)}-${WORKDAYS[day]}-september`,
+    person: person.name,
+    college: person.college,
+    day,
+    date: dayName(day),
+    read: day === TODAY ? readTime(day) : `${WORKDAYS[day]} September at 17:02`,
+    lead: wins[0],
+    also: wins.slice(1).map((win) => win.title),
+    startingStatus
+  };
+}
+
 function buildCards() {
   const cards = [];
 
   PEOPLE.forEach((person) => {
     [TODAY, TODAY - 1].forEach((day) => {
-      const wins = dayWins(person, day);
-      if (!wins.length) return;
-      cards.push({
-        id: `${slugFor(person.name)}-${WORKDAYS[day]}-september`,
-        person: person.name,
-        college: person.college,
-        date: dayName(day),
-        read: readTime(day),
-        lead: wins[0],
-        also: wins.slice(1).map((win) => win.title),
-        startingStatus: day === TODAY || wins[0].kind === 'best'
-          ? 'ready'
-          : (WORKDAYS[day] + person.name.length) % 4 === 0 ? 'skipped' : 'sent'
-      });
+      const lead = dayWins(person, day)[0];
+      const status = !lead || day === TODAY || lead.kind === 'best'
+        ? 'ready'
+        : (WORKDAYS[day] + person.name.length) % 4 === 0 ? 'skipped' : 'sent';
+      const card = dayCard(person, day, status);
+      if (card) cards.push(card);
     });
 
     const addGroup = (wins, id, date, startingStatus = 'ready') => {
@@ -313,6 +372,7 @@ function buildCards() {
         id: `${slugFor(person.name)}-${id}`,
         person: person.name,
         college: person.college,
+        day: TODAY,
         date,
         read: readTime(TODAY),
         lead: wins[0],
@@ -332,6 +392,27 @@ function buildCards() {
   if (grown) grown.startingStatus = 'changed';
 
   return cards.sort((a, b) => KIND_ORDER[a.lead.kind] - KIND_ORDER[b.lead.kind] || b.lead.value - a.lead.value);
+}
+
+// Cards from earlier in the month, before the queue's two-day window. They were all sent at the time.
+function pastCards() {
+  const cards = [];
+  PEOPLE.forEach((person) => {
+    for (let day = 0; day < TODAY - 1; day += 1) {
+      const card = dayCard(person, day, 'sent');
+      if (card) cards.push({ ...card, status: 'sent' });
+    }
+  });
+  return cards;
+}
+
+// The bigger moments of a day for the calendar: personal bests, streak milestones and Gold or higher
+const CALENDAR_TIERS = ['Gold', 'Diamond', 'Platinum', 'Black'];
+
+function milestonesOn(day) {
+  return PEOPLE.flatMap((person) => dayWins(person, day)
+    .filter((win) => win.kind === 'best' || win.kind === 'streak' || CALENDAR_TIERS.includes(win.tier))
+    .map((win) => ({ person, win })));
 }
 
 // Everything one person could be celebrated for, one achievement per card
@@ -418,3 +499,11 @@ function incentivesFor(person) {
     next: next || null
   };
 }
+
+// Shout-outs already approved, so the board has something on it before anyone posts
+const SAMPLE_SHOUTOUTS = [
+  { from: 'Sipho Dlamini', to: 'Nomsa Khumalo', message: 'Twenty days in a row with a sale. That consistency is something else. Well done!', day: TODAY },
+  { from: 'Megan Fourie', to: 'Zanele Ndlovu', message: 'Thanks for staying late to help me finish the paperwork for my students.', day: TODAY - 1 },
+  { from: 'Karabo Radebe', to: 'Busisiwe Nkosi', message: 'Your tips on following up with parents really work. Two sign-ups from it already.', day: TODAY - 2 },
+  { from: 'Chloe Naidoo', to: 'Bongani Mthembu', message: 'Always calm on the busy days and always happy to share a script. Appreciate you!', day: TODAY - 4 }
+];

@@ -22,7 +22,8 @@ function showType() {
 function showSubmissions() {
   const list = document.getElementById('submissions');
   list.replaceChildren();
-  const mine = savedFeedback().filter((item) => item.name === user.name || item.submittedBy === user.name).reverse();
+  // Shout-outs have their own page, so only feedback types are listed here
+  const mine = savedFeedback().filter((item) => TYPES[item.type] && (item.name === user.name || item.submittedBy === user.name)).reverse();
 
   if (!mine.length) {
     list.append(create('li', 'empty', 'No submissions yet. Your first message will show here.'));

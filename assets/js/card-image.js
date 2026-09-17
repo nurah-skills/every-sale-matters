@@ -6,6 +6,7 @@ const PILL_COLOURS = {
   assist: '#B9D3EA',
   incentive: '#F6C28B',
   steady: '#DCE6D8',
+  streak: '#F7B267',
   Platinum: '#E4E1F0',
   Black: '#111418',
   Bronze: '#E3C19F',
@@ -24,6 +25,7 @@ function pillText(card) {
   if (card.lead.kind === 'assist') return 'Thank you';
   if (card.lead.kind === 'incentive') return 'Staff incentive';
   if (card.lead.kind === 'steady') return 'Steady progress';
+  if (card.lead.kind === 'streak') return 'Streak';
   return card.lead.tier === 'Total' ? 'Registrations' : card.lead.tier;
 }
 
@@ -123,7 +125,7 @@ const DECORATIONS = ['none', 'dots', 'rays', 'confetti'];
 // "Match this achievement" picks colours that suit the win
 function matchingDesign(card) {
   const byTier = { Bronze: 'bronze', Silver: 'silver', Gold: 'gold', Diamond: 'diamond', Platinum: 'platinum', Black: 'midnight' };
-  const byKind = { best: 'gold', cash: 'emerald', incentive: 'sunset', steady: 'sage', assist: 'sky' };
+  const byKind = { best: 'gold', streak: 'sunset', cash: 'emerald', incentive: 'sunset', steady: 'sage', assist: 'sky' };
   const id = card.lead.kind === 'sales' ? byTier[card.lead.tier] || 'navy' : byKind[card.lead.kind] || 'navy';
   return CARD_DESIGNS.find((design) => design.id === id);
 }

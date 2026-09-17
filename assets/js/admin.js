@@ -1,7 +1,7 @@
 setUpShell();
 
 const ADMINS_KEY = 'esm-admins';
-const TYPE_LABELS = { problem: 'Something is wrong', idea: 'Idea', assist: 'Assist nomination' };
+const TYPE_LABELS = { problem: 'Something is wrong', idea: 'Idea', assist: 'Assist nomination', shoutout: 'Shout-out' };
 const STATUS_TONES = { Submitted: 'info', 'In review': 'changed', Resolved: 'good', Approved: 'good', Declined: 'waiting' };
 const FILTERS = [['open', 'Open'], ['done', 'Closed'], ['all', 'All']];
 const OPEN = ['Submitted', 'In review'];
@@ -81,6 +81,7 @@ function inboxItem(item) {
   entry.append(top);
 
   if (item.helper) entry.append(create('p', 'submission-helper', `Nominating ${item.helper}`));
+  if (item.to) entry.append(create('p', 'submission-helper', `Shout-out to ${item.to}`));
   entry.append(create('p', 'submission-message', item.message));
 
   const extra = [item.date && `Date: ${item.date}`, item.saleReference && `Sale reference: ${item.saleReference}`].filter(Boolean);
@@ -107,6 +108,14 @@ function inboxItem(item) {
     if (item.type === 'assist') {
       actions.append(
         actionButton('Approve and make a card', '', () => approveAssist(item)),
+        actionButton('Decline', 'button-quiet', () => updateFeedback(item.reference, { status: 'Declined' }))
+      );
+    } else if (item.type === 'shoutout') {
+      actions.append(
+        actionButton('Approve for the board', '', () => {
+          updateFeedback(item.reference, { status: 'Approved' });
+          showToast(`Shout-out for ${item.to} is on the board`);
+        }),
         actionButton('Decline', 'button-quiet', () => updateFeedback(item.reference, { status: 'Declined' }))
       );
     } else {
@@ -138,7 +147,7 @@ function showTiles() {
   const tiles = [
     ['Cards ready', String(cards.filter((card) => card.status === 'ready').length), 'cards.html', 'Open cards ready'],
     ['New feedback', String(feedback.filter((item) => item.status === 'Submitted').length), '#inbox-title', `${feedback.length} in total`],
-    ['Assists to review', String(feedback.filter((item) => item.type === 'assist' && OPEN.includes(item.status)).length), '#inbox-title', 'Approving makes a thank-you card'],
+    ['To approve', String(feedback.filter((item) => ['assist', 'shoutout'].includes(item.type) && OPEN.includes(item.status)).length), '#inbox-title', 'Assists and shout-outs'],
     ['Four-week check', review && review.start ? 'Running' : 'Not started', 'progress.html', review && review.start ? `Started Monday ${review.start} September` : 'Set a start date']
   ];
 

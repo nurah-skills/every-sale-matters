@@ -8,7 +8,8 @@
   <meta name="theme-color" content="#11161D" media="(prefers-color-scheme: dark)">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
-  <title>Round-ups · Sales Scoreboard</title>
+  <meta name="description" content="Every celebration card sent this month.">
+  <title>Wall of fame · Sales Scoreboard</title>
   <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,11 +42,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>
           <span>Make a card</span>
         </a>
-        <a class="menu-item" href="roundups.html" aria-current="page">
+        <a class="menu-item" href="roundups.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
           <span>Round-ups</span>
         </a>
-        <a class="menu-item" href="fame.html">
+        <a class="menu-item" href="fame.html" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>
           <span>Wall of fame</span>
         </a>
@@ -95,58 +96,78 @@
       <main class="app-main" id="main" tabindex="-1">
         <div class="page-header">
           <div>
-            <h1>Round-ups</h1>
-            <p class="page-note">Celebrate the whole team. Choose the period, check the message, then copy it into WhatsApp.</p>
+            <h1>Wall of fame</h1>
+            <p class="page-note" id="fame-note"></p>
           </div>
           <span class="tag">Sample figures · updated <span id="snapshot-time"></span></span>
         </div>
 
         <div class="controls">
-          <div class="segmented segmented-three" id="roundup-period" role="group" aria-label="Period"></div>
-          <label class="sr-only" for="roundup-date">Results up to</label>
-          <select class="select" id="roundup-date"></select>
-          <label class="sr-only" for="roundup-college">College</label>
-          <select class="select" id="roundup-college">
+          <div class="segmented" id="fame-view" role="group" aria-label="View"></div>
+          <label class="sr-only" for="fame-college">College</label>
+          <select class="select" id="fame-college">
             <option value="All">All colleges</option>
             <option>Skills Academy</option>
             <option>Matric College</option>
             <option>Bellview</option>
           </select>
+          <label class="sr-only" for="fame-person">Salesperson</label>
+          <select class="select" id="fame-person"></select>
         </div>
 
-        <div class="grid">
-          <section class="panel span-7" aria-labelledby="message-title">
-            <div class="panel-head">
-              <h2 id="message-title">Message</h2>
-              <button class="button button-inline" id="roundup-copy" type="button">Copy message</button>
-            </div>
-            <div class="chat">
-              <p class="chat-bubble" id="roundup-message"></p>
-            </div>
-            <label class="sr-only" for="roundup-text">Message text</label>
-            <textarea class="input caption" id="roundup-text" rows="6" readonly hidden></textarea>
-            <p class="panel-note">Words between asterisks show in bold in WhatsApp.</p>
-          </section>
+        <section class="fame-gallery" id="fame-gallery" aria-labelledby="gallery-title">
+          <h2 class="sr-only" id="gallery-title">Cards sent</h2>
+          <div id="fame-days"></div>
+          <button class="button button-secondary button-inline fame-more" id="fame-more" type="button" hidden>Show earlier cards</button>
+        </section>
 
-          <section class="panel span-5" aria-labelledby="summary-title">
-            <div class="panel-head">
-              <h2 id="summary-title">Summary</h2>
+        <section class="panel" id="fame-calendar" aria-labelledby="calendar-title" hidden>
+          <div class="panel-head">
+            <h2 id="calendar-title">September 2026</h2>
+            <div class="legend">
+              <span><i class="dot dot-best"></i>Personal best</span>
+              <span><i class="dot dot-streak"></i>Streak</span>
+              <span><i class="dot dot-level"></i>Gold or higher</span>
             </div>
-            <dl class="figure-list" id="roundup-figures"></dl>
-            <div>
-              <p class="subheading">By college</p>
-              <ul class="colleges" id="roundup-colleges"></ul>
-            </div>
-          </section>
-        </div>
+          </div>
+          <table class="calendar" id="calendar">
+            <caption class="sr-only">Milestones in September 2026. Choose a day to see who reached what.</caption>
+          </table>
+          <div class="calendar-detail" id="calendar-detail" aria-live="polite"></div>
+        </section>
+
+        <details class="about">
+          <summary>What shows here</summary>
+          <div class="about-body">
+            <p>The gallery shows every card marked as sent this month, newest first. Select a card to see it full size, download it again or copy its caption.</p>
+            <p>The calendar shows the bigger moments on each working day: personal bests, streaks of 5, 10 and 20 days, and Gold (5 sales) or higher. Bronze and Silver are on the cards but left off the calendar so it stays readable.</p>
+          </div>
+        </details>
       </main>
     </div>
   </div>
+
+  <dialog class="dialog" id="card-preview" aria-labelledby="preview-title">
+    <div class="dialog-head">
+      <h2 id="preview-title">Card preview</h2>
+      <button class="icon-button" id="close-preview" type="button" aria-label="Close preview">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <canvas class="preview-image" id="preview-image"></canvas>
+    <label class="field-hint" for="preview-caption">WhatsApp caption</label>
+    <textarea class="input caption" id="preview-caption" rows="3" readonly></textarea>
+    <div class="dialog-actions">
+      <button class="button button-inline" id="preview-download" type="button">Download PNG</button>
+      <button class="button button-secondary button-inline" id="preview-copy" type="button">Copy caption</button>
+    </div>
+  </dialog>
 
   <div class="toast" id="toast" role="status" hidden></div>
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/app.js"></script>
-  <script src="assets/js/roundups.js"></script>
+  <script src="assets/js/card-image.js"></script>
+  <script src="assets/js/fame.js"></script>
 </body>
 </html>
