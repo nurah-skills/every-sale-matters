@@ -200,13 +200,4 @@ document.getElementById('roundup-copy').addEventListener('click', async () => {
   }
 });
 
-let toastTimer;
-function showToast(message) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { toast.hidden = true; }, 2800);
-}
-
 render();

@@ -80,7 +80,6 @@
       <main class="app-main">
         <div class="page-header">
           <div>
-            <p class="eyebrow">Individual progress</p>
             <h1 id="person-name">Progress</h1>
             <p class="page-note" id="person-note"></p>
           </div>
@@ -92,6 +91,24 @@
           <select class="select" id="person-select"></select>
           <div class="segmented" id="period-picker" role="group" aria-label="Period"></div>
         </div>
+
+        <section class="summary" aria-labelledby="summary-title">
+          <h2 class="sr-only" id="summary-title">At a glance</h2>
+          <div class="summary-item">
+            <p class="summary-label" id="summary-period">Registrations</p>
+            <p class="summary-value"><b id="summary-count">0</b><span id="summary-pace"></span></p>
+          </div>
+          <div class="summary-item">
+            <p class="summary-label">Next record</p>
+            <p class="summary-value"><b id="summary-record"></b></p>
+            <p class="summary-note" id="summary-record-note"></p>
+          </div>
+          <div class="summary-item">
+            <p class="summary-label">Incentives this week</p>
+            <p class="summary-value"><b id="summary-incentive"></b></p>
+            <a class="summary-note" href="#incentives-title" id="summary-incentive-note"></a>
+          </div>
+        </section>
 
         <div class="grid">
           <section class="panel span-7" aria-labelledby="registrations-title">
@@ -138,8 +155,7 @@
           <section class="panel span-12 incentives" aria-labelledby="incentives-title">
             <div class="panel-head">
               <div>
-                <p class="eyebrow">Staff incentives</p>
-                <h2 id="incentives-title">Your incentives this week</h2>
+                <h2 id="incentives-title" tabindex="-1">Your incentives this week</h2>
                 <p class="panel-note" id="incentive-week"></p>
               </div>
               <span id="incentive-paid"></span>

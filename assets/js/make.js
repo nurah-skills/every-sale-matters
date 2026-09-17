@@ -16,7 +16,6 @@ const achievementSelect = document.getElementById('maker-achievement');
 const cheerInput = document.getElementById('maker-cheer');
 const designSelect = document.getElementById('maker-design');
 const captionBox = document.getElementById('maker-caption');
-const image = document.getElementById('maker-image');
 const photoSliders = { zoom: 'maker-photo-zoom', x: 'maker-photo-x', y: 'maker-photo-y' };
 
 const MAX_UPLOAD = 8 * 1024 * 1024;
@@ -62,8 +61,7 @@ async function updatePreview() {
   const thisDrawing = ++drawing;
   const canvas = await drawCard(card, state.cheer, drawOptions());
   if (thisDrawing !== drawing) return;
-  image.src = canvas.toDataURL('image/png');
-  image.alt = `${card.lead.title} card for ${card.person}`;
+  showCanvas(document.getElementById('maker-image'), canvas, `${card.lead.title} card for ${card.person}`);
 }
 
 // Pictures are read into the page as data, so nothing leaves the browser

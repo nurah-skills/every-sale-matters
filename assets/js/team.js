@@ -155,9 +155,10 @@ function sortHeader(key, label, className = '') {
   cell.scope = 'col';
   const button = create('button', '', label);
   button.type = 'button';
+  button.dataset.focus = `sort:${key}`;
   if (state.sortKey === key) {
     cell.setAttribute('aria-sort', state.sortDirection > 0 ? 'ascending' : 'descending');
-    button.append(create('span', 'sort-arrow', state.sortDirection > 0 ? ' ↑' : ' ↓'));
+    button.append(icon(state.sortDirection > 0 ? ICONS.up : ICONS.down, 14));
   }
   button.addEventListener('click', () => {
     if (state.sortKey === key) {
@@ -166,7 +167,7 @@ function sortHeader(key, label, className = '') {
       state.sortKey = key;
       state.sortDirection = key === 'name' ? 1 : -1;
     }
-    showTable();
+    keepFocus(showTable);
   });
   cell.append(button);
   return cell;
@@ -266,6 +267,10 @@ function showTable() {
 
   // One scale for every bar, so bars can be compared down the list
   const scale = Math.max(1, ...everyone.map((row) => Math.max(row.figures.count, row.figures.august))) * 1.05;
+
+  const sortChoice = document.getElementById('sort-select');
+  const chosen = `${state.sortKey}:${state.sortDirection}`;
+  sortChoice.value = [...sortChoice.options].some((option) => option.value === chosen) ? chosen : '';
 
   const table = document.getElementById('results');
   table.replaceChildren();
@@ -433,6 +438,14 @@ document.getElementById('group-toggle').checked = state.group;
 document.getElementById('group-toggle').addEventListener('change', (event) => {
   state.group = event.target.checked;
   remember('team-group', state.group ? 'on' : 'off');
+  showTable();
+});
+
+// The column headings are hidden on phones, so they sort from a list instead
+document.getElementById('sort-select').addEventListener('change', (event) => {
+  const [key, direction] = event.target.value.split(':');
+  state.sortKey = key;
+  state.sortDirection = Number(direction);
   showTable();
 });
 

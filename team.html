@@ -80,7 +80,6 @@
       <main class="app-main">
         <div class="page-header">
           <div>
-            <p class="eyebrow">Whole group</p>
             <h1>Team</h1>
             <p class="page-note" id="team-note"></p>
           </div>
@@ -116,6 +115,16 @@
           </div>
           <div class="results-tools">
             <div class="segmented" id="results-filter" role="group" aria-label="Show"></div>
+            <div class="sort-picker">
+              <label class="sr-only" for="sort-select">Sort by</label>
+              <select class="select" id="sort-select">
+                <option value="count:-1">Most registrations</option>
+                <option value="pace:-1">Furthest ahead of usual pace</option>
+                <option value="name:1">Name A to Z</option>
+                <option value="best:-1">Highest best</option>
+                <option value="cash:-1">Most cash</option>
+              </select>
+            </div>
             <label class="checkbox"><input type="checkbox" id="group-toggle"> Group by college</label>
           </div>
           <div class="legend">

@@ -43,13 +43,13 @@
           <p class="form-error" id="signup-error" role="alert" tabindex="-1" hidden>Please fix the highlighted details below.</p>
 
           <div class="field photo-field">
-            <span class="field-label" id="photo-label">Profile photo *</span>
+            <span class="field-label" id="photo-label">Profile photo <span aria-hidden="true">*</span></span>
             <div class="photo-picker">
               <span class="photo-circle" id="photo-preview" aria-hidden="true">
                 <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
               </span>
               <div class="photo-actions">
-                <input class="sr-only" id="photo" name="photo" type="file" accept="image/png, image/jpeg, image/webp" aria-labelledby="photo-label photo-button" aria-describedby="photo-hint photo-error">
+                <input class="sr-only" id="photo" aria-required="true" name="photo" type="file" accept="image/png, image/jpeg, image/webp" aria-labelledby="photo-label photo-button" aria-describedby="photo-hint photo-error">
                 <label class="button button-secondary button-inline upload-button" id="photo-button" for="photo">Choose a photo</label>
                 <p class="field-hint" id="photo-hint">A clear photo of your face. JPG, PNG or WebP, up to 5 MB.</p>
               </div>
@@ -59,13 +59,13 @@
 
           <div class="form-row">
             <div class="field">
-              <label for="first-name">First name *</label>
-              <input class="input" id="first-name" name="first-name" type="text" autocomplete="given-name" maxlength="40" aria-describedby="first-name-error">
+              <label for="first-name">First name <span aria-hidden="true">*</span></label>
+              <input class="input" id="first-name" aria-required="true" name="first-name" type="text" autocomplete="given-name" maxlength="40" aria-describedby="first-name-error">
               <p class="field-error" id="first-name-error" hidden></p>
             </div>
             <div class="field">
-              <label for="surname">Surname *</label>
-              <input class="input" id="surname" name="surname" type="text" autocomplete="family-name" maxlength="40" aria-describedby="surname-error">
+              <label for="surname">Surname <span aria-hidden="true">*</span></label>
+              <input class="input" id="surname" aria-required="true" name="surname" type="text" autocomplete="family-name" maxlength="40" aria-describedby="surname-error">
               <p class="field-error" id="surname-error" hidden></p>
             </div>
           </div>
@@ -77,8 +77,8 @@
               <p class="field-hint" id="preferred-name-hint">What colleagues call you, if it's different.</p>
             </div>
             <div class="field">
-              <label for="job-title">Job title *</label>
-              <input class="input" id="job-title" name="job-title" type="text" list="job-titles" autocomplete="organization-title" maxlength="60" aria-describedby="job-title-error">
+              <label for="job-title">Job title <span aria-hidden="true">*</span></label>
+              <input class="input" id="job-title" aria-required="true" name="job-title" type="text" list="job-titles" autocomplete="organization-title" maxlength="60" aria-describedby="job-title-error">
               <datalist id="job-titles">
                 <option value="Sales consultant"></option>
                 <option value="Senior sales consultant"></option>
@@ -91,8 +91,8 @@
 
           <div class="form-row">
             <div class="field">
-              <label for="email">Work email *</label>
-              <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="name@college.co.za" aria-describedby="email-error">
+              <label for="email">Work email <span aria-hidden="true">*</span></label>
+              <input class="input" id="email" aria-required="true" name="email" type="email" autocomplete="email" placeholder="name@college.co.za" aria-describedby="email-error">
               <p class="field-error" id="email-error" hidden></p>
             </div>
             <div class="field">
@@ -104,8 +104,8 @@
 
           <div class="form-row">
             <div class="field">
-              <label for="college">College *</label>
-              <select class="input" id="college" name="college" aria-describedby="college-error">
+              <label for="college">College <span aria-hidden="true">*</span></label>
+              <select class="input" id="college" aria-required="true" name="college" aria-describedby="college-error">
                 <option value="" selected>Choose one</option>
                 <option>Skills Academy</option>
                 <option>Matric College</option>
@@ -123,9 +123,9 @@
           </div>
 
           <div class="field">
-            <label for="password">Password *</label>
+            <label for="password">Password <span aria-hidden="true">*</span></label>
             <div class="password">
-              <input class="input" id="password" name="password" type="password" autocomplete="new-password" aria-describedby="password-hint password-error">
+              <input class="input" id="password" aria-required="true" name="password" type="password" autocomplete="new-password" aria-describedby="password-hint password-error">
               <button type="button" data-toggle-password aria-controls="password" aria-pressed="false">Show</button>
             </div>
             <p class="field-hint" id="password-hint">At least 8 characters.</p>
@@ -133,9 +133,9 @@
           </div>
 
           <div class="field">
-            <label for="password-confirm">Confirm password *</label>
+            <label for="password-confirm">Confirm password <span aria-hidden="true">*</span></label>
             <div class="password">
-              <input class="input" id="password-confirm" name="password-confirm" type="password" autocomplete="new-password" aria-describedby="password-confirm-error">
+              <input class="input" id="password-confirm" aria-required="true" name="password-confirm" type="password" autocomplete="new-password" aria-describedby="password-confirm-error">
               <button type="button" data-toggle-password aria-controls="password-confirm" aria-pressed="false">Show</button>
             </div>
             <p class="field-error" id="password-confirm-error" hidden></p>

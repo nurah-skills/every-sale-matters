@@ -97,15 +97,6 @@ form.addEventListener('submit', (event) => {
   showToast(`Thanks. Your reference is ${reference}.`);
 });
 
-let toastTimer;
-function showToast(text) {
-  const toast = document.getElementById('toast');
-  toast.textContent = text;
-  toast.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
-}
-
 document.getElementById('feedback-name').value = user.name;
 document.getElementById('feedback-college').value = user.college;
 document.getElementById('feedback-date').max = '2026-09-17';

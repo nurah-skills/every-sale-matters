@@ -37,29 +37,44 @@ async function openPreview(card) {
   const image = document.getElementById('preview-image');
   document.getElementById('preview-title').textContent = `${card.person} · ${card.lead.title}`;
   document.getElementById('preview-caption').value = captionFor(card);
-  image.alt = `${card.lead.title} card for ${card.person}`;
-  image.removeAttribute('src');
+  const blank = create('canvas', image.className);
+  blank.id = image.id;
+  image.replaceWith(blank);
   if (!dialog.open) dialog.showModal();
-  image.src = (await drawCard(card)).toDataURL('image/png');
+  showCanvas(blank, await drawCard(card), `${card.lead.title} card for ${card.person}`);
 }
 
-function setStatus(card, status) {
+// Changing a status can move the card out of the list, so focus goes to the card that takes its place
+function setStatus(card, status, undo = true) {
+  const previous = card.status;
+  const tiles = [...document.querySelectorAll('.card-tile')];
+  const position = tiles.findIndex((tile) => tile.dataset.id === card.id);
+
   saveCardStatus(card.id, status);
   showReadyCount();
   render();
+
+  const own = document.querySelector(`.card-tile[data-id="${card.id}"] .card-manage button`);
+  const next = document.querySelectorAll('.card-tile')[Math.max(0, position)];
+  const target = own || (next && next.querySelector('button')) || document.querySelector('#status-picker [aria-pressed="true"]');
+  if (target) target.focus();
+
   const messages = { sent: 'Marked as sent', skipped: 'Skipped', ready: 'Moved back to ready' };
-  showToast(messages[status]);
+  showToast(`${card.person}: ${messages[status].toLowerCase()}`, undo ? { label: 'Undo', onClick: () => setStatus({ ...card, status }, previous, false) } : null);
 }
 
-function actionButton(label, className, onClick) {
-  const button = create('button', `button button-inline ${className}`, label);
+function actionButton(label, className, onClick, iconPaths) {
+  const button = create('button', `button button-inline ${className}`);
   button.type = 'button';
+  if (iconPaths) button.append(icon(iconPaths));
+  button.append(document.createTextNode(label));
   button.addEventListener('click', onClick);
   return button;
 }
 
 function cardTile(card) {
   const tile = create('article', 'card-tile');
+  tile.dataset.id = card.id;
 
   const art = create('div', `card-art kind-${card.lead.kind}`);
   const pill = create('span', 'card-pill', pillText(card));
@@ -88,7 +103,7 @@ function cardTile(card) {
   const manage = create('div', 'card-manage');
   if (card.status === 'ready' || card.status === 'changed') {
     manage.append(
-      actionButton(card.status === 'changed' ? 'Checked, mark as sent' : 'Mark as sent', 'button-quiet', () => setStatus(card, 'sent')),
+      actionButton(card.status === 'changed' ? 'Checked, mark as sent' : 'Mark as sent', 'button-secondary button-sent', () => setStatus(card, 'sent'), ICONS.check),
       actionButton('Skip', 'button-quiet', () => setStatus(card, 'skipped'))
     );
   } else {

@@ -24,20 +24,11 @@ function saveAdmins(list) {
   }
 }
 
-let toastTimer;
-function showToast(text) {
-  const toast = document.getElementById('toast');
-  toast.textContent = text;
-  toast.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { toast.hidden = true; }, 2800);
-}
-
 function updateFeedback(reference, changes) {
   const items = savedFeedback().map((item) => (item.reference === reference ? { ...item, ...changes } : item));
   saveFeedback(items);
   showInboxCount();
-  render();
+  keepFocus(render, '#inbox-title');
 }
 
 function shorten(text, limit) {
@@ -128,6 +119,7 @@ function inboxItem(item) {
     actions.append(actionButton('Reopen', 'button-quiet', () => updateFeedback(item.reference, { status: 'In review' })));
   }
 
+  actions.querySelectorAll('button').forEach((button) => { button.dataset.focus = `${item.reference}:${button.textContent}`; });
   entry.append(actions);
   return entry;
 }

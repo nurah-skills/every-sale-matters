@@ -43,13 +43,13 @@ function captionFor(card, cheer = '') {
   return `Well done, ${firstName}! ${card.lead.title}: ${valueText(card.lead)} ${card.lead.unit}. ${card.lead.detail}.${also}${message} ${card.college} · ${card.date}`;
 }
 
-let toastTimer;
-function showToast(message) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { toast.hidden = true; }, 2800);
+// Showing the canvas itself skips turning a large card into PNG data, which is slow on older phones
+function showCanvas(placeholder, canvas, label) {
+  canvas.id = placeholder.id;
+  canvas.className = placeholder.className;
+  canvas.setAttribute('role', 'img');
+  canvas.setAttribute('aria-label', label);
+  placeholder.replaceWith(canvas);
 }
 
 // Returns false when the browser blocks copying, so the page can offer the text another way

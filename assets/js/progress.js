@@ -113,7 +113,7 @@ function showResults(responses) {
 
   QUESTIONS.forEach(({ key, label }) => {
     const average = responses.reduce((sum, response) => sum + response[key], 0) / responses.length;
-    const row = create('div', 'mrow');
+    const row = create('div');
     const top = create('div', 'college-top');
     top.append(create('span', '', label), create('b', '', `${formatNumber(Math.round(average * 10) / 10)} out of 5`));
     const track = create('div', 'track track-small');
@@ -196,15 +196,6 @@ document.getElementById('pulse-form').addEventListener('submit', (event) => {
   showResults(review.responses);
   showToast('Thanks, your response was recorded');
 });
-
-let toastTimer;
-function showToast(text) {
-  const toast = document.getElementById('toast');
-  toast.textContent = text;
-  toast.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { toast.hidden = true; }, 2800);
-}
 
 buildScale('scale-encouraged', 'encouraged');
 buildScale('scale-fair', 'fair');

@@ -118,7 +118,9 @@ function showCash(person, figures) {
   CASH_MILESTONES[unit].forEach((amount) => {
     const reached = figures.cash >= amount;
     const label = amount === 1 ? 'First payment' : `R${amount.toLocaleString('en-ZA')}`;
-    const chip = create('span', reached ? 'chip is-reached' : 'chip', reached ? `✓ ${label}` : label);
+    const chip = create('span', reached ? 'chip is-reached' : 'chip');
+    if (reached) chip.append(icon(ICONS.check, 14));
+    chip.append(document.createTextNode(label));
     chips.append(chip);
   });
 }
@@ -216,7 +218,8 @@ function showLeague(person) {
       const who = create('div');
       const name = create('button', 'person-link', someone.name);
       name.type = 'button';
-      name.addEventListener('click', () => choosePerson(someone.name));
+      name.dataset.focus = `league:${someone.name}`;
+      name.addEventListener('click', () => keepFocus(() => choosePerson(someone.name)));
       who.append(name, create('small', '', `August ${formatNumber(figures.august)} · ${describeChange(figures.count, figures.august)}`));
 
       const now = create('div', 'now');
@@ -266,10 +269,32 @@ function choosePerson(name) {
   render();
 }
 
+// The three answers people look for first, before the detail below
+function showSummary(person, figures) {
+  const period = PERIODS[state.period];
+  document.getElementById('summary-period').textContent = `Registrations · ${period.label.toLowerCase()}`;
+  document.getElementById('summary-count').textContent = String(figures.count);
+  document.getElementById('summary-pace').replaceChildren(statusChip(paceFor(figures, state.period)));
+
+  const needed = figures.previousBest + 1 - figures.count;
+  document.getElementById('summary-record').textContent = needed > 0 ? `${needed} more` : 'New best';
+  document.getElementById('summary-record-note').textContent = needed > 0
+    ? `to beat your best ${period.unit} of ${figures.previousBest}`
+    : `You beat your best ${period.unit} of ${figures.previousBest}`;
+
+  const incentives = incentivesFor(person);
+  document.getElementById('summary-incentive').textContent = formatMoney(incentives.total);
+  const toGo = incentives.next ? incentives.next[0] - incentives.qualifying : 0;
+  document.getElementById('summary-incentive-note').textContent = incentives.next
+    ? `${toGo} more enrolment${toGo === 1 ? '' : 's'} for the ${rands(incentives.next[1])} level`
+    : 'Top weekly level reached';
+}
+
 function render() {
   const person = findPerson(state.person);
   const figures = figuresFor(person, state.period);
   showHeader(person);
+  showSummary(person, figures);
   showRegistrations(person, figures);
   showRecord(figures);
   showCash(person, figures);

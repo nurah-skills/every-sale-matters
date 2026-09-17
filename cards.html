@@ -80,7 +80,6 @@
       <main class="app-main">
         <div class="page-header">
           <div>
-            <p class="eyebrow">Recognition</p>
             <h1>Cards ready</h1>
             <p class="page-note" id="cards-note"></p>
           </div>
@@ -105,7 +104,8 @@
           <span>In this demo anyone can mark cards as sent or skipped, and changes are saved in this browser only. Later, only card admins will be able to do this. Nothing is posted to WhatsApp automatically.</span>
         </p>
 
-        <div class="card-grid" id="card-grid" aria-live="polite"></div>
+        <h2 class="sr-only" id="card-list-title">Cards</h2>
+        <div class="card-grid" id="card-grid"></div>
 
         <div class="about-group">
           <details class="about">

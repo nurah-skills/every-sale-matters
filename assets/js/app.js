@@ -99,11 +99,11 @@ function showInboxCount() {
 }
 
 function showReadyCount() {
-  const badge = document.getElementById('cards-ready-count');
-  if (!badge) return;
   const ready = cardsWithStatus().filter((card) => card.status === 'ready').length;
-  badge.textContent = String(ready);
-  badge.hidden = ready === 0;
+  document.querySelectorAll('#cards-ready-count, #tab-cards-count').forEach((badge) => {
+    badge.textContent = String(ready);
+    badge.hidden = ready === 0;
+  });
 }
 
 // Feedback is also kept in this browser until there's a shared database
@@ -126,15 +126,106 @@ function saveFeedback(items) {
   }
 }
 
+// Redrawing a list replaces its buttons, which would drop keyboard focus back to the top of the page.
+// Buttons carry a data-focus key so focus can land on the matching one again.
+function keepFocus(redraw, fallback) {
+  const key = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.focus : null;
+  redraw();
+  if (!key) return;
+  const match = [...document.querySelectorAll('[data-focus]')].find((node) => node.dataset.focus === key);
+  const target = match || (fallback && document.querySelector(fallback));
+  if (target) target.focus();
+}
+
 function buildSegmented(container, options, current, onChange) {
   container.replaceChildren();
   options.forEach(([value, label]) => {
     const button = create('button', '', label);
     button.type = 'button';
+    button.dataset.focus = `${container.id}:${value}`;
     button.setAttribute('aria-pressed', String(value === current));
-    button.addEventListener('click', () => onChange(value));
+    button.addEventListener('click', () => keepFocus(() => onChange(value)));
     container.append(button);
   });
+}
+
+function icon(paths, size = 18) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', size);
+  svg.setAttribute('height', size);
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2.2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('aria-hidden', 'true');
+  paths.forEach((d) => {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    svg.append(path);
+  });
+  return svg;
+}
+
+const ICONS = {
+  check: ['M4 12.5l5 5L20 6.5'],
+  up: ['M12 19V5', 'M6 11l6-6 6 6'],
+  down: ['M12 5v14', 'M6 13l6 6 6-6'],
+  menu: ['M4 7h16', 'M4 12h16', 'M4 17h16']
+};
+
+// One message area per page. An action like Undo keeps the message up a little longer.
+let toastTimer;
+function showToast(message, action) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  clearTimeout(toastTimer);
+  toast.hidden = false;
+  toast.replaceChildren(create('span', '', message));
+  if (action) {
+    const button = create('button', 'toast-action', action.label);
+    button.type = 'button';
+    button.addEventListener('click', () => {
+      toast.hidden = true;
+      action.onClick();
+    });
+    toast.append(button);
+  }
+  toastTimer = setTimeout(() => { toast.hidden = true; }, action ? 7000 : 4000);
+}
+
+// Phones get the most used pages along the bottom, within reach of a thumb
+function buildTabBar(sidebar) {
+  const nav = create('nav', 'tabbar');
+  nav.setAttribute('aria-label', 'Quick menu');
+  const current = location.pathname.split('/').pop() || 'home.html';
+  const pages = [['home.html', 'Home'], ['team.html', 'Team'], ['cards.html', 'Cards']];
+
+  pages.forEach(([href, label]) => {
+    const link = create('a', 'tab');
+    link.href = href;
+    if (href === current) link.setAttribute('aria-current', 'page');
+    link.append(sidebar.querySelector(`.menu-item[href="${href}"] svg`).cloneNode(true), create('span', '', label));
+    if (href === 'cards.html') {
+      const count = create('em', 'count');
+      count.id = 'tab-cards-count';
+      count.hidden = true;
+      link.append(count);
+    }
+    nav.append(link);
+  });
+
+  const more = create('button', 'tab');
+  more.type = 'button';
+  more.setAttribute('aria-controls', 'sidebar');
+  more.setAttribute('aria-expanded', 'false');
+  if (!pages.some(([href]) => href === current)) more.classList.add('is-current');
+  more.append(icon(ICONS.menu, 20), create('span', '', 'More'));
+  nav.append(more);
+
+  document.getElementById('app').append(nav);
+  return more;
 }
 
 function statusChip(pace) {
@@ -154,16 +245,35 @@ function setUpShell() {
   document.getElementById('user-role').textContent = `${user.role} · ${user.college}`;
 
   const app = document.getElementById('app');
+  const sidebar = document.getElementById('sidebar');
   const menuButton = document.getElementById('menu-button');
+  const moreButton = buildTabBar(sidebar);
+  const smallScreen = window.matchMedia('(max-width: 900px)');
+  let opener = menuButton;
+
+  // On small screens the closed menu sits off to the side, so keyboards and screen readers must skip it
   const setMenuOpen = (open) => {
     app.classList.toggle('menu-open', open);
     menuButton.setAttribute('aria-expanded', String(open));
+    moreButton.setAttribute('aria-expanded', String(open));
+    sidebar.inert = smallScreen.matches && !open;
+    if (smallScreen.matches) (open ? sidebar.querySelector('.menu-item') : opener).focus({ preventScroll: true });
   };
+  sidebar.inert = smallScreen.matches;
+  smallScreen.addEventListener('change', () => {
+    app.classList.remove('menu-open');
+    sidebar.inert = smallScreen.matches;
+  });
 
-  menuButton.addEventListener('click', () => setMenuOpen(!app.classList.contains('menu-open')));
+  const openFrom = (button) => {
+    opener = button;
+    setMenuOpen(!app.classList.contains('menu-open'));
+  };
+  menuButton.addEventListener('click', () => openFrom(menuButton));
+  moreButton.addEventListener('click', () => openFrom(moreButton));
   document.getElementById('scrim').addEventListener('click', () => setMenuOpen(false));
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') setMenuOpen(false);
+    if (event.key === 'Escape' && app.classList.contains('menu-open')) setMenuOpen(false);
   });
 
   document.getElementById('sign-out').addEventListener('click', () => {
