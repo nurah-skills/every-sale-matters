@@ -42,7 +42,7 @@ The pages follow the order of the menu.
 | `pages/roundups.html` | A daily, weekly or monthly WhatsApp round-up for the whole team or one college. |
 | `pages/fame.html` | Wall of fame: every card sent this month, with filters by college, person and kind of card, this week’s highlights, and a September calendar of the bigger moments. |
 | `pages/streaks.html` | Who has made a sale on working days in a row, grouped by length, with the streak cards reached today and the longest streaks this month. |
-| `pages/shoutouts.html` | Send a short well done to a colleague. Once an admin approves it, it shows on the board. |
+| `pages/shoutouts.html` | Send a short well done to a colleague. A consultant’s shout-out waits for approval; a manager posts straight to the board and approves or declines the ones waiting, here or in the Admin inbox. |
 
 ### Team health
 

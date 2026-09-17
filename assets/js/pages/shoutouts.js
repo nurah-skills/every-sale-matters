@@ -46,24 +46,57 @@ function showBoard() {
   });
 }
 
+// A manager sees everyone's shout-outs waiting for approval; everyone else sees their own
 function showPending() {
   const list = document.getElementById('shout-pending');
   list.replaceChildren();
-  const mine = myShoutouts().filter((item) => item.submittedBy === user.name && item.status !== 'Approved').reverse();
+  const waiting = user.manager
+    ? myShoutouts().filter((item) => item.status === 'Submitted').reverse()
+    : myShoutouts().filter((item) => item.submittedBy === user.name && item.status !== 'Approved').reverse();
 
-  if (!mine.length) {
-    list.append(create('li', 'empty', 'Nothing waiting. Shout-outs you send show here until they’re approved.'));
+  document.getElementById('pending-title').textContent = user.manager
+    ? `Waiting for your approval${waiting.length ? ` · ${waiting.length}` : ''}`
+    : 'Waiting for approval';
+
+  if (!waiting.length) {
+    list.append(create('li', 'empty', user.manager
+      ? 'Nothing waiting. Shout-outs people send show here for you to approve.'
+      : 'Nothing waiting. Shout-outs you send show here until they’re approved.'));
     return;
   }
 
-  mine.forEach((item) => {
+  waiting.forEach((item) => {
     const entry = create('li');
     const top = create('div', 'submission-top');
     top.append(create('b', '', `To ${item.to}`), statusChip({ tone: item.status === 'Declined' ? 'waiting' : 'info', text: item.status === 'Submitted' ? 'Waiting' : item.status }));
-    entry.append(top, create('p', 'submission-message', item.message));
+    entry.append(top);
+    if (user.manager) entry.append(create('p', 'panel-note', `From ${item.name}`));
+    entry.append(create('p', 'submission-message', item.message));
     if (item.reply) entry.append(create('p', 'submission-reply', `Reply: ${item.reply}`));
+
+    if (user.manager) {
+      const actions = create('div', 'card-actions');
+      actions.append(
+        decide(item, 'Approve for the board', '', 'Approved'),
+        decide(item, 'Decline', 'button-quiet', 'Declined')
+      );
+      entry.append(actions);
+    }
     list.append(entry);
   });
+}
+
+function decide(item, label, className, status) {
+  const button = create('button', `button button-inline ${className}`, label);
+  button.type = 'button';
+  button.addEventListener('click', () => {
+    saveFeedback(savedFeedback().map((saved) => (saved.reference === item.reference ? { ...saved, status } : saved)));
+    showInboxCount();
+    showPending();
+    showBoard();
+    showToast(status === 'Approved' ? `Shout-out for ${item.to} is on the board` : 'Shout-out declined');
+  });
+  return button;
 }
 
 function showError(text, field) {
@@ -105,7 +138,8 @@ form.addEventListener('submit', (event) => {
     to: toSelect.value,
     helper: '',
     message: message.value.trim(),
-    status: 'Submitted',
+    // A manager's own shout-out doesn't need approving
+    status: user.manager ? 'Approved' : 'Submitted',
     reply: '',
     createdAt: new Date().toISOString()
   });
@@ -122,9 +156,18 @@ form.addEventListener('submit', (event) => {
   message.value = '';
   document.getElementById('shout-count').textContent = '0 of 140 characters';
   showPending();
+  showBoard();
   showInboxCount();
-  showToast(`Sent. Your shout-out for ${firstName} shows on the board once it’s approved.`);
+  showToast(user.manager
+    ? `Your shout-out for ${firstName} is on the board`
+    : `Sent. Your shout-out for ${firstName} shows on the board once it’s approved.`);
 });
+
+if (user.manager) {
+  document.querySelector('#shout-form button[type="submit"]').textContent = 'Post to the board';
+  document.getElementById('shout-note').textContent =
+    'Keep it kind and about work. Please leave out student names, phone numbers and payment details. Your shout-out goes straight to the board, and shout-outs don’t add a sale to anyone’s totals.';
+}
 
 // On phones the form folds away so the board comes first
 const toggle = document.getElementById('shout-toggle');
