@@ -232,8 +232,18 @@ function statusChip(pace) {
   return create('span', `status status-${pace.tone}`, pace.text);
 }
 
+// Round-ups, Our progress and Admin are for managers; everything else is the same for everyone
+const MANAGER_PAGES = ['roundups.html', 'progress.html', 'admin.html'];
+
 function setUpShell() {
   const user = readSession();
+  if (!user.manager) {
+    MANAGER_PAGES.forEach((page) => {
+      const item = document.querySelector(`.menu-item[href="${page}"]`);
+      if (item) item.hidden = true;
+    });
+  }
+
   const avatar = document.getElementById('user-initials');
   if (user.photo) {
     avatar.style.backgroundImage = 'url("' + user.photo + '")';

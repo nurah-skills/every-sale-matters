@@ -2,7 +2,8 @@ const PERIOD_OPTIONS = Object.entries(PERIODS).map(([key, period]) => [key, peri
 
 const user = setUpShell();
 const state = {
-  person: recall('person') || user.person || user.name,
+  // Only a manager can look at someone else's progress
+  person: (user.manager ? recall('person') : null) || user.person || user.name,
   period: PERIODS[recall('period')] ? recall('period') : 'today'
 };
 
@@ -22,6 +23,7 @@ function addMarker(track, className, value, scale) {
 }
 
 function showHeader(person) {
+  document.getElementById('person-picker').hidden = !user.manager;
   document.getElementById('person-name').textContent = person.name;
   document.getElementById('person-note').textContent = `${person.college} · ${PERIODS[state.period].note}`;
   document.getElementById('snapshot-time').textContent = SNAPSHOT.time;
@@ -216,14 +218,23 @@ function showLeague(person) {
     .forEach(({ someone, figures }) => {
       const item = create('li', someone.name === person.name ? 'is-selected' : '');
       const who = create('div');
-      const name = create('button', 'person-link', someone.name);
-      name.type = 'button';
-      name.dataset.focus = `league:${someone.name}`;
-      name.addEventListener('click', () => keepFocus(() => choosePerson(someone.name)));
-      who.append(name, create('small', '', `August ${formatNumber(figures.august)} · ${describeChange(figures.count, figures.august)}`));
+      if (user.manager) {
+        const name = create('button', 'person-link', someone.name);
+        name.type = 'button';
+        name.dataset.focus = `league:${someone.name}`;
+        name.addEventListener('click', () => keepFocus(() => choosePerson(someone.name)));
+        who.append(name);
+      } else {
+        who.append(create('b', '', someone.name));
+      }
+      who.append(create('small', '', `August ${formatNumber(figures.august)} · ${describeChange(figures.count, figures.august)}`));
 
       const now = create('div', 'now');
-      now.append(create('b', '', String(figures.count)), statusChip(paceFor(figures, state.period)));
+      now.append(create('b', '', String(figures.count)));
+      // Colleagues only show the good news unless you're a manager or it's your own row
+      const pace = paceFor(figures, state.period);
+      const mine = someone.name === (user.person || user.name);
+      if (user.manager || mine || ['best', 'good', 'info'].includes(pace.tone)) now.append(statusChip(pace));
       item.append(create('span', 'avatar avatar-soft', initials(someone.name)), who, now);
       list.append(item);
     });

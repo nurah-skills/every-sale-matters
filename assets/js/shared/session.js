@@ -1,10 +1,22 @@
 // There are no real accounts yet. The demo sign-in just remembers a sample person in this browser.
 const SESSION_KEY = 'esm-session';
 
-const DEMO_USER = {
-  name: 'Lerato Mokoena',
-  college: 'Skills Academy',
-  role: 'Sales consultant'
+// Two sample accounts, because managers and consultants see different things
+const DEMO_USERS = {
+  manager: {
+    name: 'Refiloe Sibanda',
+    college: 'Skills Academy',
+    role: 'Sales manager',
+    manager: true,
+    person: null
+  },
+  consultant: {
+    name: 'Lerato Mokoena',
+    college: 'Skills Academy',
+    role: 'Sales consultant',
+    manager: false,
+    person: 'Lerato Mokoena'
+  }
 };
 
 function readSession() {
@@ -24,7 +36,7 @@ function startSession(user) {
   }
 }
 
-const startDemoSession = () => startSession(DEMO_USER);
+const startDemoSession = (kind) => startSession(DEMO_USERS[kind] || DEMO_USERS.consultant);
 
 // Profile photos are kept apart from the session so they stay on cards after someone signs out
 const PHOTOS_KEY = 'esm-photos';
@@ -55,5 +67,8 @@ function endSession() {
 
 // Runs in the <head> so people never see a flash of the wrong page.
 const pageType = document.documentElement.dataset.page;
-if (pageType === 'app' && !readSession()) location.replace('index.html');
-if (pageType === 'auth' && readSession()) location.replace('home.html');
+const signedIn = readSession();
+if (pageType === 'app' && !signedIn) location.replace('index.html');
+if (pageType === 'auth' && signedIn) location.replace('home.html');
+// Some pages are for managers only
+if (document.documentElement.dataset.access === 'manager' && signedIn && !signedIn.manager) location.replace('home.html');

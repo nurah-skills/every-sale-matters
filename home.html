@@ -102,8 +102,10 @@
         </div>
 
         <div class="controls">
-          <label class="sr-only" for="person-select">Choose a person</label>
-          <select class="select" id="person-select"></select>
+          <div id="person-picker" hidden>
+            <label class="sr-only" for="person-select">Choose a person</label>
+            <select class="select" id="person-select"></select>
+          </div>
           <div class="segmented" id="period-picker" role="group" aria-label="Period"></div>
         </div>
 
@@ -221,7 +223,7 @@
           </section>
         </div>
 
-        <details class="about">
+        <details class="about" id="how-numbers">
           <summary>How these numbers work</summary>
           <div class="about-body">
             <p>A registration counts when a row has a salesperson's name and either a student name or CRM ID. “Confirmed” and “Docs Received” both count. “Cancelled” doesn't.</p>

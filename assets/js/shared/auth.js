@@ -20,11 +20,9 @@ document.querySelectorAll('form[data-not-connected]').forEach((form) => {
   });
 });
 
-const demoButton = document.querySelector('[data-demo-sign-in]');
-
-if (demoButton) {
-  demoButton.addEventListener('click', () => {
-    if (startDemoSession()) {
+document.querySelectorAll('[data-demo-sign-in]').forEach((button) => {
+  button.addEventListener('click', () => {
+    if (startDemoSession(button.dataset.demoSignIn)) {
       location.href = 'home.html';
       return;
     }
@@ -32,4 +30,4 @@ if (demoButton) {
     notice.hidden = false;
     notice.focus();
   });
-}
+});

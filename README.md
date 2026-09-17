@@ -11,8 +11,14 @@ This is a working design. It shows the same measures as the current scoreboard, 
 ## Trying it
 
 1. Open the live site.
-2. Select **Continue with demo account**, or choose **Create account** to try it with your own name and photo.
+2. Choose **Look around as a manager** or **Look around as a consultant**, or use **Create account** to try it with your own name and photo.
 3. Sign out from the bottom of the menu.
+
+### Who sees what
+
+A manager sees everything: anyone’s progress, the full team table with cash and personal bests, who is behind, and the Round-ups, Our progress and Admin pages.
+
+A consultant sees their own progress, and the team with names, registrations and the good news only. No cash or bests for colleagues, no “behind pace” labels for anyone but themselves, and no manager pages. New accounts follow the job title: one with “manager”, “team lead” or “head” in it gets the manager view.
 
 On a phone the menu sits behind the menu button, and Home, Team, Cards and More run along the bottom of the screen.
 
@@ -50,14 +56,14 @@ The pages follow the order of the menu.
 
 | Page | What it does |
 | --- | --- |
-| `index.html` | Sign in, or continue with the demo account. |
+| `index.html` | Sign in, or look around as a manager or a consultant. |
 | `signup.html` | Create an account with a profile photo, name, job title and, optionally, a preferred name, mobile number and your name on the scoreboard. |
 
 ## How the demo saves things
 
 There’s no database yet, so everything people do is saved in their own browser only:
 
-- the signed-in person and their details (passwords are never kept)
+- the signed-in person, their details and whether they are a manager (passwords are never kept)
 - profile photos, which also go on that person’s cards
 - card statuses (sent, skipped or ready)
 - feedback, assist nominations and shout-outs, with admin replies

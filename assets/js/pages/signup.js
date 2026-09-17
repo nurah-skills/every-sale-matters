@@ -121,6 +121,8 @@ form.addEventListener('submit', (event) => {
     surname: value('surname'),
     preferredName: preferred,
     role: value('job-title'),
+    // In the demo the job title decides who sees the manager pages
+    manager: /manager|team lead|head/i.test(value('job-title')),
     email: value('email'),
     mobile: value('mobile'),
     college: value('college'),

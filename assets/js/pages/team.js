@@ -2,6 +2,8 @@ const PERIOD_OPTIONS = Object.entries(PERIODS).map(([key, period]) => [key, peri
 
 setUpShell();
 
+const isManager = readSession().manager;
+
 const state = {
   period: PERIODS[recall('team-period')] ? recall('team-period') : 'today',
   college: recall('team-college') || 'All',
@@ -137,10 +139,15 @@ function filterLabels() {
     ['all', 'Everyone'],
     ['ahead', finished ? 'Above August' : 'Ahead of pace'],
     ...(finished ? [] : [['track', 'On track']]),
-    ['behind', finished ? 'Below August' : 'Behind pace'],
-    ['none', finished ? 'No registrations' : 'Not started yet']
+    // Only a manager, or the person themselves, sees who is behind
+    ...(isManager ? [
+      ['behind', finished ? 'Below August' : 'Behind pace'],
+      ['none', finished ? 'No registrations' : 'Not started yet']
+    ] : [])
   ];
 }
+
+const COLUMNS = isManager ? 5 : 3;
 
 const SORTS = {
   name: (row) => row.person.name,
@@ -196,21 +203,30 @@ function registrationsCell(row, scale) {
 }
 
 function personRow(row, scale, me, grouped) {
-  const line = create('tr', row.person.name === me ? 'is-me' : '');
+  const mine = row.person.name === me;
+  const line = create('tr', mine ? 'is-me' : '');
 
   const nameCell = create('th', 'cell-name');
   nameCell.scope = 'row';
-  const link = create('button', 'person-link', row.person.name);
-  link.type = 'button';
-  link.setAttribute('aria-haspopup', 'dialog');
-  link.addEventListener('click', () => showDetails(row));
-  nameCell.append(link);
+  if (isManager || mine) {
+    const link = create('button', 'person-link', row.person.name);
+    link.type = 'button';
+    link.setAttribute('aria-haspopup', 'dialog');
+    link.addEventListener('click', () => showDetails(row));
+    nameCell.append(link);
+  } else {
+    nameCell.append(create('b', '', row.person.name));
+  }
   if (row.person.name === me) nameCell.append(create('span', 'you-tag', 'You'));
   // The college heading already names it when rows are grouped
   if (!grouped) nameCell.append(create('small', '', row.person.college));
 
   const statusCell = create('td', 'cell-status');
-  statusCell.append(statusChip(paceFor(row.figures, state.period)));
+  const pace = paceFor(row.figures, state.period);
+  if (isManager || mine || ['best', 'good', 'info'].includes(pace.tone)) statusCell.append(statusChip(pace));
+
+  line.append(nameCell, registrationsCell(row, scale), statusCell);
+  if (!isManager) return line;
 
   const bestCell = create('td', 'cell-best');
   bestCell.append(create('b', '', String(row.figures.previousBest)), create('small', '', `best ${PERIODS[state.period].unit}`));
@@ -218,7 +234,7 @@ function personRow(row, scale, me, grouped) {
   const cashCell = create('td', 'cell-cash');
   cashCell.append(create('b', '', `R${Math.round(row.figures.cash).toLocaleString('en-ZA')}`), create('small', '', 'cash'));
 
-  line.append(nameCell, registrationsCell(row, scale), statusCell, bestCell, cashCell);
+  line.append(bestCell, cashCell);
   return line;
 }
 
@@ -226,7 +242,7 @@ function groupRow(label, rows) {
   const totals = totalsFor(rows);
   const line = create('tr', 'group-row');
   const cell = create('th', '');
-  cell.colSpan = 5;
+  cell.colSpan = COLUMNS;
   cell.scope = 'rowgroup';
   cell.append(
     create('span', 'group-name', label),
@@ -281,8 +297,7 @@ function showTable() {
     sortHeader('name', 'Name', 'cell-name'),
     sortHeader('count', 'Registrations', 'cell-registrations'),
     sortHeader('pace', 'Status', 'cell-status'),
-    sortHeader('best', 'Best', 'cell-best'),
-    sortHeader('cash', 'Cash', 'cell-cash')
+    ...(isManager ? [sortHeader('best', 'Best', 'cell-best'), sortHeader('cash', 'Cash', 'cell-cash')] : [])
   );
   head.append(headRow);
   table.append(head);
@@ -291,7 +306,7 @@ function showTable() {
     const body = create('tbody');
     const line = create('tr');
     const cell = create('td', 'is-empty', search ? `No one matches “${state.search.trim()}”.` : 'No one in this group right now.');
-    cell.colSpan = 5;
+    cell.colSpan = COLUMNS;
     line.append(cell);
     body.append(line);
     table.append(body);
@@ -319,8 +334,7 @@ function showTable() {
     label,
     create('td', 'cell-registrations', `${totals.count} of ${formatNumber(totals.august)} August average`),
     create('td', 'cell-status', `${totals.bests} new best${totals.bests === 1 ? '' : 's'}`),
-    create('td', 'cell-best', ''),
-    create('td', 'cell-cash', `R${Math.round(totals.cash).toLocaleString('en-ZA')}`)
+    ...(isManager ? [create('td', 'cell-best', ''), create('td', 'cell-cash', `R${Math.round(totals.cash).toLocaleString('en-ZA')}`)] : [])
   );
   foot.append(line);
   table.append(foot);
@@ -442,6 +456,11 @@ document.getElementById('group-toggle').addEventListener('change', (event) => {
 });
 
 // The column headings are hidden on phones, so they sort from a list instead
+if (!isManager) {
+  document.querySelectorAll('#sort-select option[value^="best"], #sort-select option[value^="cash"]')
+    .forEach((option) => option.remove());
+}
+
 document.getElementById('sort-select').addEventListener('change', (event) => {
   const [key, direction] = event.target.value.split(':');
   state.sortKey = key;
