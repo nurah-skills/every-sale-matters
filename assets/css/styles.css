@@ -291,18 +291,6 @@ select.input {
 .menu-item svg { flex: none; width: 20px; height: 20px; }
 a.menu-item:hover { background: rgba(255, 255, 255, .08); color: var(--on-navy); }
 .menu-item[aria-current="page"] { background: rgba(255, 255, 255, .12); box-shadow: inset 3px 0 0 var(--sage); }
-.menu-item.is-soon { color: var(--on-navy-muted); cursor: default; }
-.menu-item.is-soon svg { opacity: .7; }
-.soon {
-  margin-left: auto;
-  padding: 1px 8px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .1);
-  font-size: 11px;
-  font-weight: 700;
-  font-style: normal;
-  letter-spacing: .02em;
-}
 .count {
   margin-left: auto;
   min-width: 24px;
@@ -894,8 +882,26 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.5; }
 .comments { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .comments li { padding: 10px 12px; border-radius: 10px; background: var(--field); white-space: pre-wrap; overflow-wrap: anywhere; }
 
+/* Admin page */
+#admin-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tile-link { color: var(--ink); font-weight: inherit; text-decoration: none; transition: border-color .15s ease; }
+.tile-link:hover { color: var(--ink); border-color: var(--sage); }
+
+.inbox { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.inbox-item { display: flex; flex-direction: column; gap: 8px; padding: 18px 0; border-top: 1px solid var(--line); }
+.inbox-item:first-child { border-top: 0; padding-top: 0; }
+.reply-box { min-height: 64px; }
+.inbox-item .card-actions { margin-top: 0; }
+
+.access-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.access-list li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.access-list li:first-child { border-top: 0; }
+.access-email { flex: 1; min-width: 0; overflow-wrap: anywhere; font-weight: 700; }
+.access-input { flex: 1; min-width: 220px; }
+
 @media (max-width: 1100px) {
   .span-5, .span-7 { grid-column: span 12; }
+  #admin-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .maker { grid-template-columns: minmax(0, 1fr); }
   .maker-preview { position: static; }
   .college-cards { grid-template-columns: minmax(0, 1fr); }

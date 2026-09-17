@@ -93,6 +93,7 @@ form.addEventListener('submit', (event) => {
   document.getElementById('feedback-reference').value = '';
   helper.value = '';
   showSubmissions();
+  showInboxCount();
   showToast(`Thanks. Your reference is ${reference}.`);
 });
 

@@ -123,6 +123,12 @@ function showCash(person, figures) {
   });
 }
 
+function cardsLink() {
+  const link = create('a', 'text-link', 'Open cards ready');
+  link.href = 'cards.html';
+  return link;
+}
+
 function showLatestCard(person) {
   const holder = document.getElementById('latest-card');
   holder.replaceChildren();
@@ -144,7 +150,7 @@ function showLatestCard(person) {
   const footer = create('div', 'card-footer');
   footer.append(
     create('span', `status ${card.status === 'Sent' ? 'status-good' : 'status-info'}`, card.status),
-    create('span', 'panel-note', 'Cards page coming soon')
+    cardsLink()
   );
   holder.append(preview, footer);
 }

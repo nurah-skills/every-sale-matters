@@ -75,7 +75,7 @@ function cardTile(card) {
     create('p', 'card-detail', card.lead.detail)
   );
   if (card.also.length) details.append(create('p', 'card-also', `Also: ${card.also.join(' · ')}`));
-  details.append(create('p', 'card-meta', `${card.college} · ${card.date} · figures read ${card.read}`));
+  details.append(create('p', 'card-meta', `${card.college} · ${card.date} · ${readLine(card).toLowerCase()}`));
 
   const share = create('div', 'card-actions');
   share.append(

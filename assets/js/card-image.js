@@ -3,6 +3,7 @@
 const PILL_COLOURS = {
   best: '#F2DC8C',
   cash: '#8FB39A',
+  assist: '#B9D3EA',
   Bronze: '#E3C19F',
   Silver: '#CBD3DC',
   Gold: '#F2DC8C',
@@ -16,13 +17,20 @@ const shortValueText = (win) => (win.money ? `R${Math.round(win.value).toLocaleS
 function pillText(card) {
   if (card.lead.kind === 'best') return 'Personal best';
   if (card.lead.kind === 'cash') return 'Cash';
+  if (card.lead.kind === 'assist') return 'Thank you';
   return card.lead.tier === 'Total' ? 'Registrations' : card.lead.tier;
 }
 
 const pillColour = (card) => PILL_COLOURS[card.lead.kind === 'sales' ? card.lead.tier : card.lead.kind];
 
+const readLine = (card) => (card.lead.kind === 'assist' ? 'Approved by an admin' : `Figures read ${card.read}`);
+
 function captionFor(card, cheer = '') {
   const firstName = card.person.split(' ')[0];
+  if (card.lead.kind === 'assist') {
+    const extra = cheer.trim() ? ` ${cheer.trim()}` : '';
+    return `Thank you, ${firstName}, for helping ${card.lead.helped}! ${card.lead.detail}${extra} ${card.college} · ${card.date}`;
+  }
   const also = card.also.length ? ` Also: ${card.also.join(', ')}.` : '';
   const message = cheer.trim() ? ` ${cheer.trim()}` : '';
   return `Well done, ${firstName}! ${card.lead.title}: ${valueText(card.lead)} ${card.lead.unit}. ${card.lead.detail}.${also}${message} ${card.college} · ${card.date}`;
@@ -177,7 +185,7 @@ async function drawCard(card, cheer = '') {
   context.fillText(card.date, 110, 1212);
   context.fillStyle = 'rgba(255, 255, 255, .55)';
   context.font = `600 26px ${body}`;
-  context.fillText(`Figures read ${card.read}`, 110, 1254);
+  context.fillText(readLine(card), 110, 1254);
 
   return canvas;
 }

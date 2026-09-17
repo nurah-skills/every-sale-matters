@@ -66,9 +66,36 @@ function saveCardStatus(id, status) {
   }
 }
 
+// Thank-you cards for assists an admin has approved
+const ASSIST_CARDS_KEY = 'esm-assist-cards';
+
+function savedAssistCards() {
+  try {
+    return JSON.parse(localStorage.getItem(ASSIST_CARDS_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveAssistCard(card) {
+  try {
+    localStorage.setItem(ASSIST_CARDS_KEY, JSON.stringify([...savedAssistCards(), card]));
+  } catch {
+    // Without storage the approval still shows until the page reloads.
+  }
+}
+
 function cardsWithStatus() {
   const statuses = savedCardStatuses();
-  return buildCards().map((card) => ({ ...card, status: statuses[card.id] || card.startingStatus }));
+  return [...savedAssistCards(), ...buildCards()].map((card) => ({ ...card, status: statuses[card.id] || card.startingStatus }));
+}
+
+function showInboxCount() {
+  const badge = document.getElementById('inbox-count');
+  if (!badge) return;
+  const waiting = savedFeedback().filter((item) => item.status === 'Submitted').length;
+  badge.textContent = String(waiting);
+  badge.hidden = waiting === 0;
 }
 
 function showReadyCount() {
@@ -139,5 +166,6 @@ function setUpShell() {
   });
 
   showReadyCount();
+  showInboxCount();
   return user;
 }
