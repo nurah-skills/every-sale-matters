@@ -16,7 +16,7 @@ This is a working design. It shows the same measures as the current scoreboard, 
 
 ### Who sees what
 
-A manager sees everything: anyone’s progress, the full team table with cash and personal bests, who is behind, and the Round-ups, Our progress and Admin pages.
+A manager sees everything: anyone’s progress, the full team table with cash and personal bests, who is behind, marking cards as sent or skipped, and the Round-ups, Our progress and Admin pages.
 
 A consultant sees their own progress, and the team with names, registrations and the good news only. No cash or bests for colleagues, no “behind pace” labels for anyone but themselves, and no manager pages. New accounts follow the job title: one with “manager”, “team lead” or “head” in it gets the manager view.
 
@@ -37,7 +37,7 @@ The pages follow the order of the menu.
 
 | Page | What it does |
 | --- | --- |
-| `cards.html` | Cards ready: celebration cards for sales levels (Bronze to Black), personal bests, cash milestones, streaks, steady progress, staff incentives and approved assists. Download, preview, copy the caption, mark as sent (with Undo) or skip. |
+| `cards.html` | Cards ready: celebration cards for sales levels (Bronze to Black), personal bests, cash milestones, streaks, steady progress, staff incentives and approved assists. Anyone can download a card, preview it or copy the caption; only managers mark one as sent (with Undo) or skip it. |
 | `make.html` | Make a single card: choose a person and an achievement, add a cheer, pick a design or your own background, and add a photo with zoom and move controls. |
 | `roundups.html` | A daily, weekly or monthly WhatsApp round-up for the whole team or one college. |
 | `fame.html` | Wall of fame: every card sent this month, with filters by college, person and kind of card, this week’s highlights, and a September calendar of the bigger moments. |

@@ -1,4 +1,4 @@
-setUpShell();
+const isManager = setUpShell().manager;
 
 const STATUSES = [
   ['ready', 'Ready'],
@@ -104,6 +104,13 @@ function cardTile(card) {
     actionButton('Preview', 'button-secondary', () => openPreview(card)),
     actionButton('Copy caption', 'button-secondary', () => copyCaption(card))
   );
+
+  // Everyone can download a card and send it; only a manager marks it as sent or skipped
+  if (!isManager) {
+    details.append(share);
+    tile.append(art, details);
+    return tile;
+  }
 
   const manage = create('div', 'card-manage');
   if (card.status === 'ready' || card.status === 'changed') {
