@@ -844,6 +844,56 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.5; }
 .submission-message { white-space: pre-wrap; overflow-wrap: anywhere; }
 .submission-reply { padding: 8px 12px; border-radius: 10px; background: var(--info-soft); color: var(--info-ink); font-size: 14px; }
 
+/* Our progress page */
+#check { display: flex; flex-direction: column; gap: 20px; }
+#check[hidden] { display: none; }
+.check-summary { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.check-summary p { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+
+.weeks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (min-width: 1440px) {
+  .weeks { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.week-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+.week-card .panel-head h2 { font-size: 17px; }
+.week-card.is-current { border-color: var(--sage); box-shadow: inset 0 0 0 1px var(--sage), var(--shadow); }
+.week-card.is-upcoming { background: var(--field); box-shadow: none; }
+.week-card .figure-list { margin-top: 6px; font-size: 14px; }
+.week-empty { margin-top: 14px; color: var(--muted); }
+
+.scale { margin: 0; padding: 0; border: 0; }
+.scale legend { margin-bottom: 8px; font-weight: 700; }
+.scale-options { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.scale-option { position: relative; cursor: pointer; }
+.scale-option input { position: absolute; opacity: 0; pointer-events: none; }
+.scale-option span {
+  display: grid;
+  place-items: center;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--field);
+  font-family: var(--heading);
+  font-weight: 600;
+}
+.scale-option:hover span { border-color: var(--muted); }
+.scale-option input:checked + span { border-color: var(--navy); background: var(--navy); color: var(--on-navy); }
+.scale-option input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+.scale-ends { display: flex; justify-content: space-between; margin-top: 4px; font-size: 13px; color: var(--muted); }
+
+.comments { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.comments li { padding: 10px 12px; border-radius: 10px; background: var(--field); white-space: pre-wrap; overflow-wrap: anywhere; }
+
 @media (max-width: 1100px) {
   .span-5, .span-7 { grid-column: span 12; }
   .maker { grid-template-columns: minmax(0, 1fr); }
@@ -887,6 +937,7 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.5; }
 
 @media (max-width: 560px) {
   .select { width: 100%; }
+  .weeks { grid-template-columns: minmax(0, 1fr); }
   .choice-group { grid-template-columns: minmax(0, 1fr); }
   .segmented { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
   .segmented-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }

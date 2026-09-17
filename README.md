@@ -14,6 +14,7 @@ Live site: https://nurah-skills.github.io/every-sale-matters/
 - `make.html` makes a single card: choose a person, one of the achievements their figures support and an optional cheer, then download the image, share it or copy the caption.
 - `roundups.html` writes a daily, weekly or monthly WhatsApp round-up for the whole team or one college, with a summary alongside.
 - `feedback.html` lets people report a problem, share an idea or nominate a colleague for an assist, and shows their own submissions and replies. In the demo, submissions are saved in your browser only.
+- `progress.html` is the four-week check: weekly registrations against the August average, plus a short pulse survey on whether the scoreboard feels encouraging and fair.
 
 Real accounts aren't set up yet. To look around, use **Continue with demo account** on the sign-in page, and sign out from the bottom of the menu.
 
@@ -36,6 +37,7 @@ assets/js    session.js  demo sign-in and sign-out
              make.js     make a card page
              roundups.js round-ups page
              feedback.js feedback page
+             progress.js our progress page
 assets/img   logo
 ```
 
