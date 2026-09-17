@@ -196,11 +196,12 @@ function showToast(message, action) {
 }
 
 // Phones get the most used pages along the bottom, within reach of a thumb
-function buildTabBar(sidebar) {
+function buildTabBar(sidebar, manager) {
   const nav = create('nav', 'tabbar');
   nav.setAttribute('aria-label', 'Quick menu');
   const current = location.pathname.split('/').pop() || 'home.html';
-  const pages = [['home.html', 'Home'], ['team.html', 'Team'], ['cards.html', 'Cards']];
+  // Cards ready is a manager job, so consultants get the wall of fame in its place
+  const pages = [['home.html', 'Home'], ['team.html', 'Team'], manager ? ['cards.html', 'Cards'] : ['fame.html', 'Wall of fame']];
 
   pages.forEach(([href, label]) => {
     const link = create('a', 'tab');
@@ -233,7 +234,7 @@ function statusChip(pace) {
 }
 
 // Round-ups, Our progress and Admin are for managers; everything else is the same for everyone
-const MANAGER_PAGES = ['make.html', 'roundups.html', 'progress.html', 'admin.html'];
+const MANAGER_PAGES = ['cards.html', 'make.html', 'roundups.html', 'progress.html', 'admin.html'];
 
 function setUpShell() {
   const user = readSession();
@@ -257,7 +258,7 @@ function setUpShell() {
   const app = document.getElementById('app');
   const sidebar = document.getElementById('sidebar');
   const menuButton = document.getElementById('menu-button');
-  const moreButton = buildTabBar(sidebar);
+  const moreButton = buildTabBar(sidebar, user.manager);
   const smallScreen = window.matchMedia('(max-width: 900px)');
   let opener = menuButton;
 

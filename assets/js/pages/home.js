@@ -127,9 +127,10 @@ function showCash(person, figures) {
   });
 }
 
+// Cards ready is for managers, so everyone else is pointed at the wall of fame
 function cardsLink() {
-  const link = create('a', 'text-link', 'Open cards ready');
-  link.href = 'cards.html';
+  const link = create('a', 'text-link', user.manager ? 'Open cards ready' : 'See the wall of fame');
+  link.href = user.manager ? 'cards.html' : 'fame.html';
   return link;
 }
 

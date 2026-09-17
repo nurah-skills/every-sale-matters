@@ -2,6 +2,9 @@ const user = setUpShell();
 
 const state = { college: recall('streaks-college') || 'All' };
 
+// Cards ready is for managers
+document.getElementById('streak-cards-link').hidden = !user.manager;
+
 const BANDS = [
   [20, Infinity, '20 days or more'],
   [10, 19, '10 to 19 days'],

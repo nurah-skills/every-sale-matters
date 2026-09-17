@@ -16,9 +16,9 @@ This is a working design. It shows the same measures as the current scoreboard, 
 
 ### Who sees what
 
-A manager sees everything: anyone’s progress, the full team table with cash and personal bests, who is behind, making cards, marking cards as sent or skipped, and the Round-ups, Our progress and Admin pages.
+A manager sees everything: anyone’s progress, the full team table with cash and personal bests, who is behind, the whole card queue (making cards, sending them and marking them as sent), and the Round-ups, Our progress and Admin pages.
 
-A consultant sees their own progress, and the team with names, registrations and the good news only. No cash or bests for colleagues, no “behind pace” labels for anyone but themselves, and no Make a card, Round-ups, Our progress or Admin. New accounts follow the job title: one with “manager”, “team lead” or “head” in it gets the manager view.
+A consultant sees their own progress, and the team with names, registrations and the good news only. No cash or bests for colleagues, no “behind pace” labels for anyone but themselves, and no Cards ready, Make a card, Round-ups, Our progress or Admin. They see the cards that went out on the Wall of fame instead, which also takes the Cards place in the bottom bar on phones. New accounts follow the job title: one with “manager”, “team lead” or “head” in it gets the manager view.
 
 On a phone the menu sits behind the menu button, and Home, Team, Cards and More run along the bottom of the screen.
 
@@ -37,7 +37,7 @@ The pages follow the order of the menu.
 
 | Page | What it does |
 | --- | --- |
-| `pages/cards.html` | Cards ready: the queue grouped by kind — personal bests, streaks, cash milestones, sales levels (Bronze to Black), steady progress, staff incentives and approved assists. Anyone can download a card, preview it or copy the caption; only managers mark one as sent (with Undo) or skip it. |
+| `pages/cards.html` | Managers only. Cards ready: the queue grouped by kind — personal bests, streaks, cash milestones, sales levels (Bronze to Black), steady progress, staff incentives and approved assists. Download a card, preview it, copy the caption, then mark it as sent (with Undo) or skip it. |
 | `pages/make.html` | Managers only. Make a single card: choose a person and an achievement, add a cheer, pick a design or your own background, and add a photo with zoom and move controls. |
 | `pages/roundups.html` | A daily, weekly or monthly WhatsApp round-up for the whole team or one college. |
 | `pages/fame.html` | Wall of fame: every card sent this month, with filters by college, person and kind of card, this week’s highlights, and a September calendar of the bigger moments. |
