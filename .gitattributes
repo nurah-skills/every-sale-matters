@@ -1,0 +1,3 @@
+# Keep the same line endings on every computer
+* text=auto eol=lf
+*.webp binary

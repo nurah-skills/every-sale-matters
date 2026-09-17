@@ -2,58 +2,106 @@
 
 Every sale matters.
 
-The registration scoreboard for Skills Academy, Matric College and Bellview.
+A scoreboard for the sales teams at Skills Academy, Matric College and Bellview. Consultants see their own progress, the team sees the whole group, and wins are turned into celebration cards for WhatsApp.
 
-Live site: https://nurah-skills.github.io/every-sale-matters/
+**Live site:** https://nurah-skills.github.io/every-sale-matters/
+
+This is a working design. It shows the same measures as the current scoreboard, with made-up names and figures, and it isn’t connected to the real registration sheets yet.
+
+## Trying it
+
+1. Open the live site.
+2. Select **Continue with demo account**, or choose **Create account** to try it with your own name and photo.
+3. Sign out from the bottom of the menu.
+
+On a phone the menu sits behind the menu button, and Home, Team, Cards and More run along the bottom of the screen.
 
 ## Pages
 
-- `index.html` is the sign-in page.
-- `signup.html` is the create account page. It asks for a profile photo, first name, surname and job title, plus an optional preferred name, mobile number and the person's name on the scoreboard, so their own results show first.
-- `home.html` shows one person's progress: an at-a-glance strip (registrations and pace, the next record, this week's incentives), then registrations against their August average and usual pace, the next record, cash recorded, this week's staff incentives, their most recent celebration, their suggested league and the three colleges.
-- `team.html` shows the whole group: totals, college totals and everyone's results with a bar against their August average and usual pace, quick filters (ahead, on track, behind, not started), optional grouping by college and your own row highlighted. Selecting a name opens their details. Below the table, Celebrate next shows new bests or the people closest to one.
-- `cards.html` is the queue of celebration cards: sales levels from Bronze to Black, personal bests for registrations and cash, cash milestones, steady progress, staff incentives and approved assists. Each card can be previewed, downloaded as a 1080 × 1350 image for WhatsApp, have its caption copied, and be marked as sent or skipped. In the demo those statuses are saved in your browser only.
-- `make.html` makes a single card: choose a person, one of the achievements their figures support, an optional cheer, a design (or your own background) and a photo of the salesperson with zoom and move controls, then download the image, share it or copy the caption. The photo someone adds when they create their account goes on their cards automatically, including in Cards ready. Backgrounds, photos you choose for one card and saved photos stay in the browser.
-- `fame.html` is the wall of fame: every card sent this month in a gallery, grouped by day and filterable by college or person, with filters by kind of card and a row of this week’s highlights, plus a September calendar of the bigger moments (personal bests, streaks and Gold or higher) with the chosen day listed beside it. Selecting a card shows it full size to download again.
-- `streaks.html` lists who has made a sale on working days in a row, the longest streaks this month and how many people have reached the 5, 10 and 20-day cards. Streak cards also appear in Cards ready.
-- `shoutouts.html` lets anyone send a short well done to a colleague. It goes to the admin inbox, and once approved it shows on the board. Shout-outs don’t add to anyone’s totals.
-- `roundups.html` writes a daily, weekly or monthly WhatsApp round-up for the whole team or one college, with a summary alongside.
-- `feedback.html` lets people report a problem, share an idea or nominate a colleague for an assist, and shows their own submissions and replies. In the demo, submissions are saved in your browser only.
-- `progress.html` is the four-week check: weekly registrations against the August average, plus a short pulse survey on whether the scoreboard feels encouraging and fair.
-- `admin.html` is for admins: an overview, the feedback inbox (reply, resolve, approve or decline assists), the admin list and a button to reset the demo data. Shout-outs are approved here too. Approving an assist adds a thank-you card to Cards ready.
+The pages follow the order of the menu.
 
-On phones the menu moves behind a button, with Home, Team, Cards and More along the bottom of the screen.
+### Main
 
-Real accounts aren't set up yet. To look around, use **Continue with demo account** on the sign-in page, or fill in **Create account** to try it with your own name and photo. Those details stay in the browser and the password isn't kept. Sign out from the bottom of the menu.
+| Page | What it does |
+| --- | --- |
+| `home.html` | One person’s progress. An at-a-glance strip (registrations, the next record, this week’s incentives, any sales streak), then registrations against their August average and usual pace, cash recorded, staff incentives, their latest celebration, their suggested league and the three colleges. |
+| `team.html` | The whole group: totals, college totals and everyone’s results, with filters, sorting, grouping by college and your own row highlighted. Selecting a name opens their details. |
 
-## Figures
+### Recognition
 
-The measures are the same as the current scoreboard. The names and numbers are samples while the design is being settled, so no real staff data is stored in this repo. Connecting the real registration sheets is a later step.
+| Page | What it does |
+| --- | --- |
+| `cards.html` | Cards ready: celebration cards for sales levels (Bronze to Black), personal bests, cash milestones, streaks, steady progress, staff incentives and approved assists. Download, preview, copy the caption, mark as sent (with Undo) or skip. |
+| `make.html` | Make a single card: choose a person and an achievement, add a cheer, pick a design or your own background, and add a photo with zoom and move controls. |
+| `roundups.html` | A daily, weekly or monthly WhatsApp round-up for the whole team or one college. |
+| `fame.html` | Wall of fame: every card sent this month, with filters by college, person and kind of card, this week’s highlights, and a September calendar of the bigger moments. |
+| `streaks.html` | Who has made a sale on working days in a row, grouped by length, with the streak cards reached today and the longest streaks this month. |
+| `shoutouts.html` | Send a short well done to a colleague. Once an admin approves it, it shows on the board. |
+
+### Team health
+
+| Page | What it does |
+| --- | --- |
+| `progress.html` | The four-week check: weekly registrations against the August average and a short survey on whether the scoreboard feels encouraging and fair. |
+| `feedback.html` | Report a problem, share an idea or nominate a colleague for an assist, and see your own submissions and replies. |
+| `admin.html` | An overview, the inbox (feedback, assists and shout-outs), the admin list and a button to reset the demo data. |
+
+### Accounts
+
+| Page | What it does |
+| --- | --- |
+| `index.html` | Sign in, or continue with the demo account. |
+| `signup.html` | Create an account with a profile photo, name, job title and, optionally, a preferred name, mobile number and your name on the scoreboard. |
+
+## How the demo saves things
+
+There’s no database yet, so everything people do is saved in their own browser only:
+
+- the signed-in person and their details (passwords are never kept)
+- profile photos, which also go on that person’s cards
+- card statuses (sent, skipped or ready)
+- feedback, assist nominations and shout-outs, with admin replies
+- approved assist cards, the admin list and the four-week check
+
+Nothing is shared between devices. **Reset demo data** on the Admin page clears card statuses, feedback, assists, shout-outs, the admin list and the four-week check. It leaves the signed-in person and saved photos alone.
+
+## Sample data
+
+All names and figures are made up, so no real staff data is stored in this public repo. The sample month is 1 to 17 September 2026, with the figures read at 10:32 on Thursday 17 September. Some days have no sales and a few late-August days are included, so streaks start and end the way they would in real life.
+
+The counting rules match the current scoreboard: a registration counts when a row has a salesperson’s name and either a student name or CRM ID, and “Cancelled” rows don’t count.
 
 ## Folders
 
 ```
-assets/css   styles
-assets/js    session.js  demo sign-in, sign-out and saved photos
-             auth.js     sign-in and create account pages
-             signup.js   create account checks and photo
-             data.js     sample people, the calculations and the card rules
-             fame.js     wall of fame gallery and calendar
-             streaks.js  streaks page
-             shoutouts.js shout-out form and board
-             app.js      menu, signed-in person and formatting shared by signed-in pages
-             home.js     home page
-             team.js     team page
-             card-image.js  the WhatsApp card image and caption, used by both card pages
-             cards.js    cards ready page
-             make.js     make a card page
-             roundups.js round-ups page
-             feedback.js feedback page
-             progress.js our progress page
-             admin.js    admin page
-assets/img   logo, and colleges/ with the college logos used on cards
+*.html                 one file per page, kept at the top so the web addresses stay the same
+assets/css/styles.css  all styles, in the same order as the menu
+assets/img/            the logo, and colleges/ with the college logos used on cards
+assets/js/shared/      used by several pages
+  session.js           demo sign-in, sign-out and saved photos (loads first on every page)
+  data.js              sample people, the calculations and the card rules
+  app.js               menu, bottom bar, messages and small helpers for signed-in pages
+  card-image.js        draws the WhatsApp card image and writes its caption
+  auth.js              sign-in and create account buttons
+assets/js/pages/       one script per page, named after the page
 ```
 
-## Viewing it
+## Working on it
 
-Open `index.html` in a browser, or visit the live site.
+The site is plain HTML, CSS and JavaScript, with nothing to build.
+
+To run it on your own computer, open a terminal in this folder and run:
+
+```
+npx.cmd serve .
+```
+
+Then open the address it shows. The first time, this downloads a small free web server from npm.
+
+Changes pushed to the `main` branch go live on GitHub Pages within a few minutes.
+
+## Still to do
+
+- Connect the real registration and incentive sheets
+- Real sign-in with approved work emails
+- A shared database, so card statuses, feedback, shout-outs and photos are the same for everyone
