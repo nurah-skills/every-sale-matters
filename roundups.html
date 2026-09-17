@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'; base-uri 'self'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex">
-  <title>Cards ready · Every Sale Matters</title>
+  <title>Round-ups · Every Sale Matters</title>
   <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +30,7 @@
         </a>
 
         <p class="menu-label">Recognition</p>
-        <a class="menu-item" href="cards.html" aria-current="page">
+        <a class="menu-item" href="cards.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>
           <span>Cards ready</span><em class="count" id="cards-ready-count" hidden></em>
         </a>
@@ -38,7 +38,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>
           <span>Make a card</span>
         </a>
-        <a class="menu-item" href="roundups.html">
+        <a class="menu-item" href="roundups.html" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
           <span>Round-ups</span>
         </a>
@@ -81,77 +81,58 @@
         <div class="page-header">
           <div>
             <p class="eyebrow">Recognition</p>
-            <h1>Cards ready</h1>
-            <p class="page-note" id="cards-note"></p>
+            <h1>Round-ups</h1>
+            <p class="page-note">Celebrate the whole team. Choose the period, check the message, then copy it into WhatsApp.</p>
           </div>
           <span class="tag">Sample figures · updated <span id="snapshot-time"></span></span>
         </div>
 
-        <ol class="steps" aria-label="How to share a card">
-          <li><span>1</span>Download the card</li>
-          <li><span>2</span>Send it in the WhatsApp group</li>
-          <li><span>3</span>Mark it as sent</li>
-        </ol>
-
         <div class="controls">
-          <div class="segmented" id="status-picker" role="group" aria-label="Status"></div>
-          <label class="sr-only" for="person-filter">Salesperson</label>
-          <select class="select" id="person-filter"></select>
-          <button class="button button-secondary button-inline" id="check-cards" type="button">Check for new cards</button>
+          <div class="segmented segmented-three" id="roundup-period" role="group" aria-label="Period"></div>
+          <label class="sr-only" for="roundup-date">Results up to</label>
+          <select class="select" id="roundup-date"></select>
+          <label class="sr-only" for="roundup-college">College</label>
+          <select class="select" id="roundup-college">
+            <option value="All">All colleges</option>
+            <option>Skills Academy</option>
+            <option>Matric College</option>
+            <option>Bellview</option>
+          </select>
         </div>
 
-        <p class="notice">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
-          <span>In this demo anyone can mark cards as sent or skipped, and changes are saved in this browser only. Later, only card admins will be able to do this. Nothing is posted to WhatsApp automatically.</span>
-        </p>
-
-        <div class="card-grid" id="card-grid" aria-live="polite"></div>
-
-        <div class="about-group">
-          <details class="about">
-            <summary>When do we make a card?</summary>
-            <div class="about-body">
-              <p><strong>Sales in one day:</strong> Bronze for the first sale, Silver for 3, Gold for 5 and Diamond for 10. The levels start again each day.</p>
-              <p><strong>Beat your own best:</strong> more sales than your previous best day or week, or a month so far that beats your previous whole month. Matching a best doesn't count.</p>
-              <p><strong>Cash:</strong> first payment of any size, then R1 000, R2 500, R5 000 and R10 000 in a day. Weekly milestones are R5 000, R10 000 and R20 000, and monthly milestones are R5 000, R10 000, R20 000 and R50 000. Only the highest milestone in each period gets a card.</p>
-              <p><strong>Steady improvement:</strong> beat your August daily average on at least 4 recorded days in the same week. One card per person per week.</p>
-              <p><strong>Thank you for an assist:</strong> a colleague nominates someone, and an admin approves a short thank-you. It doesn't add a sale or cash to anyone's totals.</p>
+        <div class="grid">
+          <section class="panel span-7" aria-labelledby="message-title">
+            <div class="panel-head">
+              <h2 id="message-title">Message</h2>
+              <button class="button button-inline" id="roundup-copy" type="button">Copy message</button>
             </div>
-          </details>
-          <details class="about">
-            <summary>How the queue works</summary>
-            <div class="about-body">
-              <p>Unsent wins for the same person on the same day share one card, and the biggest personal best leads.</p>
-              <p>If more sales come in after a card was sent, the card shows as "Figures changed" so an admin can check it. The card that was sent stays as it was.</p>
-              <p>Cash is the amount recorded under Paid on the sheet date. Cancelled rows, missing amounts and missing CRM IDs are left out, and repeated CRM IDs count once a month.</p>
+            <div class="chat">
+              <p class="chat-bubble" id="roundup-message"></p>
             </div>
-          </details>
+            <label class="sr-only" for="roundup-text">Message text</label>
+            <textarea class="input caption" id="roundup-text" rows="6" readonly hidden></textarea>
+            <p class="panel-note">Words between asterisks show in bold in WhatsApp.</p>
+          </section>
+
+          <section class="panel span-5" aria-labelledby="summary-title">
+            <div class="panel-head">
+              <h2 id="summary-title">Summary</h2>
+            </div>
+            <dl class="figure-list" id="roundup-figures"></dl>
+            <div>
+              <p class="subheading">By college</p>
+              <ul class="colleges" id="roundup-colleges"></ul>
+            </div>
+          </section>
         </div>
       </main>
     </div>
   </div>
 
-  <dialog class="dialog" id="card-preview" aria-labelledby="preview-title">
-    <div class="dialog-head">
-      <h2 id="preview-title">Card preview</h2>
-      <button class="icon-button" id="close-preview" type="button" aria-label="Close preview">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-    </div>
-    <img class="preview-image" id="preview-image" alt="">
-    <label class="field-hint" for="preview-caption">WhatsApp caption</label>
-    <textarea class="input caption" id="preview-caption" rows="3" readonly></textarea>
-    <div class="dialog-actions">
-      <button class="button button-inline" id="preview-download" type="button">Download PNG</button>
-      <button class="button button-secondary button-inline" id="preview-copy" type="button">Copy caption</button>
-    </div>
-  </dialog>
-
   <div class="toast" id="toast" role="status" hidden></div>
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/app.js"></script>
-  <script src="assets/js/card-image.js"></script>
-  <script src="assets/js/cards.js"></script>
+  <script src="assets/js/roundups.js"></script>
 </body>
 </html>
