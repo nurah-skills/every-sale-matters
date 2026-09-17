@@ -119,8 +119,19 @@
           <span>This page is for managers: download a card, send it in the WhatsApp group, then mark it as sent. In this demo those changes are saved in this browser only, and nothing is posted to WhatsApp automatically.</span>
         </p>
 
-        <h2 class="sr-only" id="card-list-title">Cards</h2>
-        <div id="card-groups"></div>
+        <section id="category-list" aria-labelledby="category-list-title">
+          <h2 class="sr-only" id="category-list-title">Choose a kind of card</h2>
+          <div class="category-grid" id="category-grid"></div>
+        </section>
+
+        <section id="category-view" aria-labelledby="category-title" hidden>
+          <div class="category-head">
+            <button class="button button-secondary button-inline" id="back-to-categories" type="button">All kinds of card</button>
+            <h2 id="category-title" tabindex="-1"></h2>
+            <p class="panel-note" id="category-note"></p>
+          </div>
+          <div class="card-grid" id="card-grid"></div>
+        </section>
 
         <div class="about-group">
           <details class="about">

@@ -28,6 +28,7 @@ const STATUS_CHIPS = {
 const state = {
   status: STATUSES.some(([key]) => key === recall('cards-status')) ? recall('cards-status') : 'ready',
   person: recall('cards-person') || 'all',
+  category: CATEGORIES.some(([kind]) => kind === recall('cards-category')) ? recall('cards-category') : null,
   previewing: null
 };
 
@@ -167,27 +168,78 @@ function render() {
   const shown = cards.filter((card) =>
     (state.status === 'all' || card.status === state.status) && (state.person === 'all' || card.person === state.person));
 
-  const holder = document.getElementById('card-groups');
-  holder.replaceChildren();
+  const shownIn = (kind) => shown.filter((card) => card.lead.kind === kind);
+  if (state.category && !shownIn(state.category).length) state.category = null;
+
+  document.getElementById('category-list').hidden = Boolean(state.category);
+  document.getElementById('category-view').hidden = !state.category;
+  if (state.category) showCategory(shownIn(state.category));
+  else showCategories(shown, shownIn);
+}
+
+// The queue opens on the kinds of card, so a long list is one tap away instead of straight in your face
+function showCategories(shown, shownIn) {
+  const grid = document.getElementById('category-grid');
+  grid.replaceChildren();
+
   if (!shown.length) {
     const label = STATUSES.find(([key]) => key === state.status)[1].toLowerCase();
-    holder.append(create('p', 'empty', state.status === 'all' ? 'No cards for this person yet.' : `No ${label} cards here right now.`));
+    grid.append(create('p', 'empty', state.status === 'all' ? 'No cards for this person yet.' : `No ${label} cards here right now.`));
     return;
   }
 
-  // Same order as the card rules: personal bests first, then streaks, cash, levels and the rest
   CATEGORIES.forEach(([kind, label]) => {
-    const group = shown.filter((card) => card.lead.kind === kind);
+    const group = shownIn(kind);
     if (!group.length) return;
-    const section = create('section', 'card-group');
-    const head = create('div', 'card-group-head');
-    head.append(create('h3', '', label), create('span', 'panel-note', `${group.length} card${group.length === 1 ? '' : 's'}`));
-    const grid = create('div', 'card-grid');
-    group.forEach((card) => grid.append(cardTile(card)));
-    section.append(head, grid);
-    holder.append(section);
+    const tile = create('button', 'category-tile');
+    tile.type = 'button';
+    tile.dataset.focus = `category:${kind}`;
+
+    const art = create('span', `card-art kind-${kind}`);
+    const pill = create('span', 'card-pill', pillText(group[0]));
+    pill.style.background = pillColour(group[0]);
+    pill.style.color = pillTextColour(group[0]);
+    art.append(pill, create('b', '', String(group.length)), create('span', '', group.length === 1 ? 'card' : 'cards'));
+
+    const body = create('span', 'category-body');
+    const names = [...new Set(group.map((card) => card.person.split(' ')[0]))];
+    body.append(
+      create('b', '', label),
+      create('small', '', names.slice(0, 3).join(', ') + (names.length > 3 ? ` and ${names.length - 3} more` : ''))
+    );
+
+    tile.append(art, body);
+    tile.addEventListener('click', () => openCategory(kind));
+    grid.append(tile);
   });
 }
+
+function openCategory(kind) {
+  state.category = kind;
+  remember('cards-category', kind);
+  render();
+  document.getElementById('category-title').focus();
+}
+
+function showCategory(group) {
+  const [, label] = CATEGORIES.find(([kind]) => kind === state.category);
+  document.getElementById('category-title').textContent = label;
+  document.getElementById('category-note').textContent =
+    `${group.length} card${group.length === 1 ? '' : 's'} · ${STATUSES.find(([key]) => key === state.status)[1].toLowerCase()}`;
+
+  const grid = document.getElementById('card-grid');
+  grid.replaceChildren();
+  group.forEach((card) => grid.append(cardTile(card)));
+}
+
+document.getElementById('back-to-categories').addEventListener('click', () => {
+  const kind = state.category;
+  state.category = null;
+  remember('cards-category', '');
+  render();
+  const tile = document.querySelector(`[data-focus="category:${kind}"]`);
+  if (tile) tile.focus();
+});
 
 document.getElementById('person-filter').addEventListener('change', (event) => {
   state.person = event.target.value;

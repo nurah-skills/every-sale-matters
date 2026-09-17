@@ -37,7 +37,7 @@ The pages follow the order of the menu.
 
 | Page | What it does |
 | --- | --- |
-| `pages/cards.html` | Managers only. Cards ready: the queue grouped by kind — personal bests, streaks, cash milestones, sales levels (Bronze to Black), steady progress, staff incentives and approved assists. Download a card, preview it, copy the caption, then mark it as sent (with Undo) or skip it. |
+| `pages/cards.html` | Managers only. Cards ready: the queue opens on a tile per kind of card — personal bests, streaks, cash milestones, sales levels (Bronze to Black), steady progress, staff incentives and approved assists — each with a count. Choose one to see those cards. Download a card, preview it, copy the caption, then mark it as sent (with Undo) or skip it. |
 | `pages/make.html` | Managers only. Make a single card: choose a person and an achievement, add a cheer, pick a design or your own background, and add a photo with zoom and move controls. |
 | `pages/roundups.html` | A daily, weekly or monthly WhatsApp round-up for the whole team or one college. |
 | `pages/fame.html` | Wall of fame: every card sent this month, with filters by college, person and kind of card, this week’s highlights, and a September calendar of the bigger moments. |
