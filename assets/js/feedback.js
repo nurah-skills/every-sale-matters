@@ -116,5 +116,11 @@ PEOPLE.filter((person) => person.name !== user.name)
   .sort((a, b) => a.name.localeCompare(b.name))
   .forEach((person) => helperSelect.append(new Option(person.name, person.name)));
 
+// Coming from 'Say thank you for an assist' on the team page
+if (recall('feedback-type') === 'assist') {
+  form.querySelector('input[value="assist"]').checked = true;
+  remember('feedback-type', '');
+}
+
 showType();
 showSubmissions();

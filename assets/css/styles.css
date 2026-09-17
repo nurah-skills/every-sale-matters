@@ -629,6 +629,17 @@ a.menu-item:hover { background: rgba(255, 255, 255, .08); color: var(--on-navy);
 .results tfoot th,
 .results tfoot td { font-weight: 700; border-bottom: 0; }
 
+/* Person details on the team page */
+.details-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.details-stats div { display: flex; flex-direction: column; padding: 12px; border-radius: 12px; background: var(--field); }
+.details-stats b { font-family: var(--heading); font-size: 26px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.details-stats span { font-size: 13px; color: var(--muted); line-height: 1.3; }
+.details-next { font-weight: 700; }
+#details-status { align-self: flex-start; }
+a.button { text-decoration: none; }
+a.button-secondary, a.button-secondary:hover { color: var(--ink); }
+a.button:not(.button-secondary), a.button:not(.button-secondary):hover { color: var(--on-navy); }
+
 /* Cards ready page */
 .status-changed { background: color-mix(in srgb, var(--now) 20%, transparent); color: var(--ink); }
 

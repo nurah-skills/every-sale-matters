@@ -114,15 +114,57 @@
             <label class="sr-only" for="search">Search names</label>
             <input class="search" id="search" type="search" placeholder="Search names" autocomplete="off">
           </div>
-          <p class="panel-note">Select a name to open their progress. Select a column heading to sort.</p>
+          <p class="panel-note">Select a name for details. Select a column heading to sort.</p>
           <div class="table-wrap">
             <table class="results" id="results"></table>
           </div>
           <p class="panel-note">August average is August's registrations divided by 20 recorded days, multiplied by the days in the period. The latest day may still be in progress.</p>
         </section>
+
+        <div class="grid">
+          <section class="panel span-7" aria-labelledby="celebrate-title">
+            <div class="panel-head">
+              <h2 id="celebrate-title">Celebrate next</h2>
+              <a class="text-link" href="make.html">Make a celebration card</a>
+            </div>
+            <p class="panel-note" id="celebrate-note"></p>
+            <ul class="league" id="celebrate-list"></ul>
+          </section>
+
+          <section class="panel span-5" aria-labelledby="help-title">
+            <div class="panel-head">
+              <h2 id="help-title">We help each other</h2>
+            </div>
+            <p>Share a useful tip. Lend a hand. Say thank you when someone helps you close a sale.</p>
+            <p class="panel-note">If someone needs help, have that conversation privately.</p>
+            <div class="dialog-actions">
+              <a class="button button-secondary button-inline" href="feedback.html" id="thank-assist">Say thank you for an assist</a>
+            </div>
+          </section>
+        </div>
       </main>
     </div>
   </div>
+
+  <dialog class="dialog" id="person-details" aria-labelledby="details-name">
+    <div class="dialog-head">
+      <div>
+        <h2 id="details-name"></h2>
+        <p class="panel-note" id="details-note"></p>
+      </div>
+      <button class="icon-button" id="close-details" type="button" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="details-stats" id="details-stats"></div>
+    <span id="details-status"></span>
+    <p class="details-next" id="details-next"></p>
+    <dl class="figure-list" id="details-figures"></dl>
+    <div class="dialog-actions">
+      <a class="button button-inline" id="details-card" href="make.html">Make a card</a>
+      <a class="button button-secondary button-inline" id="details-progress" href="home.html">Open full progress</a>
+    </div>
+  </dialog>
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/app.js"></script>

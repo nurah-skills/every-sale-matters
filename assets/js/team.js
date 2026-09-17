@@ -212,11 +212,8 @@ function showTable() {
         cell.scope = 'row';
         const link = create('button', 'person-link', row.person.name);
         link.type = 'button';
-        link.addEventListener('click', () => {
-          remember('person', row.person.name);
-          remember('period', state.period);
-          location.href = 'home.html';
-        });
+        link.setAttribute('aria-haspopup', 'dialog');
+        link.addEventListener('click', () => showDetails(row));
         cell.append(link);
         line.append(cell);
         return;
@@ -267,11 +264,96 @@ function showTable() {
   table.append(head, body, foot);
 }
 
+function showDetails(row) {
+  const { person, figures } = row;
+  const period = PERIODS[state.period];
+  const dialog = document.getElementById('person-details');
+
+  document.getElementById('details-name').textContent = person.name;
+  document.getElementById('details-note').textContent = `${person.college} · ${period.note}`;
+
+  const stats = document.getElementById('details-stats');
+  stats.replaceChildren();
+  [
+    [String(figures.count), 'Registrations'],
+    [formatNumber(figures.august), 'August average'],
+    [String(figures.previousBest), `Best ${period.unit} since August`]
+  ].forEach(([value, label]) => {
+    const stat = create('div');
+    stat.append(create('b', '', value), create('span', '', label));
+    stats.append(stat);
+  });
+
+  document.getElementById('details-status').replaceChildren(statusChip(paceFor(figures, state.period)));
+  const needed = figures.previousBest + 1 - figures.count;
+  document.getElementById('details-next').textContent = needed > 0
+    ? `${needed} more registration${needed === 1 ? '' : 's'} would set a new best ${period.unit} since August.`
+    : `A new best ${period.unit} since August. Worth a celebration.`;
+
+  const rows = [['Compared with August', describeChange(figures.count, figures.august)]];
+  if (state.period !== 'yesterday') rows.push([`Usually by ${SNAPSHOT.time}`, formatNumber(figures.byNow)]);
+  rows.push(['Cash recorded', formatMoney(figures.cash)]);
+  const list = document.getElementById('details-figures');
+  list.replaceChildren();
+  rows.forEach(([term, value]) => {
+    const item = create('div');
+    item.append(create('dt', '', term), create('dd', '', value));
+    list.append(item);
+  });
+
+  const cardLink = document.getElementById('details-card');
+  cardLink.textContent = `Make a card for ${person.name.split(' ')[0]}`;
+  cardLink.onclick = () => remember('make-person', person.name);
+  document.getElementById('details-progress').onclick = () => {
+    remember('person', person.name);
+    remember('period', state.period);
+  };
+
+  dialog.showModal();
+}
+
+// People with a new best this period, or the ones closest to one
+function showCelebrateNext() {
+  const rows = rowsFor(state.college);
+  const unit = PERIODS[state.period].unit;
+  const bests = rows.filter((row) => row.figures.count > row.figures.previousBest);
+  const list = document.getElementById('celebrate-list');
+  const note = document.getElementById('celebrate-note');
+  list.replaceChildren();
+
+  const shown = bests.length
+    ? bests
+    : rows.slice().sort((a, b) =>
+      (a.figures.previousBest + 1 - a.figures.count) - (b.figures.previousBest + 1 - b.figures.count)).slice(0, 4);
+
+  note.textContent = bests.length
+    ? `New personal bests ${state.period === 'yesterday' ? 'yesterday' : 'in this period'}. Give these the biggest cheer.`
+    : `No new records yet in this period. These people are closest to a new best ${unit}.`;
+
+  shown.forEach((row) => {
+    const needed = row.figures.previousBest + 1 - row.figures.count;
+    const item = create('li');
+    const who = create('div');
+    const name = create('button', 'person-link', row.person.name);
+    name.type = 'button';
+    name.addEventListener('click', () => showDetails(row));
+    who.append(name, create('small', '', `${row.person.college} · best ${unit} ${row.figures.previousBest}`));
+    const now = create('div', 'now');
+    now.append(
+      create('b', '', String(row.figures.count)),
+      statusChip(needed > 0 ? { tone: 'info', text: `${needed} to a new best` } : { tone: 'best', text: 'New best' })
+    );
+    item.append(create('span', 'avatar avatar-soft', initials(row.person.name)), who, now);
+    list.append(item);
+  });
+}
+
 function render() {
   showHeader();
   showTiles();
   showColleges();
   showTable();
+  showCelebrateNext();
 }
 
 document.getElementById('college-select').addEventListener('change', (event) => {
@@ -279,6 +361,12 @@ document.getElementById('college-select').addEventListener('change', (event) => 
   remember('team-college', state.college);
   render();
 });
+
+document.getElementById('close-details').addEventListener('click', () => document.getElementById('person-details').close());
+document.getElementById('person-details').addEventListener('click', (event) => {
+  if (event.target.id === 'person-details') event.target.close();
+});
+document.getElementById('thank-assist').addEventListener('click', () => remember('feedback-type', 'assist'));
 
 document.getElementById('search').addEventListener('input', (event) => {
   state.search = event.target.value;
