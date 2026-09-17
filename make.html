@@ -108,6 +108,31 @@
               </div>
 
               <div class="field">
+                <label for="maker-design"><span class="step-number">4</span>Choose a design</label>
+                <div class="design-row">
+                  <select class="select" id="maker-design"></select>
+                  <button class="button button-secondary button-inline" id="maker-shuffle" type="button">Try another design</button>
+                </div>
+                <div class="upload-row">
+                  <input class="sr-only" id="maker-background" type="file" accept="image/png, image/jpeg, image/webp">
+                  <label class="button button-secondary button-inline upload-button" for="maker-background">Use your own background</label>
+                  <button class="button button-quiet button-inline" id="maker-background-clear" type="button" hidden>Remove background</button>
+                </div>
+                <p class="field-hint">Your background stays in this browser. The writing is darkened over it so it stays easy to read.</p>
+              </div>
+
+              <div class="field">
+                <span class="field-label"><span class="step-number">5</span>Add a photo <span class="optional">(optional)</span></span>
+                <div class="upload-row">
+                  <span class="photo-preview" id="maker-photo-preview" aria-hidden="true"></span>
+                  <input class="sr-only" id="maker-photo" type="file" accept="image/png, image/jpeg, image/webp">
+                  <label class="button button-secondary button-inline upload-button" for="maker-photo">Choose the salesperson's photo</label>
+                  <button class="button button-quiet button-inline" id="maker-photo-clear" type="button" hidden>Remove photo</button>
+                </div>
+                <p class="field-hint">The photo stays in this browser and is only added to the card you download. It isn't uploaded or saved. Choosing another person clears it.</p>
+              </div>
+
+              <div class="field">
                 <label for="maker-caption">WhatsApp caption</label>
                 <textarea class="input caption" id="maker-caption" rows="4" readonly></textarea>
               </div>
