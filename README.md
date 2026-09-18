@@ -94,6 +94,10 @@ assets/js/shared/      used by several pages
 assets/js/pages/       one script per page, named after the page
 ```
 
+## How it looks
+
+This board and the [Mailer board](https://nurah-skills.github.io/hsg-mailer-management/) share one design, so a person who knows one can read the other. Headings and figures are set in Archivo, running text in Nunito, both from Google Fonts. The palette, the three corner shapes and the parts they build are written down in [DESIGN.md](DESIGN.md).
+
 ## Working on it
 
 The site is plain HTML, CSS and JavaScript, with nothing to build.
@@ -105,6 +109,14 @@ npx.cmd serve .
 ```
 
 Then open the address it shows. The first time, this downloads a small free web server from npm.
+
+Before committing a change to anything in `assets/`, run:
+
+```
+node tools/stamp-assets.js
+```
+
+GitHub Pages lets a browser keep a stylesheet or a script for ten minutes. Without that step a visitor can load the new page beside the old script, and a control that is on screen does nothing. The script puts `?v=` and a short hash of each file on every link to it, so a file that changed gets a new address and a file that did not stays cached. It says "nothing to stamp" when everything is already current.
 
 Changes pushed to the `main` branch go live on GitHub Pages within a few minutes.
 
