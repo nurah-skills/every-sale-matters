@@ -144,7 +144,11 @@ function buildSegmented(container, options, current, onChange) {
     button.type = 'button';
     button.dataset.focus = `${container.id}:${value}`;
     button.setAttribute('aria-pressed', String(value === current));
-    button.addEventListener('click', () => keepFocus(() => onChange(value)));
+    // The pressed one moves here, so a caller that does not rebuild the control still shows the change
+    button.addEventListener('click', () => keepFocus(() => {
+      [...container.children].forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+      onChange(value);
+    }));
     container.append(button);
   });
 }
