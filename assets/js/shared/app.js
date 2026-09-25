@@ -301,7 +301,6 @@ function setUpShell() {
   return user;
 }
 
-
 // The one banner a page is allowed. It takes the same items the "Where to start"
 // band builds — count, words, href, tone — so nothing new has to be worked out.
 // The loudest becomes the figure and the sentence; the rest become the line under it.
@@ -356,14 +355,3 @@ function buildBanner(items, options) {
 
 const capitalise = (words) => words.charAt(0).toUpperCase() + words.slice(1);
 
-// The live line under the page title: what the board is reading and what needs attention.
-function buildStatusLine(parts) {
-  const line = create('p', 'status-line');
-  (parts || []).forEach((part, index) => {
-    if (index) line.append(document.createTextNode(' \u00b7 '));
-    if (part.bold) line.append(create('b', '', part.text));
-    else if (part.warn) line.append(create('span', 'is-warn', part.text));
-    else line.append(document.createTextNode(part.text));
-  });
-  return line;
-}
