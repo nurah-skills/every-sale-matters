@@ -1,64 +1,49 @@
 :root {
-  color-scheme: light dark;
-  --page: #F1F6F3;
+  color-scheme: light;
+  --page: #F4F5F8;
   --card: #FFFFFF;
-  --field: #E6EEE9;
-  --ink: #11211B;
-  --muted: #52665D;
-  --line: #D6E4DC;
-  --navy: #14352C;
-  --navy-deep: #0C211A;
-  --accent: #17A57C;
-  --accent-ink: #0A6B50;
-  --accent-soft: #D8F1E6;
-  --focus: #0F766E;
-  --now: #0A6B50;
-  --bar: #17A57C;
+  --field: #EEF0F4;
+  --ink: #0F172A;
+  --muted: #5B6878;
+  --line: #E7E9EE;
+  --navy: #0E1B3D;
+  --navy-deep: #0A142E;
+  --accent: #2F6FEB;
+  --accent-ink: #1D56C9;
+  --accent-soft: #EAF1FE;
+  --focus: #2F6FEB;
+  --now: #1D56C9;
+  --bar: #2F6FEB;
   --streak: #9E4A33;
-  --field-line: #6D837A;
-  --selected: #14352C;
+  --field-line: #D5D9E0;
+  --selected: #0E1B3D;
   --on-selected: #FFFFFF;
-  --on-accent: #06251B;
-  --info-soft: #DEEAF4;
-  --info-ink: #2C4B6B;
-  --error: #B0392C;
+  --on-accent: #FFFFFF;
+  --info-soft: #EAF1FE;
+  --info-ink: #1D56C9;
+  --error: #C81E1E;
   --on-navy: #FFFFFF;
-  --on-navy-muted: rgba(255, 255, 255, .8);
-  --heading: "Archivo", "Segoe UI", system-ui, sans-serif;
-  --body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --on-navy-muted: rgba(255, 255, 255, .72);
+  --heading: "Geist", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --body: "Geist", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
   /* Three shapes, and nothing else: a surface, a control, a mark. Pills are for chips only. */
-  --radius: 16px;
+  --radius: 12px;
   --radius-control: 10px;
   --radius-mark: 4px;
-  --shell: 0 1px 2px rgba(17, 33, 27, .04), 0 16px 32px -20px rgba(17, 33, 27, .24);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --page: #0A130F;
-    --card: #12201A;
-    --field: #1A2B24;
-    --ink: #E7F0EB;
-    --muted: #96A9A0;
-    --line: #26382F;
-    --navy: #143027;
-    --navy-deep: #0C1F19;
-    --accent: #3FBF95;
-    --accent-ink: #7FDCBB;
-    --accent-soft: #14312A;
-    --focus: #6EE7C4;
-    --now: #3FBF95;
-    --bar: #3FBF95;
-    --streak: #E89A87;
-    --field-line: #6A7E76;
-    --selected: #3FBF95;
-    --on-selected: #06251B;
-    --on-accent: #06251B;
-    --info-soft: #1C2A38;
-    --info-ink: #B7CBE3;
-    --error: #F08A7E;
-    --shell: 0 0 0 1px var(--line);
-  }
+  --subtle: #FAFBFC; /* Mist: table headers, row hover, the user block. */
+  --line-soft: #F0F1F4; /* Soft hairline: table row dividers, a card foot rule. */
+  --segment-track: #E9ECF1; /* The track behind the segmented control. */
+  --bar-track: #EDEFF3; /* The empty part of every meter. */
+  --navy-lift: #24407A; /* Top of the primary button and brand mark gradients. */
+  --navy-mid: #13295A; /* Middle stop of the banner gradient. */
+  --navy-end: #2B4F93; /* Right end of the banner gradient. */
+  --calm: #0F3D2A; /* The banner when nothing is waiting. */
+  --calm-lift: #1B6B47; /* Right end of the calm banner gradient. */
+  --faint: #94A3B8; /* Placeholders and inactive icons only, never text to read. */
+  --ink-2: #334155; /* Secondary text: menu rows, table cells, neutral pill text. */
+  --mono: "Geist Mono", ui-monospace, "Cascadia Mono", monospace; /* Figures that should read like an instrument. */
+  --shadow-focus: 0 0 0 3px rgba(47, 111, 235, .25); /* Fields on focus, with an accent border. */
+  --shell: 0 1px 2px rgba(15, 23, 42, .05);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -1461,3 +1446,93 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.5; }
   .auth-panel { padding: 24px 32px; gap: 24px; }
   .auth-main { padding: 28px 32px; }
 }
+
+
+/* ===========================================================================
+   Service Board
+   The system this board follows. Its rules, in the order the brand book states
+   them: a hairline before a shadow; state colour reserved for state; one navy.
+   =========================================================================== */
+
+/* Hairline first. A card is defined by its border, and hover strengthens that
+   border rather than lifting the card. */
+.panel, .tile, .status-tile, .card, .note-card { border: 1px solid var(--line); box-shadow: var(--shell); }
+.panel:hover, .tile:hover { border-color: var(--line); }
+.status-tile:hover { border-color: var(--line-strong, #D5D9E0); background: var(--subtle); box-shadow: var(--shadow-hover, 0 2px 8px rgba(15, 23, 42, .06)); }
+
+/* The sidebar is white against the grey canvas, edged not shadowed. */
+.sidebar { background: var(--card); border-right: 1px solid var(--line); box-shadow: none; }
+.menu-item { color: var(--ink-2); font-weight: 500; border: 1px solid transparent; border-radius: 9px; }
+.menu-item svg { color: var(--faint); }
+.menu-item:hover { background: var(--page); color: var(--ink); }
+.menu-item[aria-current="page"] {
+  background: var(--card);
+  border-color: var(--line);
+  box-shadow: var(--shell);
+  color: var(--ink);
+  font-weight: 600;
+}
+.menu-item[aria-current="page"] svg { color: var(--navy); }
+.menu-label { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+/* Figures read like figures. */
+.tile-figure b, .status-count b, .column-value, .ring-value {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.03em;
+  font-weight: 650;
+}
+h1 { letter-spacing: -.02em; font-weight: 650; }
+
+/* Pills carry words, and only these five fills exist. */
+.status { min-height: 24px; padding: 0 9px; font-size: 12px; font-weight: 600; }
+.status-good, .status-well, .status-up { background: var(--green-soft); color: var(--green-ink); }
+.status-waiting, .status-hold { background: var(--yellow-soft); color: var(--yellow-ink); }
+.status-changed, .status-poor, .status-down, .status-stop { background: var(--red-soft); color: var(--red-ink); }
+.status-info { background: var(--accent-soft); color: var(--accent-ink); }
+
+/* Tables: sentence-case headers on mist, soft dividers, mist on hover. */
+.results th { background: var(--subtle); border-bottom: 1px solid var(--line); font-size: 12px; font-weight: 500; color: var(--muted); text-transform: none; letter-spacing: 0; }
+.results td, .results tbody th { border-bottom: 1px solid var(--line-soft); font-size: 14px; }
+.results tbody tr:hover > * { background: var(--subtle); }
+
+/* Controls. */
+.button { min-height: 36px; border-radius: var(--radius-control); font-weight: 600; }
+.button:not(.button-secondary) { border: 0; background: linear-gradient(180deg, var(--navy-lift), var(--navy)); color: var(--on-navy); box-shadow: 0 1px 2px rgba(14, 27, 61, .25), inset 0 1px 0 rgba(255, 255, 255, .12); }
+.button:not(.button-secondary):hover { background: var(--navy); }
+.button-secondary { border: 1px solid var(--line); background: var(--card); color: var(--ink); box-shadow: var(--shell); }
+.button-secondary:hover { background: var(--subtle); border-color: var(--field-line); }
+.select, .search, .input { border-radius: var(--radius-control); border: 1px solid var(--line); background: var(--card); box-shadow: var(--shell); }
+.select:focus, .search:focus, .input:focus { outline: 0; border-color: var(--accent); box-shadow: var(--shadow-focus); }
+.segmented { background: var(--segment-track); border-radius: 10px; padding: 3px; }
+.segmented button { border-radius: 8px; font-weight: 500; color: var(--muted); }
+.segmented button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(15, 23, 42, .12); }
+
+/* Meters and tracks. */
+.track { background: var(--bar-track); border-radius: 999px; }
+.track-fill { border-radius: 999px; }
+
+/* The system's own note on --muted: "4.8:1 on card, 4.6:1 on subtle; only 4.4:1 on
+   page, so keep small muted text on cards." These four sit on the page canvas, so they
+   take --ink-2, which the system provides for exactly this. Measured 4.37:1 before. */
+.page-note, .start-note, .page-foot, .panel-note { color: var(--ink-2); }
+/* Inside a card it sits on white or mist, where muted is 4.8:1 and correct. */
+.panel .panel-note, .tile .panel-note, .status-tile .panel-note, .card .panel-note { color: var(--muted); }
+
+/* An unpressed segment sits on the segment track, not on a card: 4.02:1 as muted. */
+.segmented button { color: var(--ink-2); }
+.segmented button:hover { color: var(--ink); }
+
+/* Grey secondary text on a state-tinted card measured 3.97:1, and grey on a coloured
+   surface is wrong besides: the supporting line takes the tint's own ink. */
+.decision-card.is-stop small, .decision-card.is-stop .panel-note,
+[class*="is-stop"] > small { color: var(--red-ink); }
+[class*="is-hold"] > small { color: var(--yellow-ink); }
+[class*="is-go"] > small, [class*="is-good"] > small { color: var(--green-ink); }
+
+/* The system's neutral pill is --field fill with --ink-2 text, not muted. */
+.tag { color: var(--ink-2); }
+.decide-tile small, .decide-tile .panel-note { color: var(--ink-2); }
+
+/* Focus, on everything. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+::selection { background: var(--accent-soft); color: var(--ink); }

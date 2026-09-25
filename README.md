@@ -96,7 +96,7 @@ assets/js/pages/       one script per page, named after the page
 
 ## How it looks
 
-This board and the [Mailer board](https://nurah-skills.github.io/hsg-mailer-management/) share one design, so a person who knows one can read the other. Headings and figures are set in Archivo, running text in Nunito, both from Google Fonts. The palette, the three corner shapes and the parts they build are written down in [DESIGN.md](DESIGN.md).
+This board and the [Mailer board](https://nurah-skills.github.io/hsg-mailer-management/) share one design, so a person who knows one can read the other. Everything is set in Geist, with Geist Mono for figures that should read like an instrument. The palette, the three corner shapes and the parts they build are written down in [DESIGN.md](DESIGN.md).
 
 ## Working on it
 

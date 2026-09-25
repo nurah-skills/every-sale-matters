@@ -1,39 +1,47 @@
 # How this board is built
 
+> **This board follows the Service Board design system.** Its tokens, type, spacing,
+> radii and component rules come from there, so the boards in the family read as one
+> thing. Where this file and the system disagree, the system wins — except for the one
+> deviation recorded under Colour.
+
 The Sales Scoreboard and the [Mailer board](https://nurah-skills.github.io/hsg-mailer-management/) share one design. Same palette, same two faces, same three shapes, same shell. A person who knows one board can read the other without learning anything new. This file is the scoreboard's copy of that agreement; where the two differ, it is because the scoreboard has something the mailer board does not, never because a choice drifted.
 
 ## Colour
 
-Colours live as custom properties on `:root` in `assets/css/styles.css`, redefined once under `@media (prefers-color-scheme: dark)`. Nothing in the stylesheet uses a raw colour value, with two deliberate exceptions noted below — if a new colour is needed, it becomes a token first.
+The palette is the Service Board system's, light only. The boards are read at a desk in
+office light and on meeting-room projectors, so there is no dark theme.
 
-| Token | Light | Dark | Used for |
-| --- | --- | --- | --- |
-| `--page` | `#F1F6F3` | `#0A130F` | The ground behind everything |
-| `--card` | `#FFFFFF` | `#12201A` | Panels, tiles, the menu, the raised surfaces |
-| `--field` | `#E6EEE9` | `#1A2B24` | Inputs, chip backgrounds, tracks |
-| `--ink` | `#11211B` | `#E7F0EB` | Body text |
-| `--muted` | `#52665D` | `#96A9A0` | Second-line text, labels, captions |
-| `--line` | `#D6E4DC` | `#26382F` | Hairlines and dividers |
-| `--navy` / `--navy-deep` | `#14352C` / `#0C211A` | `#143027` / `#0C1F19` | The dark card art, the sign-in panel |
-| `--accent` | `#17A57C` | `#3FBF95` | The green both boards are known by |
-| `--accent-ink` | `#0A6B50` | `#7FDCBB` | Links, and text on green |
-| `--streak` | `#9E4A33` | `#E89A87` | Streaks, and only streaks |
-| `--focus` | `#0F766E` | `#6EE7C4` | The focus ring |
+| Token | Value | Used for |
+| --- | --- | --- |
+| `--page` | `#F4F5F8` | The cool grey canvas behind every card |
+| `--card` | `#FFFFFF` | Cards, the sidebar, controls |
+| `--subtle` | `#FAFBFC` | Table headers, row hover, the user block |
+| `--ink` | `#0F172A` | Headings, figures and body text |
+| `--ink-2` | `#334155` | Secondary text: menu rows, table cells, neutral pills |
+| `--muted` | `#5B6878` | Notes, labels, chart axes |
+| `--line` | `#E7E9EE` | The hairline every surface is defined by |
+| `--accent` | `#2F6FEB` | Charts, focus rings. Never text |
+| `--accent-ink` | `#1D56C9` | Link and accent text |
+| `--navy` | `#0E1B3D` | Primary buttons, the current menu icon, the dark card art |
 
-**`--streak` is the one warm colour on a cool board**, and it is spent on one idea: a run of working days with a registration. It is not a warning and never marks a problem.
+**The State Colour Rule.** Green means on track, amber means attention, red means late,
+and they mean nothing else. They appear as a soft pill, a thin meter or a short phrase —
+never as a card fill.
 
-**The award tiers** — bronze, silver, gold, diamond, platinum, black — are written as fixed colours rather than tokens, because a gold card has to look gold in both themes. Their text is a fixed dark ink for the same reason. These are the only hand-written colours in the stylesheet.
-
-**Contrast.** Every text colour measures at least 4.5:1 against the surface behind it, in both themes, measured against its own tint rather than the page.
+**One deviation from the system, deliberately.** The system sets `--muted` to `#64748B`,
+and its own note warns that this reaches only 4.4:1 on the page. These boards also use
+`--field` and the segmented track as surfaces, where it falls to 4.17:1 and 4.02:1 —
+below the system's own 4.5:1 requirement. One notch darker, `#5B6878`, clears 4.5:1 on
+all five grounds these boards actually use.
 
 ## Type
 
-Two faces, from Google Fonts:
+One face, **Geist**, at 400/500/600/700, carries everything. **Geist Mono** at 500 is for
+figures that should read like an instrument, and never for words. Both load from Google
+Fonts, the only external resource the content security policy allows.
 
-- **Archivo** (500/600/700) for headings, figures and anything counted.
-- **Nunito** (400/600/700) for running text.
-
-Figures use `font-variant-numeric: tabular-nums` wherever they line up in a column, so a changing number does not shift the ones beside it.
+Every figure, table and scorecard uses `font-variant-numeric: tabular-nums`.
 
 ## Space and shape
 
