@@ -73,9 +73,8 @@ button,
 input,
 select,
 textarea { font: inherit; color: inherit; }
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-mark); }
+:focus-visible { border-radius: var(--radius-mark); }
 .auth-panel :focus-visible { outline-color: var(--accent); }
-::selection { background: var(--accent-soft); color: var(--ink); }
 html { scrollbar-color: var(--field-line) var(--page); }
 input,
 textarea { caret-color: var(--accent-ink); }
@@ -248,14 +247,11 @@ select.input {
   justify-content: center;
   gap: 8px;
   width: 100%;
-  min-height: 50px;
   padding: 10px 20px;
   border: 0;
-  border-radius: var(--radius-control);
   background: var(--navy);
   color: var(--on-navy);
   font-family: var(--heading);
-  font-weight: 500;
   font-size: 16px;
   cursor: pointer;
   transition: background-color .15s ease, transform .15s ease;
@@ -277,13 +273,6 @@ select.input {
 
 select option,
 select optgroup { background-color: var(--card); color: var(--ink); }
-
-.button-secondary {
-  background: var(--card);
-  color: var(--ink);
-  border: 1px solid var(--line);
-}
-.button-secondary:hover { background: var(--field); border-color: var(--muted); }
 
 .demo { display: flex; flex-direction: column; gap: 10px; text-align: center; }
 
@@ -348,8 +337,6 @@ select optgroup { background-color: var(--card); color: var(--ink); }
   flex-direction: column;
   gap: clamp(10px, 1.7vh, 24px);
   padding: clamp(14px, 2.2vh, 24px) 16px;
-  background: var(--card);
-  border-right: 1px solid var(--line);
   color: var(--ink);
 }
 .sidebar .brand { color: var(--ink); padding: 0 8px; font-size: 17px; }
@@ -359,11 +346,6 @@ select optgroup { background-color: var(--card); color: var(--ink); }
 .menu-label {
   margin: clamp(4px, 1.1vh, 16px) 0 3px;
   padding: 0 12px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--muted);
 }
 .menu-item {
   display: flex;
@@ -371,15 +353,10 @@ select optgroup { background-color: var(--card); color: var(--ink); }
   gap: 12px;
   min-height: clamp(36px, 4.4vh, 44px);
   padding: 0 12px;
-  border-radius: var(--radius-control);
-  color: var(--muted);
-  font-weight: 700;
   text-decoration: none;
 }
 .menu-item svg { flex: none; width: 20px; height: 20px; }
 a.menu-item:hover { background: var(--field); color: var(--ink); }
-.menu-item[aria-current="page"] { background: var(--accent-soft); color: var(--accent-ink); box-shadow: inset 0 0 0 1px var(--accent); }
-.menu-item[aria-current="page"] svg { color: var(--accent-ink); }
 .menu { scrollbar-color: var(--line) transparent; }
 
 /* A short laptop screen holds the same menu, drawn tighter, so it never needs scrolling */
@@ -501,7 +478,6 @@ a.menu-item:hover { background: var(--field); color: var(--ink); }
   border-radius: var(--radius-control);
   background: var(--field);
   border: 1px solid var(--line);
-  color: var(--muted);
   font-size: 14px;
   font-weight: 700;
 }
@@ -528,35 +504,22 @@ a.menu-item:hover { background: var(--field); color: var(--ink); }
   display: inline-flex;
   flex-wrap: wrap;
   gap: 2px;
-  padding: 4px;
   border: 1px solid var(--line);
-  border-radius: var(--radius-control);
-  background: var(--field);
 }
 .segmented button {
   min-height: 40px;
   padding: 4px 14px;
   border: 0;
-  border-radius: var(--radius-control);
   background: transparent;
-  color: var(--muted);
-  font-weight: 700;
   cursor: pointer;
 }
-.segmented button:hover { color: var(--ink); }
-.segmented button[aria-pressed="true"] { background: var(--selected); color: var(--on-selected); }
 
 .status {
   display: inline-flex;
   align-items: center;
-  padding: 3px 10px;
   border-radius: 999px;
-  font-size: 14px;
-  font-weight: 700;
   white-space: nowrap;
 }
-.status-good { background: var(--accent-soft); color: var(--accent-ink); }
-.status-info { background: var(--info-soft); color: var(--info-ink); }
 .status-waiting { background: var(--field); color: var(--muted); }
 
 .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 22px; }
@@ -584,9 +547,9 @@ a.menu-item:hover { background: var(--field); color: var(--ink); }
 .big-number span { font-size: 17px; font-weight: 700; color: var(--muted); }
 
 /* A bar with a marker for the August average and one for where people usually are by now */
-.track { position: relative; height: 14px; border-radius: 999px; background: var(--field); }
+.track { position: relative; height: 14px; }
 .track-small { height: 10px; margin: 10px 0 6px; }
-.track-fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--bar); max-width: 100%; }
+.track-fill { position: absolute; inset: 0 auto 0 0; background: var(--bar); max-width: 100%; }
 .track-marker { position: absolute; top: -5px; bottom: -5px; width: 3px; border-radius: var(--radius-mark); transform: translateX(-50%); }
 .track-marker.is-august { background: var(--ink); }
 .track-marker.is-now { background: var(--now); }
@@ -768,7 +731,6 @@ a.summary-note { color: var(--accent-ink); }
 .reg-top b { font-family: var(--heading); font-size: 20px; font-weight: 600; }
 .reg-top span { font-size: 13px; color: var(--muted); }
 .results .track-small { margin: 6px 0 2px; }
-.results tbody tr:hover > * { background: var(--field); }
 .results tr.is-me > * { background: var(--accent-soft); }
 .results tr.is-me:hover > * { background: var(--accent-soft); }
 .you-tag { margin-left: 8px; padding: 1px 8px; border-radius: 999px; background: var(--selected); color: var(--on-selected); font-size: 12px; font-weight: 700; vertical-align: 2px; }
@@ -820,7 +782,6 @@ a.button:not(.button-secondary):hover { color: var(--on-navy); }
 .category-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; margin-bottom: 16px; }
 .category-head h2 { font-size: 22px; font-weight: 600; }
 .category-head .panel-note { margin-left: auto; }
-.status-changed { background: color-mix(in srgb, var(--now) 20%, transparent); color: var(--ink); }
 
 .button-inline { width: auto; min-height: 44px; padding: 6px 16px; font-size: 15px; }
 .button-sent svg { color: var(--accent-ink); }
@@ -1543,7 +1504,7 @@ h1 { letter-spacing: -.02em; font-weight: 650; }
 .search:focus,
 .input:focus { outline: 0; border-color: var(--accent); box-shadow: var(--shadow-focus); }
 .segmented { background: var(--segment-track); border-radius: 10px; padding: 3px; }
-.segmented button { border-radius: 8px; font-weight: 500; color: var(--muted); }
+.segmented button { border-radius: 8px; font-weight: 500; }
 .segmented button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(15, 23, 42, .12); }
 
 /* Meters and tracks. */
@@ -1631,4 +1592,74 @@ h1 { letter-spacing: -.02em; font-weight: 650; }
   .banner { flex-direction: column; align-items: flex-start; }
   .banner-figure { font-size: 34px; }
   .banner-link { align-self: stretch; justify-content: center; }
+}
+
+/* ===========================================================================
+   On paper
+   The board gets printed and taken into meetings, so it has a printed form
+   rather than whatever the browser makes of the screen one. The controls go,
+   because nothing on paper can be filtered; the figures, their notes and
+   every (i) caveat stay, because a figure without its caveat is the thing
+   this board exists not to produce.
+   =========================================================================== */
+
+@media print {
+  /* Ink is expensive and paper is white. */
+  :root {
+    --page: #FFFFFF;
+    --card: #FFFFFF;
+    --field: #FFFFFF;
+    --subtle: #FFFFFF;
+    --shell: none;
+  }
+
+  html, body { background: #FFFFFF; }
+
+  /* The shell is a way of moving around a screen. On paper it is furniture. */
+  .sidebar,
+  .topbar,
+  .tabbar,
+  .scrim,
+  .toast,
+  .skip-link,
+  .header-tools,
+  .controls,
+  .board-search,
+  .search-open,
+  .sort-button svg,
+  .export,
+  .button { display: none !important; }
+
+  .app { display: block; }
+  .app-body { display: block; }
+  .app-main { padding: 0; gap: 16px; }
+
+  /* A panel split across a page break is a panel nobody can read. */
+  .panel,
+  .tile,
+  .banner,
+  table { break-inside: avoid; page-break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+
+  /* Hairlines survive printing; soft shadows do not. */
+  .panel, .tile, .banner { border: 1px solid #C9CFD8; box-shadow: none; }
+
+  /* The banner is white-on-navy on screen. On paper it is the other way round. */
+  .banner, .banner.is-calm { background: #FFFFFF; color: #000000; border: 2px solid #000000; }
+  .banner h2, .banner p, .banner p b, .banner-figure { color: #000000; }
+  .banner-link { display: none; }
+
+  /* Every (i) is opened, so the caveats print with the figures they belong to. */
+  .tile-about { display: block !important; }
+  .tile-about-open { display: none; }
+
+  /* A link on paper cannot be followed, so the ones that matter say where they go. */
+  .app-main a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 11px; color: #444; }
+
+  /* A table that scrolls on screen has to fit on paper. */
+  .table-wrap { overflow: visible; }
+  table { width: 100%; font-size: 11px; }
+  thead { display: table-header-group; }
+
+  @page { margin: 14mm; }
 }
