@@ -300,3 +300,70 @@ function setUpShell() {
   showInboxCount();
   return user;
 }
+
+
+// The one banner a page is allowed. It takes the same items the "Where to start"
+// band builds — count, words, href, tone — so nothing new has to be worked out.
+// The loudest becomes the figure and the sentence; the rest become the line under it.
+function buildBanner(items, options) {
+  const settings = options || {};
+  const live = (items || []).filter((item) => item.count);
+  const holder = create('section', 'banner');
+  holder.setAttribute('aria-label', 'What needs somebody');
+
+  if (!live.length) {
+    holder.classList.add('is-calm');
+    const left = create('div', 'banner-left');
+    const words = create('div');
+    words.append(create('h2', '', settings.calmTitle || 'Nothing is waiting on a manager.'));
+    if (settings.calmNote) words.append(create('p', '', settings.calmNote));
+    left.append(create('span', 'banner-figure', '0'), words);
+    holder.append(left);
+    return holder;
+  }
+
+  const lead = live[0];
+  const rest = live.slice(1);
+
+  const left = create('div', 'banner-left');
+  left.append(create('span', 'banner-figure', formatNumber(lead.count)));
+
+  const words = create('div');
+  const title = create('h2', '', lead.count === 1 ? capitalise(lead.one) : capitalise(lead.many));
+  words.append(title);
+
+  if (rest.length) {
+    const line = create('p');
+    rest.forEach((item, index) => {
+      if (index) line.append(document.createTextNode(' \u00b7 '));
+      line.append(create('b', '', formatNumber(item.count)));
+      line.append(document.createTextNode(' ' + (item.count === 1 ? item.one : item.many)));
+    });
+    words.append(line);
+  }
+  left.append(words);
+  holder.append(left);
+
+  if (lead.href) {
+    const link = create('a', 'banner-link');
+    link.href = lead.href;
+    // a drawn arrow, never a text one
+    link.append(document.createTextNode(settings.action || 'Open it'), icon(['M5 12h13', 'M12.5 6l6 6-6 6'], 14));
+    holder.append(link);
+  }
+  return holder;
+}
+
+const capitalise = (words) => words.charAt(0).toUpperCase() + words.slice(1);
+
+// The live line under the page title: what the board is reading and what needs attention.
+function buildStatusLine(parts) {
+  const line = create('p', 'status-line');
+  (parts || []).forEach((part, index) => {
+    if (index) line.append(document.createTextNode(' \u00b7 '));
+    if (part.bold) line.append(create('b', '', part.text));
+    else if (part.warn) line.append(create('span', 'is-warn', part.text));
+    else line.append(document.createTextNode(part.text));
+  });
+  return line;
+}
