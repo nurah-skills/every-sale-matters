@@ -9,6 +9,16 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
+
+// Nothing ships with a figure that cannot say what it does not prove. This is the last
+// gate before a commit, so the rule holds even when the pages were not rebuilt.
+try {
+  execFileSync(process.execPath, [require('path').join(__dirname, 'check-tiles.js')], { stdio: 'inherit' });
+} catch (error) {
+  console.error('Nothing was stamped.');
+  process.exit(1);
+}
 const crypto = require('crypto');
 
 const root = path.join(__dirname, '..');
