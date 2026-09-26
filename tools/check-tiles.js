@@ -89,6 +89,57 @@ function objectsInArray(text, open) {
   return found;
 }
 
+// A copy of the file, the same length as the original, with the inside of every string,
+// template literal and comment replaced by spaces. Brackets can then be counted without
+// an apostrophe in a comment — "Today's chips" — being taken for the start of a string and
+// swallowing everything after it. Every position still lines up with the original.
+function maskedCode(text) {
+  const out = text.split('');
+  const blank = (at) => { out[at] = text[at] === '\n' ? '\n' : ' '; };
+  let i = 0;
+
+  while (i < text.length) {
+    if (text[i] === '/' && text[i + 1] === '/') {
+      while (i < text.length && text[i] !== '\n') { blank(i); i += 1; }
+      continue;
+    }
+    if (text[i] === '/' && text[i + 1] === '*') {
+      const close = text.indexOf('*/', i + 2);
+      const stop = close === -1 ? text.length : close + 2;
+      while (i < stop) { blank(i); i += 1; }
+      continue;
+    }
+    if (text[i] === '"' || text[i] === "'" || text[i] === '`') {
+      const quote = text[i];
+      i += 1;
+      while (i < text.length) {
+        if (text[i] === '\\') { blank(i); blank(i + 1); i += 2; continue; }
+        if (text[i] === quote) break;
+        blank(i);
+        i += 1;
+      }
+      i += 1;
+      continue;
+    }
+    i += 1;
+  }
+
+  return out.join('');
+}
+
+// The ']' that closes the '[' at the given index of masked code, or -1.
+function matchingBracket(masked, open) {
+  let depth = 0;
+  for (let i = open; i < masked.length; i++) {
+    if (masked[i] === '[') depth += 1;
+    else if (masked[i] === ']') {
+      depth -= 1;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
+}
+
 const lineOf = (text, at) => text.slice(0, at).split('\n').length;
 
 // A tile is an object that gives statTile a figure. Chart data has a label and a value
@@ -133,6 +184,24 @@ function tilesIn(text) {
       tiles.push({ body: object.body, at: asMap.index + open });
       returns.lastIndex = object.end;
     }
+  }
+
+  // [ { ... }, { ... } ].map(statTile) — written out in place, so there is no name to look
+  // up. Every '[' is tested for a .map(statTile) just past its own closing bracket, read
+  // off masked code so a comment or a string cannot throw the count off.
+  const masked = maskedCode(text);
+  for (let i = 0; i < masked.length; i++) {
+    if (masked[i] !== '[') continue;
+
+    const close = matchingBracket(masked, i);
+    if (close === -1) continue;
+    if (!/^\s*\.map\(\s*statTile\s*\)/.test(masked.slice(close + 1, close + 32))) continue;
+
+    // Positions come from the masked copy, the text from the original.
+    objectsInArray(masked, i).forEach((object) => {
+      tiles.push({ body: text.slice(object.at + 1, object.at + 1 + object.body.length), at: object.at });
+    });
+    i = close;
   }
 
   return tiles;
