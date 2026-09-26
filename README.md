@@ -30,8 +30,8 @@ The pages follow the order of the menu.
 
 | Page | What it does |
 | --- | --- |
-| `pages/home.html` | One person’s progress. An at-a-glance strip (registrations, the next record, this week’s incentives, any sales streak), then registrations against their August average and usual pace, cash recorded, staff incentives, their latest celebration, their suggested league and the three colleges. |
-| `pages/team.html` | The whole group: totals, college totals and everyone’s results, with filters, sorting, grouping by college and your own row highlighted. Selecting a name opens their details. |
+| `pages/home.html` | One person’s progress: registrations against their August average and usual pace (with any sales streak), the next record, cash recorded, their latest celebration, staff incentives, their suggested league and the three colleges. Each figure appears once. |
+| `pages/team.html` | The whole group: four totals (registrations, against August, people above August, cash), college totals and everyone’s results, with filters, sorting, grouping by college and your own row highlighted. Selecting a name opens their details. |
 
 ### Recognition
 
@@ -40,7 +40,7 @@ The pages follow the order of the menu.
 | `pages/cards.html` | Managers only. Cards ready: the queue opens on a tile per kind of card — personal bests, streaks, cash milestones, sales levels (Bronze to Black), steady progress, staff incentives and approved assists — each with a count. Choose one to see those cards. Download a card, preview it, copy the caption, then mark it as sent (with Undo) or skip it. |
 | `pages/make.html` | Managers only. Make a single card: choose a person and an achievement, add a cheer, pick a design or your own background, and add a photo with zoom and move controls. |
 | `pages/roundups.html` | A daily, weekly or monthly WhatsApp round-up for the whole team or one college. |
-| `pages/fame.html` | Wall of fame: every card sent this month, with filters by college, person and kind of card, this week’s highlights, and a September calendar of the bigger moments. |
+| `pages/fame.html` | Wall of fame: every card sent this month, filtered by kind of card (college and person sit behind **More filters**), this week’s highlights, and a September calendar of the bigger moments. |
 | `pages/streaks.html` | Who has made a sale on working days in a row, grouped by length, with the streak cards reached today and the longest streaks this month. |
 | `pages/shoutouts.html` | Send a short well done to a colleague. A consultant’s shout-out waits for approval; a manager posts straight to the board and approves or declines the ones waiting, here or in the Admin inbox. |
 

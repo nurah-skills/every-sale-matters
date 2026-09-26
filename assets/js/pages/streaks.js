@@ -91,7 +91,7 @@ function render() {
     .sort((a, b) => b.streak.current - a.streak.current || a.person.name.localeCompare(b.person.name));
 
   document.getElementById('streaks-note').textContent =
-    `${state.college === 'All' ? 'All colleges' : state.college} · ${people(running.length)} on a streak of 2 days or more`;
+    `${people(running.length)} on a streak of 2 days or more`;
 
   showToday(rows);
   showBands(running);

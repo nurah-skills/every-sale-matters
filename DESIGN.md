@@ -63,7 +63,8 @@ Pills (`999px`) are for chips and counts only; `50%` is for avatars. Nothing els
 
 - **The menu** — a light column on `--card`, held off the page by a single hairline. The page you are on is a soft green pill with a thin green ring; everything else is `--muted` until you hover it. Eleven pages have to fit without scrolling, so the gaps, the padding and the row height are sized against the window with `clamp()`, and two `max-height` steps draw it tighter on a short laptop screen. A finger still gets a 44px row through `@media (pointer: coarse)`.
 - **The page header** — the page name and its one-line note, closed by a hairline.
-- **`.tile`** — a figure with its name and a note under it, on `--card` with `--shell`.
+- **`.tile`** — a figure with its name and one line under it saying its base, on `--card` with `--shell`. Where the board has a rule for good and bad (ahead of or behind usual pace), the line ends in a short coloured word, never a fill. A tile never repeats a figure that a filter, a table or another tile already shows.
+- **More filters** — where a page has more filters than people use every day, the one or two they do stay in the row and the rest sit behind a secondary button that reveals them inline. It opens by itself when one of its filters is already set, counts them when closed (“More filters · 1”) and reads “Fewer filters” when open.
 - **`.panel`** — the surface everything else sits in.
 - **Card art** — the dark green block on a recognition card, a mini card or a category tile. It takes `--navy` to `--navy-deep` and `--on-navy` for its text, so it follows the palette rather than carrying a colour of its own.
 - **Tables** (`.results`) show a heading row on a laptop. On a phone the heading row is hidden and each cell carries its own heading through `data-label`.
@@ -75,7 +76,7 @@ Every link to a stylesheet, a script or the logo carries `?v=` and a short hash 
 
 ## Motion
 
-Almost none, and always short: 0.15s ease on colour and shadow, and the menu drawer sliding in. `prefers-reduced-motion` turns transitions off. Nothing animates on load — the page is readable in its first frame.
+Almost none, and always short: 0.15s ease on colour and shadow, the menu drawer sliding in, and the More filters controls fading in over 150ms on `--ease-out` (opacity only, no slide). `prefers-reduced-motion` turns transitions off. Nothing animates on load — the page is readable in its first frame.
 
 ## Writing
 

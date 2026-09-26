@@ -22,9 +22,8 @@ function totalsFor(rows) {
     cash: sum.cash + row.figures.cash,
     cashAugust: sum.cashAugust + row.figures.cashAugust,
     above: sum.above + (row.figures.count > 0 && row.figures.count >= row.figures.august ? 1 : 0),
-    ahead: sum.ahead + (row.figures.count > 0 && row.figures.count >= row.figures.byNow ? 1 : 0),
     bests: sum.bests + (row.figures.count > row.figures.previousBest ? 1 : 0)
-  }), { count: 0, august: 0, byNow: 0, cash: 0, cashAugust: 0, above: 0, ahead: 0, bests: 0 });
+  }), { count: 0, august: 0, byNow: 0, cash: 0, cashAugust: 0, above: 0, bests: 0 });
 }
 
 function rowsFor(college) {
@@ -34,9 +33,7 @@ function rowsFor(college) {
 }
 
 function showHeader() {
-  const people = rowsFor(state.college).length;
-  document.getElementById('team-note').textContent =
-    `${state.college === 'All' ? 'All colleges' : state.college} · ${PERIODS[state.period].note} · ${people} people`;
+  document.getElementById('team-note').textContent = PERIODS[state.period].note;
   document.getElementById('snapshot-time').textContent = SNAPSHOT.time;
   document.getElementById('college-select').value = state.college;
 
@@ -47,31 +44,34 @@ function showHeader() {
   });
 }
 
+// Four figures, each said once. The gap to August is the percentage read the other way, the
+// people ahead of their usual pace are counted in the Ahead filter over the table, and
+// personal bests are counted per college just below, so none of those gets a tile of its own.
 function showTiles() {
   const rows = rowsFor(state.college);
   const totals = totalsFor(rows);
   const inProgress = state.period !== 'yesterday';
-  const difference = totals.count - totals.august;
+  // The same rule as each row's status: at or past the usual count by now is ahead
+  const verdict = inProgress && totals.count
+    ? (totals.count >= totals.byNow ? ['ahead', 'is-good'] : ['behind', 'is-late'])
+    : null;
 
   const tiles = [
     ['Registrations', String(totals.count),
-      inProgress ? `Usually ${formatNumber(totals.byNow)} by ${SNAPSHOT.time}` : 'Full day'],
+      inProgress ? `Usually ${formatNumber(totals.byNow)} by ${SNAPSHOT.time}` : 'Full day', verdict],
     ['Compared with August', formatPercent(totals.count, totals.august),
-      `${totals.count} of ${formatNumber(totals.august)}`],
-    ['Extra registrations vs August', `${difference > 0 ? '+' : ''}${formatNumber(difference)}`,
-      difference >= 0 ? 'Ahead of the August average' : 'Still to reach the August average'],
-    ['People above August', `${totals.above} of ${rows.length}`,
-      inProgress ? `${totals.ahead} ahead of their usual pace` : 'Compared with their own August'],
-    ['New bests since August', String(totals.bests),
-      totals.bests ? 'Give these the biggest cheer' : 'None yet in this period'],
+      `of the August average, ${formatNumber(totals.august)}`],
+    ['People above August', `${totals.above} of ${rows.length}`, 'Each against their own August'],
     ['Cash recorded', formatMoney(totals.cash), `August pace ${formatMoney(totals.cashAugust)}`]
   ];
 
   const holder = document.getElementById('team-tiles');
   holder.replaceChildren();
-  tiles.forEach(([label, value, note]) => {
+  tiles.forEach(([label, value, note, judgement]) => {
     const tile = create('div', 'tile');
-    tile.append(create('span', '', label), create('b', '', value), create('small', '', note));
+    const line = create('small', '', note);
+    if (judgement) line.append(document.createTextNode(' · '), create('span', `tile-verdict ${judgement[1]}`, judgement[0]));
+    tile.append(create('span', '', label), create('b', '', value), line);
     holder.append(tile);
   });
 }

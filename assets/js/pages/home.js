@@ -57,6 +57,14 @@ function showRegistrations(person, figures) {
   document.getElementById('registrations-count').textContent = String(figures.count);
   document.getElementById('registrations-label').textContent = figures.count === 1 ? 'registration' : 'registrations';
 
+  const streak = streakFor(person);
+  const streakLink = document.getElementById('registrations-streak');
+  streakLink.hidden = streak.current < 2;
+  streakLink.replaceChildren(
+    icon(['M12 22c4 0 7-2.8 7-7 0-3.5-2.5-6-4-8-.5 2-1.5 3-3 3 0-3-1-6-4-8 0 4-3 6.5-3 11 0 4.2 3 9 7 9z'], 16),
+    document.createTextNode(`${streak.current}-day sales streak`)
+  );
+
   const track = document.getElementById('registrations-track');
   track.replaceChildren();
   const scale = Math.max(figures.count, figures.august, 1) * 1.15;
@@ -96,9 +104,9 @@ function showRecord(figures) {
     record.append(create('b', '', `${needed} more`), create('span', '', `for a new best ${unit} since August`));
   }
 
+  // The count so far is the big figure under Registrations, so only the best is repeated here
   fillFigures(document.getElementById('record-figures'), [
-    [`Previous best ${unit}`, String(figures.previousBest)],
-    ['So far', String(figures.count)]
+    [`Previous best ${unit}`, String(figures.previousBest)]
   ]);
 }
 
@@ -281,40 +289,10 @@ function choosePerson(name) {
   render();
 }
 
-// The three answers people look for first, before the detail below
-function showSummary(person, figures) {
-  const period = PERIODS[state.period];
-  document.getElementById('summary-period').textContent = `Registrations · ${period.label.toLowerCase()}`;
-  document.getElementById('summary-count').textContent = String(figures.count);
-  document.getElementById('summary-pace').replaceChildren(statusChip(paceFor(figures, state.period)));
-
-  const streak = streakFor(person);
-  const streakLink = document.getElementById('summary-streak');
-  streakLink.hidden = streak.current < 2;
-  streakLink.replaceChildren(
-    icon(['M12 22c4 0 7-2.8 7-7 0-3.5-2.5-6-4-8-.5 2-1.5 3-3 3 0-3-1-6-4-8 0 4-3 6.5-3 11 0 4.2 3 9 7 9z'], 16),
-    document.createTextNode(`${streak.current}-day sales streak`)
-  );
-
-  const needed = figures.previousBest + 1 - figures.count;
-  document.getElementById('summary-record').textContent = needed > 0 ? `${needed} more` : 'New best';
-  document.getElementById('summary-record-note').textContent = needed > 0
-    ? `to beat your best ${period.unit} of ${figures.previousBest}`
-    : `You beat your best ${period.unit} of ${figures.previousBest}`;
-
-  const incentives = incentivesFor(person);
-  document.getElementById('summary-incentive').textContent = formatMoney(incentives.total);
-  const toGo = incentives.next ? incentives.next[0] - incentives.qualifying : 0;
-  document.getElementById('summary-incentive-note').textContent = incentives.next
-    ? `${toGo} more enrolment${toGo === 1 ? '' : 's'} for the ${rands(incentives.next[1])} level`
-    : 'Top weekly level reached';
-}
-
 function render() {
   const person = findPerson(state.person);
   const figures = figuresFor(person, state.period);
   showHeader(person);
-  showSummary(person, figures);
   showRegistrations(person, figures);
   showRecord(figures);
   showCash(person, figures);

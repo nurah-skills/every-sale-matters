@@ -44,6 +44,7 @@
   --mono: "Geist Mono", ui-monospace, "Cascadia Mono", monospace; /* Figures that should read like an instrument. */
   --shadow-focus: 0 0 0 3px rgba(47, 111, 235, .25); /* Fields on focus, with an accent border. */
   --shell: 0 1px 2px rgba(15, 23, 42, .05);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* The one curve for anything that appears. */
 }
 
 *,
@@ -654,21 +655,6 @@ a.menu-item:hover { background: var(--field); color: var(--ink); }
 .about[open] summary::after { transform: rotate(180deg); }
 .about-body { display: flex; flex-direction: column; gap: 10px; max-width: 75ch; padding-bottom: 20px; color: var(--muted); }
 
-/* At a glance on Home: one strip, split into three answers */
-.summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-}
-.summary-item { display: flex; flex-direction: column; gap: 4px; padding: 18px 22px; min-width: 0; }
-.summary-item + .summary-item { border-left: 1px solid var(--line); }
-.summary-label { font-size: 14px; font-weight: 700; color: var(--muted); }
-.summary-value { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; }
-.summary-value b { font-family: var(--heading); font-size: 32px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
-.summary-note { font-size: 15px; color: var(--muted); }
-a.summary-note { color: var(--accent-ink); }
 
 /* Staff incentives on Home */
 .span-12 { grid-column: span 12; }
@@ -1140,8 +1126,8 @@ a.button:not(.button-secondary):hover { color: var(--on-navy); }
 .longest b { display: block; }
 .longest small { display: block; font-size: 14px; color: var(--muted); }
 .longest-days { font-family: var(--heading); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.summary-streak { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
-a.summary-streak { color: var(--streak); }
+/* A running sales streak, under the registrations it belongs to */
+.streak-link { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-weight: 700; color: var(--streak); }
 
 /* Shout-outs */
 .shout-toggle { display: none; }
@@ -1370,10 +1356,6 @@ textarea.input { resize: vertical; min-height: 120px; line-height: 1.5; }
   .results-tools { justify-content: flex-start; }
   .segmented button,
 .password button { min-height: 44px; }
-  .summary { grid-template-columns: minmax(0, 1fr); }
-  .summary-item { padding: 14px 18px; }
-  .summary-item + .summary-item { border-left: 0; border-top: 1px solid var(--line); }
-  .summary-value b { font-size: 28px; }
   .calendar { border-spacing: 3px; margin: -3px; width: calc(100% + 6px); }
   .calendar th { padding: 0 2px; font-size: 13px; }
   .calendar-day { min-height: 64px; padding: 6px 5px; gap: 3px; }
@@ -1668,3 +1650,26 @@ h1 { letter-spacing: -.02em; font-weight: 650; }
 
   @page { margin: 14mm; }
 }
+
+/* More filters on the Wall of fame: college and person, opened from one button beside
+   the Gallery and Calendar switch. It is opened a few times a day, so the controls fade
+   in (150ms, the board's ease-out) rather than popping, and do not slide: the row
+   reflows around them either way. */
+.more-filter-set:not([hidden]) { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; transition: opacity 150ms var(--ease-out); }
+@starting-style { .more-filter-set:not([hidden]) { opacity: 0; } }
+.more-filters { white-space: nowrap; }
+.more-filters[aria-expanded="true"] { background: var(--subtle); border-color: var(--field-line); }
+@media (max-width: 560px) {
+  .more-filters { flex: 1 1 100%; }
+  .more-filter-set:not([hidden]) { flex: 1 1 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { .more-filter-set:not([hidden]) { transition: none; } }
+
+/* Team totals: four figures, each with one line saying its base and, for registrations,
+   whether the team is ahead of its usual pace. The judgement is a short coloured word,
+   never a fill. */
+.tiles-four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) { .tiles-four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tile .tile-verdict { display: inline; font-size: inherit; font-weight: 600; white-space: nowrap; }
+.tile-verdict.is-good { color: var(--green-ink); }
+.tile-verdict.is-late { color: var(--yellow-ink); }

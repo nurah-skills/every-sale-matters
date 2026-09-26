@@ -145,8 +145,8 @@ function showTiles() {
   })();
 
   const tiles = [
-    ['Cards ready', String(cards.filter((card) => card.status === 'ready').length), 'cards.html', 'Open cards ready'],
-    ['New feedback', String(feedback.filter((item) => item.status === 'Submitted').length), '#inbox-title', `${feedback.length} in total`],
+    ['Cards ready', String(cards.filter((card) => card.status === 'ready').length), 'cards.html', 'Not sent yet'],
+    ['New feedback', String(feedback.filter((item) => item.status === 'Submitted').length), '#inbox-title', 'Not reviewed yet'],
     ['To approve', String(feedback.filter((item) => ['assist', 'shoutout'].includes(item.type) && OPEN.includes(item.status)).length), '#inbox-title', 'Assists and shout-outs'],
     ['Four-week check', review && review.start ? 'Running' : 'Not started', 'progress.html', review && review.start ? `Started Monday ${review.start} September` : 'Set a start date']
   ];

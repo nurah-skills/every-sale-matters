@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500&display=swap">
-  <link rel="stylesheet" href="../assets/css/styles.css?v=c4273379">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=1419e5e9">
   <script src="../assets/js/shared/session.js?v=3ea17988"></script>
 </head>
 <body>
@@ -103,15 +103,18 @@
 
         <div class="controls">
           <div class="segmented" id="fame-view" role="group" aria-label="View"></div>
-          <label class="sr-only" for="fame-college">College</label>
-          <select class="select" id="fame-college">
-            <option value="All">All colleges</option>
-            <option>Skills Academy</option>
-            <option>Matric College</option>
-            <option>Bellview</option>
-          </select>
-          <label class="sr-only" for="fame-person">Salesperson</label>
-          <select class="select" id="fame-person"></select>
+          <button class="button button-secondary button-inline more-filters" id="more-filters" type="button" aria-expanded="false" aria-controls="more-filter-set">More filters</button>
+          <div class="more-filter-set" id="more-filter-set" hidden>
+            <label class="sr-only" for="fame-college">College</label>
+            <select class="select" id="fame-college">
+              <option value="All">All colleges</option>
+              <option>Skills Academy</option>
+              <option>Matric College</option>
+              <option>Bellview</option>
+            </select>
+            <label class="sr-only" for="fame-person">Salesperson</label>
+            <select class="select" id="fame-person"></select>
+          </div>
         </div>
 
         <div class="filter-chips" id="fame-types" role="group" aria-label="Kind of celebration"></div>
@@ -176,6 +179,6 @@
   <script src="../assets/js/shared/data.js?v=e6294530"></script>
   <script src="../assets/js/shared/app.js?v=94bfdb60"></script>
   <script src="../assets/js/shared/card-image.js?v=6db76863"></script>
-  <script src="../assets/js/pages/fame.js?v=4f089b80"></script>
+  <script src="../assets/js/pages/fame.js?v=fc021b74"></script>
 </body>
 </html>

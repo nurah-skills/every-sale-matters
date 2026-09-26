@@ -254,12 +254,30 @@ function showDay() {
   });
 }
 
+// College and person live behind More filters, beside the Gallery and Calendar switch. A
+// filter that is set is never hidden: the set opens by itself on arrival when one was left
+// on last time, and the closed button says how many are on.
+let moreFiltersOpen = null;
+function showMoreFilters() {
+  const button = document.getElementById('more-filters');
+  const set = document.getElementById('more-filter-set');
+  const on = [state.college !== 'All', state.person !== 'all'].filter(Boolean).length;
+  if (moreFiltersOpen === null) moreFiltersOpen = on > 0;
+  set.hidden = !moreFiltersOpen;
+  button.setAttribute('aria-expanded', String(moreFiltersOpen));
+  button.textContent = moreFiltersOpen ? 'Fewer filters' : on ? `More filters · ${on}` : 'More filters';
+}
+
 function render() {
   const cards = sentCards();
   document.getElementById('snapshot-time').textContent = SNAPSHOT.time;
-  document.getElementById('fame-note').textContent = `${cards.length} card${cards.length === 1 ? '' : 's'} sent from 1 to 17 September`;
   document.getElementById('fame-college').value = state.college;
   fillPeople();
+  // The All chip already counts the cards, so the note says only what they are and, when a
+  // filter is on, whose
+  const narrowed = [state.college !== 'All' && state.college, state.person !== 'all' && state.person].filter(Boolean);
+  document.getElementById('fame-note').textContent = ['Cards sent from 1 to 17 September', ...narrowed].join(' · ');
+  showMoreFilters();
 
   buildSegmented(document.getElementById('fame-view'), VIEWS, state.view, (view) => {
     state.view = view;
@@ -274,6 +292,12 @@ function render() {
   if (state.view === 'gallery') showGallery(cards);
   else showCalendar();
 }
+
+document.getElementById('more-filters').addEventListener('click', () => {
+  moreFiltersOpen = !moreFiltersOpen;
+  showMoreFilters();
+  if (moreFiltersOpen) document.getElementById('fame-college').focus();
+});
 
 document.getElementById('fame-college').addEventListener('change', (event) => {
   state.college = event.target.value;
