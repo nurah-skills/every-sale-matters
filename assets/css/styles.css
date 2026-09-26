@@ -45,6 +45,19 @@
   --shadow-focus: 0 0 0 3px rgba(47, 111, 235, .25); /* Fields on focus, with an accent border. */
   --shell: 0 1px 2px rgba(15, 23, 42, .05);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* The one curve for anything that appears. */
+  --line-strong: #D5D9E0; /* A hairline that has to hold its own: a hovered tile. */
+  /* State colour, the family's values. Green on track, amber attention, red late, and
+     nothing else. Each ink clears 4.5:1 on its soft fill (green 4.50, amber 5.30,
+     red 5.02) and on white (5.02, 5.78, 5.74). */
+  --green-soft: #E8F6EE;
+  --green-ink: #15803D;
+  --green-bar: #22A55A;
+  --yellow-soft: #FEF4E2;
+  --yellow-ink: #A64B07;
+  --yellow-bar: #F0A020;
+  --red-soft: #FDECEC;
+  --red-ink: #C81E1E;
+  --red-bar: #E5484D;
 }
 
 *,
@@ -1461,7 +1474,8 @@ h1 { letter-spacing: -.02em; font-weight: 650; }
 
 /* Pills carry words, and only these five fills exist. */
 .status { min-height: 24px; padding: 0 9px; font-size: 12px; font-weight: 600; }
-.status-good { background: var(--green-soft); color: var(--green-ink); }
+.status-good,
+.status-best { background: var(--green-soft); color: var(--green-ink); }
 .status-waiting,
 .status-hold { background: var(--yellow-soft); color: var(--yellow-ink); }
 .status-changed { background: var(--red-soft); color: var(--red-ink); }
