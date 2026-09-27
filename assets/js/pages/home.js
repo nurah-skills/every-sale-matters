@@ -4,7 +4,7 @@ const user = setUpShell();
 const state = {
   // Only a manager can look at someone else's progress
   person: (user.manager ? recall('person') : null) || user.person || user.name,
-  period: PERIODS[recall('period')] ? recall('period') : 'today'
+  period: PERIODS[recall('period')] ? recall('period') : DEFAULT_PERIOD
 };
 
 function fillFigures(list, rows) {
@@ -97,6 +97,13 @@ function showRecord(figures) {
   const record = document.getElementById('record');
   record.replaceChildren();
 
+  // No best is kept for a rolling 30 days, so the panel says so instead of inventing one.
+  if (figures.previousBest === null) {
+    record.append(create('b', '', 'No 30-day record'), create('span', '', 'The scoreboard keeps a best day, week and month. Choose This month to see the next record.'));
+    fillFigures(document.getElementById('record-figures'), []);
+    return;
+  }
+
   if (figures.count > figures.previousBest) {
     record.append(create('b', '', 'New record'), create('span', '', `A new best ${unit} since August. Worth a celebration.`));
   } else {
@@ -121,7 +128,7 @@ function showCash(person, figures) {
   ]);
 
   document.getElementById('cash-milestones-title').textContent =
-    unit === 'day' ? 'Daily milestones' : unit === 'week' ? 'Weekly milestones' : 'Monthly milestones';
+    unit === 'day' ? 'Daily milestones' : unit === 'week' ? 'Weekly milestones' : unit === 'month' ? 'Monthly milestones' : '30-day milestones';
 
   const chips = document.getElementById('cash-milestones');
   chips.replaceChildren();

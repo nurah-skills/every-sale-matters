@@ -5,7 +5,7 @@ setUpShell();
 const isManager = readSession().manager;
 
 const state = {
-  period: PERIODS[recall('team-period')] ? recall('team-period') : 'today',
+  period: PERIODS[recall('team-period')] ? recall('team-period') : DEFAULT_PERIOD,
   college: recall('team-college') || 'All',
   search: '',
   sortKey: 'count',
@@ -22,7 +22,7 @@ function totalsFor(rows) {
     cash: sum.cash + row.figures.cash,
     cashAugust: sum.cashAugust + row.figures.cashAugust,
     above: sum.above + (row.figures.count > 0 && row.figures.count >= row.figures.august ? 1 : 0),
-    bests: sum.bests + (row.figures.count > row.figures.previousBest ? 1 : 0)
+    bests: sum.bests + (row.figures.previousBest !== null && row.figures.count > row.figures.previousBest ? 1 : 0)
   }), { count: 0, august: 0, byNow: 0, cash: 0, cashAugust: 0, above: 0, bests: 0 });
 }
 
@@ -155,7 +155,7 @@ const SORTS = {
   name: (row) => row.person.name,
   count: (row) => row.figures.count,
   pace: (row) => row.figures.count / Math.max(row.figures.byNow, 0.1),
-  best: (row) => row.figures.previousBest,
+  best: (row) => row.figures.previousBest ?? -1,
   cash: (row) => row.figures.cash
 };
 
@@ -231,7 +231,8 @@ function personRow(row, scale, me, grouped) {
   if (!isManager) return line;
 
   const bestCell = create('td', 'cell-best');
-  bestCell.append(create('b', '', String(row.figures.previousBest)), create('small', '', `best ${PERIODS[state.period].unit}`));
+  bestCell.append(create('b', '', row.figures.previousBest === null ? '—' : String(row.figures.previousBest)),
+    create('small', '', row.figures.previousBest === null ? 'no 30-day record' : `best ${PERIODS[state.period].unit}`));
 
   const cashCell = create('td', 'cell-cash');
   cashCell.append(create('b', '', `R${Math.round(row.figures.cash).toLocaleString('en-ZA')}`), create('small', '', 'cash'));
@@ -355,7 +356,7 @@ function showDetails(row) {
   [
     [String(figures.count), 'Registrations'],
     [formatNumber(figures.august), 'August average'],
-    [String(figures.previousBest), `Best ${period.unit} since August`]
+    [figures.previousBest === null ? '—' : String(figures.previousBest), figures.previousBest === null ? 'No 30-day record kept' : `Best ${period.unit} since August`]
   ].forEach(([value, label]) => {
     const stat = create('div');
     stat.append(create('b', '', value), create('span', '', label));
@@ -363,8 +364,10 @@ function showDetails(row) {
   });
 
   document.getElementById('details-status').replaceChildren(statusChip(paceFor(figures, state.period)));
-  const needed = figures.previousBest + 1 - figures.count;
-  document.getElementById('details-next').textContent = needed > 0
+  const needed = figures.previousBest === null ? null : figures.previousBest + 1 - figures.count;
+  document.getElementById('details-next').textContent = needed === null
+    ? 'No best is kept for a rolling 30 days. Choose This month to see how close this is to a record.'
+    : needed > 0
     ? `${needed} more registration${needed === 1 ? '' : 's'} would set a new best ${period.unit} since August.`
     : `A new best ${period.unit} since August. Worth a celebration.`;
 
@@ -399,10 +402,15 @@ function showDetails(row) {
 function showCelebrateNext() {
   const rows = rowsFor(state.college);
   const unit = PERIODS[state.period].unit;
-  const bests = rows.filter((row) => row.figures.count > row.figures.previousBest);
+  const bests = rows.filter((row) => row.figures.previousBest !== null && row.figures.count > row.figures.previousBest);
   const list = document.getElementById('celebrate-list');
   const note = document.getElementById('celebrate-note');
   list.replaceChildren();
+
+  if (PERIODS[state.period].noRecord) {
+    note.textContent = 'No records are kept for a rolling 30 days. Choose Today, This week or This month to see who is closest to a new best.';
+    return;
+  }
 
   const shown = bests.length
     ? bests

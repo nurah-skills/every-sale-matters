@@ -13,6 +13,8 @@ const TODAY = WORKDAYS.length - 1;
 // The last working days of August, so streaks can run back past 1 September
 const AUGUST_DAYS = 12;
 const WEEK_START = WORKDAYS.indexOf(14);
+// Working days from 18 to 31 August: the August part of a rolling 30 days to 17 September.
+const LATE_AUGUST_IN_THIRTY = 10;
 
 const PERIODS = {
   today: {
@@ -31,15 +33,28 @@ const PERIODS = {
   month: {
     label: 'This month', unit: 'month', from: 0, to: TODAY,
     note: '1 to 17 September so far', days: TODAY + 1, daysByNow: TODAY + SNAPSHOT.dayFraction
+  },
+  // A rolling 30 days: 18 August to 17 September, 10 working days of August and 13 of
+  // September. A negative day reaches back into late August. No best is kept for a rolling
+  // 30 days, so this period never claims a new record.
+  thirty: {
+    label: '30 days', unit: '30 days', from: -LATE_AUGUST_IN_THIRTY, to: TODAY,
+    note: '18 August to 17 September so far', days: LATE_AUGUST_IN_THIRTY + TODAY + 1,
+    daysByNow: LATE_AUGUST_IN_THIRTY + TODAY + SNAPSHOT.dayFraction, noRecord: true
   }
 };
+
+// Where a page has the period picker, it opens on the last 30 days; a choice someone has
+// made before is remembered and wins.
+const DEFAULT_PERIOD = 'thirty';
 
 const COLLEGES = ['Skills Academy', 'Matric College', 'Bellview'];
 
 const CASH_MILESTONES = {
   day: [1, 1000, 2500, 5000, 10000],
   week: [5000, 10000, 20000],
-  month: [5000, 10000, 20000, 50000]
+  month: [5000, 10000, 20000, 50000],
+  '30 days': [5000, 10000, 20000, 50000]
 };
 
 const LEAGUE_NAMES = ['Kingfishers', 'Herons', 'Falcons', 'Swifts'];
@@ -89,6 +104,9 @@ const PEOPLE = SAMPLE_PEOPLE.map(([name, collegeIndex, august]) => {
     if (!cashAugust || random() > (index === TODAY ? 0.15 : 0.4)) return 0;
     return roundToFive(cashAugust * (1 + random() * 3));
   });
+  const lateCash = seededRandom(`${name} late August cash`);
+  const lateAugustCash = Array.from({ length: AUGUST_DAYS }, () =>
+    (!cashAugust || lateCash() > 0.4 ? 0 : roundToFive(cashAugust * (1 + lateCash() * 3))));
 
   return {
     name,
@@ -101,7 +119,8 @@ const PEOPLE = SAMPLE_PEOPLE.map(([name, collegeIndex, august]) => {
     cashBest: cashAugust ? roundToFive(cashAugust * (5 + random() * 8)) : 0,
     days,
     lateAugust,
-    cash
+    cash,
+    lateAugustCash
   };
 });
 
@@ -163,23 +182,26 @@ function sumBetween(values, from, to) {
   return total;
 }
 
+// A day before 1 September (a negative day) is read from the late-August history.
+const sumAcross = (late, september, from, to) => sumBetween([...late, ...september], AUGUST_DAYS + from, AUGUST_DAYS + to);
+
 function figuresFor(person, periodKey) {
   const period = PERIODS[periodKey];
   const bests = { day: person.best, week: person.bestWeek, month: person.bestMonth };
   return {
-    count: sumBetween(person.days, period.from, period.to),
-    cash: sumBetween(person.cash, period.from, period.to),
+    count: sumAcross(person.lateAugust, person.days, period.from, period.to),
+    cash: sumAcross(person.lateAugustCash, person.cash, period.from, period.to),
     august: person.august * period.days,
     byNow: person.august * period.daysByNow,
     cashAugust: person.cashAugust * period.days,
-    previousBest: bests[period.unit]
+    previousBest: period.noRecord ? null : bests[period.unit]
   };
 }
 
 function paceFor(figures, periodKey) {
   const { count, august, byNow, previousBest } = figures;
   const finished = periodKey === 'yesterday';
-  if (count > previousBest) return { tone: 'best', text: 'New best' };
+  if (previousBest !== null && count > previousBest) return { tone: 'best', text: 'New best' };
   if (count > 0 && count >= august) return { tone: 'good', text: 'Above August average' };
   if (!finished && count > 0 && count >= byNow) return { tone: 'good', text: 'Ahead of usual pace' };
   if (!finished && count > 0 && count >= byNow * 0.75) return { tone: 'info', text: 'On track' };

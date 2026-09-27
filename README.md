@@ -30,7 +30,7 @@ The pages follow the order of the menu.
 
 | Page | What it does |
 | --- | --- |
-| `pages/home.html` | One person’s progress: registrations against their August average and usual pace (with any sales streak), the next record, cash recorded, their latest celebration, staff incentives, their suggested league and the three colleges. Each figure appears once. |
+| `pages/home.html` | One person’s progress: registrations against their August average and usual pace (with any sales streak), the next record, cash recorded, their latest celebration, staff incentives, their suggested league and the three colleges. Each figure appears once. Opens on the last 30 days (18 August to 17 September in the sample); Today, Yesterday, This week and This month are one click away, and a choice holds for the rest of the visit. No best is kept for a rolling 30 days, so that view makes no record claims. |
 | `pages/team.html` | The whole group: four totals (registrations, against August, people above August, cash), college totals and everyone’s results, with filters, sorting, grouping by college and your own row highlighted. Selecting a name opens their details. |
 
 ### Recognition
