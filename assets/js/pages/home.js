@@ -135,13 +135,6 @@ function showCash(person, figures) {
   });
 }
 
-// Cards ready is for managers, so everyone else is pointed at the wall of fame
-function cardsLink() {
-  const link = create('a', 'text-link', user.manager ? 'Open cards ready' : 'See the wall of fame');
-  link.href = user.manager ? 'cards.html' : 'fame.html';
-  return link;
-}
-
 function showLatestCard(person) {
   const holder = document.getElementById('latest-card');
   holder.replaceChildren();
@@ -162,8 +155,7 @@ function showLatestCard(person) {
 
   const footer = create('div', 'card-footer');
   footer.append(
-    create('span', `status ${card.status === 'Sent' ? 'status-good' : 'status-info'}`, card.status),
-    cardsLink()
+    create('span', `status ${card.status === 'Sent' ? 'status-good' : 'status-info'}`, card.status)
   );
   holder.append(preview, footer);
 }
